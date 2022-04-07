@@ -1,6 +1,8 @@
 # PlanningPoker
 A planning poker game for TSD labs
+
 Frontend: React.js
+
 Backend: Spring Boot
 
 Questions to answer:
