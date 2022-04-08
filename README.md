@@ -7,6 +7,8 @@ Backend: Spring Boot
 
 DataBase: Firestore
 
+Deploy: GoogleCloud
+
 Questions to answer:
 - what are the tools needed to develop the application
 - how to configure the project on a developer's machine (database, webserver, etc.)
