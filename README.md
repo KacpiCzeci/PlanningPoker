@@ -16,3 +16,11 @@ Questions to answer:
 - how to run tests
 - how to deploy the application to production
  -main page which would display the name of the project and the team members
+
+# Start up
+## Installation
+`npm i`
+## Frontend
+`npx nx run client:serve`
+## Backend
+`npx nx run backend:serve`
