@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import NxWelcome from './nx-welcome';
-import GamePage from './GamePage/GamePage';
+import GamePage from '../../../../libs/react/UI/GamePage/GamePage';
 
 const StyledApp = styled.div`
   // Your style here
