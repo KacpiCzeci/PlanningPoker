@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
+import TextField from "../Componets/TextField/TextField"
+import "./GamePage.scss"
 
 export default function GamePage(){
+    const [val, setVal] = useState("");
     return(
         <div className="GamePage-container">
             <div className="GamePage-userinfobar">
@@ -11,6 +14,9 @@ export default function GamePage(){
             </div>
             <div className="GamePage-gameinfo">
                 <div className="GamePage-gamename">
+                    <TextField  placeholder="Name of vote" 
+                    value={val}
+                    onChange={setVal} />   
                 </div>
                 <div className="GamePage-vote">
                 </div>

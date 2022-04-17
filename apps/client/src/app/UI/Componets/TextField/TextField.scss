@@ -1,0 +1,47 @@
+
+// @keyframes visibilityOnAnimation { 
+//     0% {
+//       opacity: 0;
+//     }
+  
+//     100% {
+//       opacity: 1;
+//     }
+//   }
+
+.text-field-label-v{
+    // animation: visibilityOnAnimation 0.1s;
+    font-size: smaller;
+    position:absolute;
+    pointer-events:none;
+    left:15px;
+    top:18px;
+    transition:0.2s ease all;
+    -moz-transition:0.2s ease all;
+    -webkit-transition:0.2s ease all;
+    background-color: white;
+    background-size: cover;
+    transition: visibility 2s;
+
+    
+}
+// .text-field-label-uv{
+//     opacity: 0;
+//     font-size: smaller;
+//     position:absolute;
+//     pointer-events:none;
+//     left:15px;
+//     top:18px;
+//     transition:0.2s ease all;
+//     -moz-transition:0.2s ease all;
+//     -webkit-transition:0.2s ease all;
+//     background-color: white;
+//     background-size: cover;
+// }
+.text-field-input{
+    text-align: center;
+    border: 2px solid skyblue;
+    border-radius: 2%;
+    width: 200px;
+    height: 25px;
+}
