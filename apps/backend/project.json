@@ -17,6 +17,8 @@
           "optimization": true,
           "extractLicenses": true,
           "inspect": false,
+          "generatePackageJson": true,
+          "sourceMap": false,
           "fileReplacements": [
             {
               "replace": "apps/backend/src/environments/environment.ts",
