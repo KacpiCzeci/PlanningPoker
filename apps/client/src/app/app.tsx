@@ -1,16 +1,14 @@
 import styled from 'styled-components';
-import NxWelcome from './nx-welcome';
-import GamePage from '../../../../libs/react/UI/GamePage/GamePage';
+//import GamePage from '../../../../libs/react/UI/GamePage/GamePage';
+//import Card from '../../../../libs/data/UI/Card/Card';
+//import { Card } from '@planning-poker/react/ui';
+import { GlobalStateProvider } from './GlobalStateProvider';
 
-const StyledApp = styled.div`
-  // Your style here
-`;
 
 export function App() {
   return (
-    <StyledApp>
-      <GamePage />
-    </StyledApp>
+    <GlobalStateProvider>
+    </GlobalStateProvider>
   );
 }
 
