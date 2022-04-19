@@ -1,5 +1,7 @@
 import { DatastoreService } from './../datastore/datastore.service';
 import { Body, Controller, Get, Post } from '@nestjs/common';
+import { VoteDto, GetResultSuccessDto } from './voting.dto';
+import { ApiOkResponse } from '@nestjs/swagger';
 
 export type Voting = {
   question: string;
@@ -7,11 +9,6 @@ export type Voting = {
   participants: { name: string; score: number }[];
   onFinish: (() => void)[];
 };
-
-class VoteDto {
-  name: string;
-  score: number;
-}
 
 @Controller('voting')
 export class VotingController {
@@ -27,13 +24,14 @@ export class VotingController {
   }
 
   @Get('getResult')
-  async getResult() {
+  @ApiOkResponse({ type: GetResultSuccessDto })
+  async getResult(): Promise<GetResultSuccessDto> {
     const voting = this.datastore.getBoard().currentVoting;
     await new Promise<void>((res) => {
       voting.onFinish.push(res);
     });
 
-    return voting.participants.map((p) => p.score);
+    return { scores: voting.participants };
   }
 
   @Post('vote')

@@ -1,6 +1,9 @@
+import { VoteDto, VotingDto } from './../voting/voting.dto';
+import { BoardDto, CreateVotingDto } from './board.dto';
 import { DatastoreService } from './../datastore/datastore.service';
 import { Voting } from './../voting/voting.controller';
 import { Body, Controller, Get, Post } from '@nestjs/common';
+import { ApiOkResponse } from '@nestjs/swagger';
 
 export type Board = {
   players: string[];
@@ -8,8 +11,6 @@ export type Board = {
   name: string;
   currentVoting: Voting | undefined;
 };
-
-
 
 let onNewVoting: Array<() => void> = [];
 
@@ -21,12 +22,13 @@ export class BoardController {
   }
 
   @Get()
+  @ApiOkResponse({ type: BoardDto })
   getBoard() {
     return this.board;
   }
 
   @Post('newVoting')
-  newVoting(@Body() data: { name: string }) {
+  newVoting(@Body() data: CreateVotingDto) {
     this.board.currentVoting = {
       finished: false,
       onFinish: [],
@@ -41,7 +43,8 @@ export class BoardController {
   }
 
   @Get('nextVoting')
-  async getNextVoting() {
+  @ApiOkResponse({ type: VotingDto })
+  async getNextVoting(): Promise<VotingDto> {
     await new Promise<void>((res) => onNewVoting.push(res));
     return this.board.currentVoting;
   }
