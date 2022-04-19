@@ -1,15 +1,11 @@
-import styled from 'styled-components';
 import GamePage from './UI/GamePage/GamePage';
+import { GlobalStateProvider } from './GlobalStateProvider';
 
-const StyledApp = styled.div`
-  // Your style here
-`;
 
 export function App() {
   return (
-    <StyledApp>
-      <GamePage />
-    </StyledApp>
+    <GlobalStateProvider>
+    </GlobalStateProvider>
   );
 }
 
