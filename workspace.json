@@ -4,6 +4,7 @@
     "backend": "apps/backend",
     "client": "apps/client",
     "client-e2e": "apps/client-e2e",
-    "nestjs-auth": "libs/nestjs/auth"
+    "nestjs-auth": "libs/nestjs/auth",
+    "nestjs-planning-poker": "libs/nestjs/planning-poker"
   }
 }

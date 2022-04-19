@@ -15,7 +15,10 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@planning-poker/nestjs/auth": ["libs/nestjs/auth/src/index.ts"]
+      "@planning-poker/nestjs/auth": ["libs/nestjs/auth/src/index.ts"],
+      "@planning-poker/nestjs/planning-poker": [
+        "libs/nestjs/planning-poker/src/index.ts"
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]

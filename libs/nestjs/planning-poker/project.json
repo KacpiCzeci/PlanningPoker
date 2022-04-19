@@ -1,0 +1,22 @@
+{
+  "root": "libs/nestjs/planning-poker",
+  "sourceRoot": "libs/nestjs/planning-poker/src",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/nestjs/planning-poker/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/nestjs/planning-poker"],
+      "options": {
+        "jestConfig": "libs/nestjs/planning-poker/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}
