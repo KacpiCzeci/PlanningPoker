@@ -1,0 +1,23 @@
+{
+  "root": "libs/shared/backend-api-client",
+  "sourceRoot": "libs/shared/backend-api-client/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/shared/backend-api-client/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/shared/backend-api-client"],
+      "options": {
+        "jestConfig": "libs/shared/backend-api-client/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

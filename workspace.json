@@ -3,6 +3,9 @@
   "projects": {
     "backend": "apps/backend",
     "client": "apps/client",
-    "client-e2e": "apps/client-e2e"
+    "client-e2e": "apps/client-e2e",
+    "nestjs-auth": "libs/nestjs/auth",
+    "nestjs-planning-poker": "libs/nestjs/planning-poker",
+    "shared-backend-api-client": "libs/shared/backend-api-client"
   }
 }
