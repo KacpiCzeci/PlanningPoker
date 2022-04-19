@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import TextField from "../Componets/TextField/TextField"
+import CardDeck from "../Componets/CardDeck/CardDeck";
 import "./GamePage.scss"
 
 export default function GamePage(){
@@ -25,6 +26,7 @@ export default function GamePage(){
             </div>
             <div className="GamePage-voteinfo">
                 <div className="GamePage-voteoptions">
+                    <CardDeck/>
                 </div>
                 <div className="GamePage-newvote">
                 </div>

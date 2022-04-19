@@ -5,6 +5,7 @@ import { GlobalStateProvider } from './GlobalStateProvider';
 export function App() {
   return (
     <GlobalStateProvider>
+      <GamePage/>
     </GlobalStateProvider>
   );
 }
