@@ -11,6 +11,12 @@ export default defineConfig({
       schemas: destPath('schemas'),
 
       client: 'axios-functions',
+      override: {
+        mutator: {
+          path: destPath("custom-instance.ts"),
+          name: 'customInstance',
+        },
+      },
     },
 
     input: {

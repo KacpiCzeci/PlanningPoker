@@ -1,1 +1,1 @@
-export * from './lib/shared-backend-api-client';
+export * from './backend'
