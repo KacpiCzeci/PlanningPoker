@@ -3,4 +3,52 @@
     flex-direction: column;
     width: 100%;
 }
+/* Style the header */
+.GamePage-header{
+    background-color: skyblue;
+    padding: 20px;
+    text-align: center;
+}
+/* The user info bar container */
+.GamePage-userinfobar{
+    overflow: hidden;
+    background-color: rgba(51, 51, 51, 0.717);
+}
+/* Navbar links */
+.GamePage-userinfobar div {
+    float: left;
+    display: block;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
 
+/* Create colum for game info */
+.GamePage-gameinfo {
+    background-color: white;
+    float: left;
+    padding: 15px;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+.GamePage-gameinfo div{
+    margin-top: 10px;
+    margin-left: 10px;
+}
+/* Style of vote info (cards)*/
+.GamePage-voteinfo{
+    background-color: #f1f1f1;
+    padding: 10px;
+    text-align: center;
+    justify-content: center;
+}
+.GamePage-voteinfo div{
+    float: left;
+    display: block;
+    color: black;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
