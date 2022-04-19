@@ -46,7 +46,6 @@ export default function GamePage(){
             </div>
             <div className="GamePage-voteinfo">
                 <div className="GamePage-voteoptions">
-                    Karty
                 </div>
                 <div className="GamePage-newvote">
                     NewVote
