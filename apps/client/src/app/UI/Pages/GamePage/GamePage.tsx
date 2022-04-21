@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TextField from "../../Componets/TextField/TextField"
+import TextArea from "../../Componets/TextArea/TextArea"
 import CardDeck from "../../Componets/CardDeck/CardDeck";
+import Button from "../../Componets/Button/Button";
 import "./GamePage.scss"
 import { stringify } from "querystring";
+import { GlobalStateInterface, useGlobalState } from "../../../GlobalStateProvider";
 
 function getSessionStorageOrDefault(key: string, defaultValue: string) {
     const stored = sessionStorage.getItem(key);
