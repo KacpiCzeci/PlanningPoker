@@ -11,18 +11,14 @@ export default function LoginPage(){
                         <img className="LoginPage-image-img" src="../../../../assets/poker.png" alt="Logo.png"></img>
                     </div>
                     <div className="LoginPage-text-container">
-                        <p className="LoginPage-text-txt">Plannning Poker</p>
+                        <p className="LoginPage-text-txt">Planning Poker</p>
                     </div>
                 </div>
-                <div className="LoginInput-container">
-                    <div className="LoginInput-container">
-                        <TextField value={""} onChange={()=>{}} placeholder={"User1"} destiny="name-of-vote"/>
-                    </div>
+                <div className="LoginPage-input">
+                    <TextField value={""} onChange={()=>{}} placeholder={"User1"} destiny="name-of-vote"/>
                 </div>
-                <div className="LoginPage-button-container">
-                    <div className="LoginPage-button-subcontainer">
-                        Button will be here
-                    </div>
+                <div className="LoginPage-button">
+                    Button will be here
                 </div>
             </div>
         </div>
