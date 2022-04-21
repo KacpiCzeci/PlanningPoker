@@ -3,8 +3,8 @@ import React, { createContext, useState, useContext, Dispatch, SetStateAction } 
 export interface GlobalStateInterface {
     gameName?: string;
     userName?: string;
-    result?: number;
-    resultAverange?: number;
+    result?: string;
+    resultAverange?: string;
     gameEnded?: boolean;
     cardPicked?: number;
 }

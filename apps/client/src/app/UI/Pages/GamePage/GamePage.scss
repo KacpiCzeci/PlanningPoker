@@ -43,10 +43,18 @@
     padding: 10px;
     text-align: center;
     justify-content: center;
+    display: flex;
 }
 .GamePage-voteinfo div{
+    flex-direction: row;
     float: left;
     color: black;
     padding: 14px 16px;
     text-decoration: none;
+}
+.GamePage-newvote{
+width: 100%;
+}
+
+.GamePage-voteoptions{
 }
