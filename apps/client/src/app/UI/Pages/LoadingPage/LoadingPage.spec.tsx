@@ -1,10 +1,10 @@
 import { render } from '@testing-library/react';
 
-import CardDeck from './CardDeck';
+import LoadingPage from './LoadingPage';
 
-describe('CardDeck', () => {
+describe('LoadingPage', () => {
   it('should render successfully', () => {
-    const { baseElement } = render(<CardDeck />);
+    const { baseElement } = render(<LoadingPage/>);
     expect(baseElement).toBeTruthy();
   });
 });

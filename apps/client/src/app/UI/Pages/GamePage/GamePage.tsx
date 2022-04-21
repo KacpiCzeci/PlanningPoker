@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import TextField from "../Componets/TextField/TextField"
-import CardDeck from "../Componets/CardDeck/CardDeck";
+import TextField from "../../Componets/TextField/TextField"
+import CardDeck from "../../Componets/CardDeck/CardDeck";
 import "./GamePage.scss"
 
 export default function GamePage(){
