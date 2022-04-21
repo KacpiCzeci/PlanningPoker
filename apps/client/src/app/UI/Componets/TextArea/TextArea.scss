@@ -1,0 +1,54 @@
+.container{
+    height: 50px;
+    width: 50px;
+    justify-content: center;
+    margin: 25px;
+}
+
+.value{
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 300;
+    margin: 0;
+    text-align: center;
+}
+
+.hover{
+    filter: brightness(1.2);
+    cursor: pointer;
+}
+
+.TextArea{
+    &-container{
+        @extend .container;
+    }
+    &-label{
+        @extend .value;
+        font-size: large;
+        position:relative;
+        bottom: -40px;
+        left: -50px;
+    }
+    &-input{
+        @extend .value;
+        text-align: center;
+        border: 2px solid #3993ff;
+        height: 50px;
+        width: 50px;
+        border-radius: 25%;
+        font-size: medium;
+        color: #3993ff;
+    }
+    // &-input:hover{
+    //     @extend .hover;
+    //     @extend .value;
+    //     text-align: center;
+    //     border: 2px solid #3993ff;
+    //     height: 50px;
+    //     width: 50px;
+    //     border-radius: 20%;
+    //     font-size: medium;
+    // }
+}
