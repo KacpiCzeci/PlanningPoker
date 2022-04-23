@@ -1,16 +1,15 @@
-import { Board } from './../board/board.controller';
+import { Voting } from './../voting/voting.controller';
 import { Injectable } from '@nestjs/common';
-
-const board: Board = {
-  currentVoting: undefined,
-  name: '',
-  players: [],
-  votings: [],
-};
 
 @Injectable()
 export class DatastoreService {
-  getBoard(): Board {
-    return board;
+  private voting: Voting = {
+    finished: false,
+    onFinish: [],
+    participants: [],
+    question: '',
+  };
+  getCurrentVoting(): Voting {
+    return this.voting;
   }
 }
