@@ -1,27 +1,19 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export type Vote = { name: string; score: number };
+export type Player = { player: string; score: number };
 
-export class VoteDto implements Vote {
+export class PlayerDto implements Player {
   @ApiProperty()
-  name: string;
+  player: string;
 
   @ApiProperty()
   score: number;
 }
 
 export class GetResultSuccessDto {
-  @ApiProperty({ type: [VoteDto] })
-  scores: Vote[];
-}
-
-export class VotingDto {
   @ApiProperty()
-  question: string;
+  gameName: string;
 
-  @ApiProperty()
-  finished: boolean;
-
-  @ApiProperty({ type: [VoteDto] })
-  participants: Vote[];
+  @ApiProperty({ type: [PlayerDto] })
+  players: Player[];
 }

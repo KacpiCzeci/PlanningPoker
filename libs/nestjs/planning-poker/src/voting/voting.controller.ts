@@ -1,7 +1,22 @@
 import { DatastoreService } from './../datastore/datastore.service';
-import { Body, Controller, Get, Post } from '@nestjs/common';
-import { VoteDto, GetResultSuccessDto } from './voting.dto';
-import { ApiOkResponse } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpException,
+  Param,
+  Post,
+  Query,
+} from '@nestjs/common';
+import { PlayerDto, GetResultSuccessDto } from './voting.dto';
+import {
+  ApiConflictResponse,
+  ApiHeader,
+  ApiOkResponse,
+  ApiProperty,
+} from '@nestjs/swagger';
+import { calculateEtag } from '@planning-poker/shared/backend-api-client';
 
 export type Voting = {
   question: string;
@@ -10,39 +25,92 @@ export type Voting = {
   onFinish: (() => void)[];
 };
 
+let updateCB: (() => void)[] = [];
+
+export class RestartRequest {
+  @ApiProperty()
+  name: string;
+}
+
+export class GetResultRequest {
+  @ApiProperty({ required: false })
+  etag?: string;
+}
+
 @Controller('voting')
 export class VotingController {
   voting: Voting;
-  constructor(private datastore: DatastoreService) {}
+  constructor(private datastore: DatastoreService) {
+    console.log('Create');
+  }
 
-  @Get('finish')
-  finish() {
-    const voting = this.datastore.getBoard().currentVoting;
-    voting.onFinish.forEach((x) => x());
-    voting.onFinish = [];
-    voting.finished = true;
+  @Post('startNew')
+  startNew(@Body() { name }: RestartRequest) {
+    const voting = this.datastore.getCurrentVoting();
+    voting.question = name;
+
+    voting.participants = [];
+    updateCB.forEach((x) => x());
+    updateCB = [];
   }
 
   @Get('getResult')
   @ApiOkResponse({ type: GetResultSuccessDto })
-  async getResult(): Promise<GetResultSuccessDto> {
-    const voting = this.datastore.getBoard().currentVoting;
-    await new Promise<void>((res) => {
-      voting.onFinish.push(res);
-    });
+  @ApiConflictResponse({ description: 'Error when voting not started' })
+  async getResult(
+    @Query() {etag}: GetResultRequest
+  ): Promise<GetResultSuccessDto> {
+    const voting = this.datastore.getCurrentVoting();
 
-    return { scores: voting.participants };
+    if (voting.question === '') {
+      throw new HttpException('voting is not started', 409);
+    }
+
+    const waitForUpdate = () => new Promise<void>((res) => updateCB.push(res));
+
+    const [result, update] = ((): [GetResultSuccessDto, () => void] => {
+      const mapPlayers = () =>
+        voting.participants.map((x) => ({
+          player: x.name,
+          score: x.score,
+        }));
+      const result = {
+        gameName: voting.question,
+        players: mapPlayers(),
+      };
+      return [
+        result,
+        () => {
+          (result.gameName = voting.question), (result.players = mapPlayers());
+        },
+      ];
+    })();
+
+    if (etag !== undefined) {
+      while (etag === calculateEtag(result)) {
+        await waitForUpdate();
+        update();
+      }
+    }
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-expect-error
+    result.etag = calculateEtag(result)
+
+    return {...result};
   }
 
   @Post('vote')
-  vote(@Body() data: VoteDto) {
-    const voting = this.datastore.getBoard().currentVoting;
-    const participant = voting.participants.find((p) => p.name === data.name);
+  vote(@Body() { player, score }: PlayerDto) {
+    const voting = this.datastore.getCurrentVoting();
+    const participant = voting.participants.find((p) => p.name === player);
     if (participant === undefined) {
-      voting.participants.push(data);
+      voting.participants.push({ name: player, score });
     } else {
-      participant.score = data.score;
+      participant.score = score;
     }
+    updateCB.forEach((x) => x());
+    updateCB = [];
     return 'ok';
   }
 }
