@@ -6,6 +6,6 @@
     "types": [],
     "target": "es6"
   },
-  "include": ["**/*.ts"],
+  "include": ["**/*.ts", "../../shared/backend-api-client/src/voting-etag/etag.test.ts"],
   "exclude": ["**/*.spec.ts", "**/*.test.ts"]
 }
