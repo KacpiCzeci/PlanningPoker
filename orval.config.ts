@@ -10,7 +10,7 @@ export default defineConfig({
 
       schemas: destPath('schemas'),
 
-      client: 'axios-functions',
+      client: 'react-query',
       override: {
         mutator: {
           path: destPath("custom-instance.ts"),

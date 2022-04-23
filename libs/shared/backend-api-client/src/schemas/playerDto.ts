@@ -7,5 +7,5 @@
 
 export interface PlayerDto {
   player: string;
-  score: number;
+  score: number | null;
 }

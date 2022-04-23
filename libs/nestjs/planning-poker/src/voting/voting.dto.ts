@@ -6,8 +6,8 @@ export class PlayerDto implements Player {
   @ApiProperty()
   player: string;
 
-  @ApiProperty()
-  score: number;
+  @ApiProperty({required: false})
+  score: number | undefined;
 }
 
 export class GetResultSuccessDto {

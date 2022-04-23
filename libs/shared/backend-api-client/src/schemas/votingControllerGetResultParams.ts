@@ -5,7 +5,4 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface GetResultRequest {
-  player: string;
-  etag: string;
-}
+export type VotingControllerGetResultParams = { etag?: string };

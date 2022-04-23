@@ -4,16 +4,31 @@
  * Planning Poker API
  * OpenAPI spec version: 1.0
  */
+import {
+  useQuery,
+  useMutation,
+  UseQueryOptions,
+  UseMutationOptions,
+  QueryFunction,
+  MutationFunction,
+  UseQueryResult,
+  QueryKey
+} from 'react-query'
 import type {
   RestartRequest,
   GetResultSuccessDto,
-  GetResultRequest,
+  VotingControllerGetResultParams,
   PlayerDto
 } from './schemas'
 import { customInstance, ErrorType } from './custom-instance'
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AsyncReturnType<
+T extends (...args: any) => Promise<any>
+> = T extends (...args: any) => Promise<infer R> ? R : any;
 
-  export const appControllerGetData = (
+
+export const appControllerGetData = (
     
  ) => {
       return customInstance<void>(
@@ -22,6 +37,35 @@ import { customInstance, ErrorType } from './custom-instance'
       );
     }
   
+
+export const getAppControllerGetDataQueryKey = () => [`/api`];
+
+    
+export type AppControllerGetDataQueryResult = NonNullable<AsyncReturnType<typeof appControllerGetData>>
+export type AppControllerGetDataQueryError = ErrorType<unknown>
+
+export const useAppControllerGetData = <TData = AsyncReturnType<typeof appControllerGetData>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<AsyncReturnType<typeof appControllerGetData>, TError, TData>, }
+
+  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+
+  const {query: queryOptions} = options || {}
+
+  const queryKey = queryOptions?.queryKey ?? getAppControllerGetDataQueryKey();
+
+  
+
+  const queryFn: QueryFunction<AsyncReturnType<typeof appControllerGetData>> = () => appControllerGetData();
+
+  const query = useQuery<AsyncReturnType<typeof appControllerGetData>, TError, TData>(queryKey, queryFn, queryOptions)
+
+  return {
+    queryKey,
+    ...query
+  }
+}
+
+
 export const votingControllerStartNew = (
     restartRequest: RestartRequest,
  ) => {
@@ -33,16 +77,69 @@ export const votingControllerStartNew = (
       );
     }
   
+
+
+    export type VotingControllerStartNewMutationResult = NonNullable<AsyncReturnType<typeof votingControllerStartNew>>
+    export type VotingControllerStartNewMutationBody = RestartRequest
+    export type VotingControllerStartNewMutationError = ErrorType<unknown>
+
+    export const useVotingControllerStartNew = <TError = ErrorType<unknown>,
+    
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<AsyncReturnType<typeof votingControllerStartNew>, TError,{data: RestartRequest}, TContext>, }
+) => {
+      const {mutation: mutationOptions} = options || {}
+
+      
+
+
+      const mutationFn: MutationFunction<AsyncReturnType<typeof votingControllerStartNew>, {data: RestartRequest}> = (props) => {
+          const {data} = props || {};
+
+          return  votingControllerStartNew(data,)
+        }
+
+      return useMutation<AsyncReturnType<typeof votingControllerStartNew>, TError, {data: RestartRequest}, TContext>(mutationFn, mutationOptions)
+    }
+    
 export const votingControllerGetResult = (
-    getResultRequest: GetResultRequest,
+    params?: VotingControllerGetResultParams,
  ) => {
       return customInstance<GetResultSuccessDto>(
       {url: `/api/voting/getResult`, method: 'get',
-      headers: {'Content-Type': 'application/json'}
+        params,
     },
       );
     }
   
+
+export const getVotingControllerGetResultQueryKey = (params?: VotingControllerGetResultParams,) => [`/api/voting/getResult`, ...(params ? [params]: [])];
+
+    
+export type VotingControllerGetResultQueryResult = NonNullable<AsyncReturnType<typeof votingControllerGetResult>>
+export type VotingControllerGetResultQueryError = ErrorType<void>
+
+export const useVotingControllerGetResult = <TData = AsyncReturnType<typeof votingControllerGetResult>, TError = ErrorType<void>>(
+ params?: VotingControllerGetResultParams, options?: { query?:UseQueryOptions<AsyncReturnType<typeof votingControllerGetResult>, TError, TData>, }
+
+  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+
+  const {query: queryOptions} = options || {}
+
+  const queryKey = queryOptions?.queryKey ?? getVotingControllerGetResultQueryKey(params);
+
+  
+
+  const queryFn: QueryFunction<AsyncReturnType<typeof votingControllerGetResult>> = () => votingControllerGetResult(params, );
+
+  const query = useQuery<AsyncReturnType<typeof votingControllerGetResult>, TError, TData>(queryKey, queryFn, queryOptions)
+
+  return {
+    queryKey,
+    ...query
+  }
+}
+
+
 export const votingControllerVote = (
     playerDto: PlayerDto,
  ) => {
@@ -55,12 +152,26 @@ export const votingControllerVote = (
     }
   
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type AsyncReturnType<
-T extends (...args: any) => Promise<any>
-> = T extends (...args: any) => Promise<infer R> ? R : any;
 
-export type AppControllerGetDataResult = NonNullable<AsyncReturnType<typeof appControllerGetData>>
-export type VotingControllerStartNewResult = NonNullable<AsyncReturnType<typeof votingControllerStartNew>>
-export type VotingControllerGetResultResult = NonNullable<AsyncReturnType<typeof votingControllerGetResult>>
-export type VotingControllerVoteResult = NonNullable<AsyncReturnType<typeof votingControllerVote>>
+    export type VotingControllerVoteMutationResult = NonNullable<AsyncReturnType<typeof votingControllerVote>>
+    export type VotingControllerVoteMutationBody = PlayerDto
+    export type VotingControllerVoteMutationError = ErrorType<unknown>
+
+    export const useVotingControllerVote = <TError = ErrorType<unknown>,
+    
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<AsyncReturnType<typeof votingControllerVote>, TError,{data: PlayerDto}, TContext>, }
+) => {
+      const {mutation: mutationOptions} = options || {}
+
+      
+
+
+      const mutationFn: MutationFunction<AsyncReturnType<typeof votingControllerVote>, {data: PlayerDto}> = (props) => {
+          const {data} = props || {};
+
+          return  votingControllerVote(data,)
+        }
+
+      return useMutation<AsyncReturnType<typeof votingControllerVote>, TError, {data: PlayerDto}, TContext>(mutationFn, mutationOptions)
+    }
+    
