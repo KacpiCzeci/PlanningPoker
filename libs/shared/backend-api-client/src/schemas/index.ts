@@ -4,3 +4,6 @@ export * from './getResultSuccessDto';
 export * from './votingDto';
 export * from './boardDto';
 export * from './createVotingDto';
+export * from './restartRequest';
+export * from './getResultRequest';
+export * from './playerDto';

@@ -4,8 +4,9 @@
  * Planning Poker API
  * OpenAPI spec version: 1.0
  */
-import type { VoteDto } from './voteDto';
+import type { PlayerDto } from './playerDto';
 
 export interface GetResultSuccessDto {
-  scores: VoteDto[];
+  gameName: string;
+  players: PlayerDto[];
 }
