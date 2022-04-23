@@ -5,11 +5,10 @@
  * OpenAPI spec version: 1.0
  */
 import type {
+  RestartRequest,
   GetResultSuccessDto,
-  VoteDto,
-  BoardDto,
-  CreateVotingDto,
-  VotingDto
+  GetResultRequest,
+  PlayerDto
 } from './schemas'
 import { customInstance, ErrorType } from './custom-instance'
 
@@ -23,60 +22,34 @@ import { customInstance, ErrorType } from './custom-instance'
       );
     }
   
-export const votingControllerFinish = (
-    
+export const votingControllerStartNew = (
+    restartRequest: RestartRequest,
  ) => {
       return customInstance<void>(
-      {url: `/api/voting/finish`, method: 'get'
+      {url: `/api/voting/startNew`, method: 'post',
+      headers: {'Content-Type': 'application/json'},
+      data: restartRequest
     },
       );
     }
   
 export const votingControllerGetResult = (
-    
+    getResultRequest: GetResultRequest,
  ) => {
       return customInstance<GetResultSuccessDto>(
-      {url: `/api/voting/getResult`, method: 'get'
+      {url: `/api/voting/getResult`, method: 'get',
+      headers: {'Content-Type': 'application/json'}
     },
       );
     }
   
 export const votingControllerVote = (
-    voteDto: VoteDto,
+    playerDto: PlayerDto,
  ) => {
       return customInstance<void>(
       {url: `/api/voting/vote`, method: 'post',
       headers: {'Content-Type': 'application/json'},
-      data: voteDto
-    },
-      );
-    }
-  
-export const boardControllerGetBoard = (
-    
- ) => {
-      return customInstance<BoardDto>(
-      {url: `/api/board`, method: 'get'
-    },
-      );
-    }
-  
-export const boardControllerNewVoting = (
-    createVotingDto: CreateVotingDto,
- ) => {
-      return customInstance<void>(
-      {url: `/api/board/newVoting`, method: 'post',
-      headers: {'Content-Type': 'application/json'},
-      data: createVotingDto
-    },
-      );
-    }
-  
-export const boardControllerGetNextVoting = (
-    
- ) => {
-      return customInstance<VotingDto>(
-      {url: `/api/board/nextVoting`, method: 'get'
+      data: playerDto
     },
       );
     }
@@ -88,9 +61,6 @@ T extends (...args: any) => Promise<any>
 > = T extends (...args: any) => Promise<infer R> ? R : any;
 
 export type AppControllerGetDataResult = NonNullable<AsyncReturnType<typeof appControllerGetData>>
-export type VotingControllerFinishResult = NonNullable<AsyncReturnType<typeof votingControllerFinish>>
+export type VotingControllerStartNewResult = NonNullable<AsyncReturnType<typeof votingControllerStartNew>>
 export type VotingControllerGetResultResult = NonNullable<AsyncReturnType<typeof votingControllerGetResult>>
 export type VotingControllerVoteResult = NonNullable<AsyncReturnType<typeof votingControllerVote>>
-export type BoardControllerGetBoardResult = NonNullable<AsyncReturnType<typeof boardControllerGetBoard>>
-export type BoardControllerNewVotingResult = NonNullable<AsyncReturnType<typeof boardControllerNewVoting>>
-export type BoardControllerGetNextVotingResult = NonNullable<AsyncReturnType<typeof boardControllerGetNextVoting>>
