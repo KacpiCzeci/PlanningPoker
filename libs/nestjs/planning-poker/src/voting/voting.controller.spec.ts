@@ -36,7 +36,7 @@ describe('VotingController', () => {
   test('should return info about voting', async () => {
     controller.startNew({ name: 'voting' });
 
-    expect(await controller.getResult({})).toStrictEqual({
+    expect(await controller.getResult({})).toMatchObject({
       gameName: 'voting',
       players: [],
     });
@@ -46,7 +46,7 @@ describe('VotingController', () => {
     controller.startNew({ name: 'voting' });
     controller.vote({ player: '2', score: 10 });
 
-    return expect(controller.getResult({})).resolves.toStrictEqual({
+    return expect(controller.getResult({})).resolves.toMatchObject({
       gameName: 'voting',
       players: [{ player: '2', score: 10 }],
     });
@@ -63,7 +63,7 @@ describe('VotingController', () => {
           players: [{ player: 'p1', score: undefined }],
         }),
       })
-    ).resolves.toStrictEqual({
+    ).resolves.toMatchObject({
       gameName: 'voting123',
       players: [{ player: 'p1', score: 10 }],
     });
@@ -83,7 +83,7 @@ describe('VotingController', () => {
           players: [{ player: 'p1', score: undefined }],
         }),
       })
-    ).resolves.toStrictEqual({
+    ).resolves.toMatchObject({
       gameName: 'voting2',
       players: [],
     });
