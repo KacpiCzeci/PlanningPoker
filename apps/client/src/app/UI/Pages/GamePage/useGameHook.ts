@@ -65,17 +65,17 @@ export const useGameHook = () => {
   );
 
   const voteFn = useCallback(
-    function voteFNN(value: number) {
+    function voteFNN(value: number|undefined) {
       console.log('vote', value);
       if (g.state.userName) {
-        vote.mutateAsync({ data: { player: g.state.userName, score: value } });
+        vote.mutateAsync({ data: { player: g.state.userName, score: value??null } });
       }
     },
     [g.state.userName, vote]
   );
 
   useEffect(function loginToVotingAtStartup() {
-    loginToVoting();
+    //loginToVoting();
     result.fetch();
   }, []);
 
