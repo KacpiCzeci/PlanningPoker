@@ -10,6 +10,7 @@ import {
   useGlobalState,
 } from '../../../GlobalStateProvider';
 import { useGameHook } from './useGameHook';
+import UserList from '../../Componets/UserList/UserList';
 
 function getSessionStorageOrDefault(key: string, defaultValue: string) {
   const stored = sessionStorage.getItem(key);
@@ -28,7 +29,7 @@ export default function GamePage() {
 
   const { state, setState } = useGlobalState();
   const [vote, setVote] = useState();
-
+  useEffect(()=>game.vote(state.cardPicked),[state.cardPicked])
   const changeGlobalState = (data: Partial<GlobalStateInterface>) => {
     setState((prevSt) => ({ ...prevSt, ...data }));
   };
@@ -126,11 +127,7 @@ export default function GamePage() {
       </div>
       <div className="GamePage-userinfobar">
         <div className="GamePage-gameusers">Game Users</div>
-        {game.data.players.map(({ player, score }) => (
-          <div className="GamePage-username">
-            {player} - {score}
-          </div>
-        ))}
+            <UserList users={game.data.players}/>
       </div>
       <div className="GamePage-gameinfo">
         <p>{vote}</p>
