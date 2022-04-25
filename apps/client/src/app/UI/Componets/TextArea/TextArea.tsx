@@ -36,15 +36,12 @@ function TextArea( props : TextAreaProps) {
     const changeGlobalState = (data: Partial<GlobalStateInterface>) => {
         setState((prevSt) => ({...prevSt, ...data}));
       }    
-
-    // function changeHandler(e: { target: { value: string; }; }) {
-    //     props.onChange(e.target.value);
-    //     changeGlobalState({gameName:e.target.value});
-    // }
     return(
         <div className="TextArea-container">
-        <label className="TextArea-label" htmlFor="input">{props.label}</label>
-        <input id="input" className="TextArea-input" placeholder={"0"} value={props.value}/>
+            <p>
+        <label className="TextArea-label" htmlFor="text">{props.label}</label>
+        <input id="text" className="TextArea-input" placeholder={"0"} value={props.value}/>
+        </p>
         </div>
     )
     // return(<p>Here shoud be a textarea <p className="error">{props.name}</p></p>)
