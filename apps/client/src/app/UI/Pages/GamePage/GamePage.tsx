@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import TextField from '../../Componets/TextField/TextField';
 import TextArea from '../../Componets/TextArea/TextArea';
 import CardDeck from '../../Componets/CardDeck/CardDeck';
@@ -29,34 +29,42 @@ export default function GamePage() {
 
   const { state, setState } = useGlobalState();
   const [vote, setVote] = useState();
-  useEffect(()=>game.vote(state.cardPicked),[state.cardPicked, game.data.players])
+  useEffect(
+    () => game.vote(state.cardPicked),
+    [state.cardPicked, game.data.players]
+  );
   const changeGlobalState = (data: Partial<GlobalStateInterface>) => {
     setState((prevSt) => ({ ...prevSt, ...data }));
   };
-  useEffect(()=>{
+  useEffect(() => {
     // console.log("Change name: ",game.data.gameName);
-    setGameNameLocal(game.data.gameName ?? "");},[game.data.gameName])
+    setGameNameLocal(game.data.gameName ?? '');
+  }, [game.data.gameName]);
   const onChange = (e: any) => {
     setState({ resultAverange: e.target.value });
   };
 
-  const CalculateResult = () => {
+  const CalculateResult = useCallback(() => {
     // console.log("-----------CalculateResult-----------")
     //----Get data---
-    let localResultsWithNull: (number | null)[] =[];
-    game.data.players.map(({ player, score }) => (
+    let localResultsWithNull: (number | null)[] = [];
+    game.data.players.map(({ player, score }) =>
       localResultsWithNull.push(score)
-    ));
+    );
     //----Erase null value---
-    localResultsWithNull=localResultsWithNull.filter(s=>s!=null);
-    const localResults = localResultsWithNull.map((i:any)=>{return i});
+    localResultsWithNull = localResultsWithNull.filter((s) => s != null);
+    const localResults = localResultsWithNull.map((i: any) => {
+      return i;
+    });
     // console.log("-----results-----");
     console.log(localResultsWithNull);
     // console.log("-----end-----");
     //----calculate result---
     const average =
-    localResults.reduce((prevValue, currentValue) => prevValue + currentValue, 0) /
-    localResults.length;
+      localResults.reduce(
+        (prevValue, currentValue) => prevValue + currentValue,
+        0
+      ) / localResults.length;
 
     const cardsValues = [0, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89];
     const goal = Math.round(average);
@@ -67,18 +75,24 @@ export default function GamePage() {
 
     console.log(`Average: ${average}`);
     console.log(`Average in fibo: ${closest}`);
+
     changeGlobalState({ result: average.toString() });
     changeGlobalState({ resultAverange: closest.toString() });
+    return { average, closest };
     // console.log("-----------END-----------")
-  };
+  }, [game.data.players]);
 
-  const NewBoard =()=>{
-    changeGlobalState({ result: "0" });
-    changeGlobalState({ resultAverange: "0" });
+  const NewBoard = () => {
+    changeGlobalState({ result: '0' });
+    changeGlobalState({ resultAverange: '0' });
     sessionStorage.setItem('cardPicked', '');
-    changeGlobalState({cardPicked: undefined});
-  }
-  const HandleNewVote =useCallback(()=> {game.startNewVoting(gameNameLocal)},[game, gameNameLocal])
+    changeGlobalState({ cardPicked: undefined });
+  };
+  const HandleNewVote = useCallback(() => {
+    game.startNewVoting(gameNameLocal);
+  }, [game, gameNameLocal]);
+  const results_ = useMemo(() => CalculateResult(), [CalculateResult]);
+
   return (
     <div className="GamePage-container">
       <div className="GamePage-header">
@@ -86,22 +100,32 @@ export default function GamePage() {
       </div>
       <div className="GamePage-userinfobar">
         <div className="GamePage-gameusers">Game Users</div>
-            <UserList users={game.data.players}/>
+        <UserList users={game.data.players} />
       </div>
       <div className="GamePage-gameinfo">
         <p>{vote}</p>
         <div className="GamePage-gamename">
           <TextField
-            placeholder='Game Name'
+            placeholder="Game Name"
             value={gameNameLocal}
             onChange={setGameNameLocal}
             name="Name of vote"
           />
         </div>
         <div className="GamePage-vote">
-          <Button name="Change name" value={0} onClick={()=>{HandleNewVote()}} />
+          <Button
+            name="Change name"
+            value={0}
+            onClick={() => {
+              HandleNewVote();
+            }}
+          />
         </div>
-        <div className="GamePage-voting-results">
+
+        <div
+          className="GamePage-voting-results"
+          style={{ opacity: state.cardPicked ? undefined : 0 }}
+        >
           <TextArea label="Vote Avarege:" value={state.result} />
           <TextArea label="Vote Result:" value={state.resultAverange} />
         </div>
@@ -112,7 +136,14 @@ export default function GamePage() {
           <CardDeck onChange={(v) => game.vote(v)} />
         </div>
         <div className="GamePage-newvote">
-          <Button name="New Game" value={0} onClick={()=>{NewBoard(); game.startNewVoting("New voting");}} />
+          <Button
+            name="New Game"
+            value={0}
+            onClick={() => {
+              NewBoard();
+              game.startNewVoting('New voting');
+            }}
+          />
         </div>
       </div>
     </div>
