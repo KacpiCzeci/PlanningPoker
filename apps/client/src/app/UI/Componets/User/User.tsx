@@ -3,7 +3,7 @@ import "./User.scss";
 import { GlobalStateInterface, useGlobalState } from "../../../GlobalStateProvider";
 export interface UserProps{
 value?:number;
-userName:string;
+userName?:string;
 }
     
 export default function User(props: UserProps){

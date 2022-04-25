@@ -29,7 +29,7 @@ export default function GamePage() {
 
   const { state, setState } = useGlobalState();
   const [vote, setVote] = useState();
-  useEffect(()=>game.vote(state.cardPicked),[state.cardPicked])
+  useEffect(()=>game.vote(state.cardPicked),[state.cardPicked, game.data.players])
   const changeGlobalState = (data: Partial<GlobalStateInterface>) => {
     setState((prevSt) => ({ ...prevSt, ...data }));
   };
@@ -73,6 +73,8 @@ export default function GamePage() {
   const NewBoard =()=>{
     changeGlobalState({ result: "0" });
     changeGlobalState({ resultAverange: "0" });
+    sessionStorage.setItem('cardPicked', '');
+    changeGlobalState({cardPicked: undefined});
   }
   return (
     <div className="GamePage-container">
