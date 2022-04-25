@@ -1,11 +1,22 @@
 import React, { useState } from 'react';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import TextField from '../../Componets/TextField/TextField';
+import Button from '../../Componets/Button/Button';
 import './LoginPage.scss';
+import { useGameHook } from '../GamePage/useGameHook';
 
 export default function LoginPage() {
   const [value, setValue] = useState('');
   const g = useGlobalState();
+  const game = useGameHook();
+
+  const handleClick = () => {
+    if(value !== ""){
+      g.setState((p) => ({ ...p, userName: value }));
+      sessionStorage.setItem('userName', value);
+    }
+  }
+
   return (
     <div className="LoginPage-container">
       <div className="LoginPage-subcontainer">
@@ -29,11 +40,8 @@ export default function LoginPage() {
             destiny="name-of-vote"
           />
         </div>
-        <div
-          className="LoginPage-button"
-          onClick={() => g.setState((p) => ({ ...p, userName: value }))}
-        >
-          Button will be here
+        <div className="LoginPage-button">
+          <Button name="Enter the Game" onClick={handleClick} />
         </div>
       </div>
     </div>
