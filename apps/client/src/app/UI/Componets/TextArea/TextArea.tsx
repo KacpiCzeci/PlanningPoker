@@ -43,8 +43,8 @@ function TextArea( props : TextAreaProps) {
     // }
     return(
         <div className="TextArea-container">
-        <label className="TextArea-label" htmlFor="textarea">{props.label}</label>
-        <input id="textarea" className="TextArea-input"  disabled={true}  placeholder={"0"} value={props.value} readOnly/>
+        <label className="TextArea-label" htmlFor="input">{props.label}</label>
+        <input id="input" className="TextArea-input" placeholder={"0"} value={props.value}/>
         </div>
     )
     // return(<p>Here shoud be a textarea <p className="error">{props.name}</p></p>)

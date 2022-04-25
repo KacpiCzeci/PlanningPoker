@@ -1,4 +1,71 @@
 
+
+
+ @keyframes scale-down-tl{0%{transform:scale(1);transform-origin:0 0}100%{transform:scale(.5);transform-origin:0 0}}
+
+.container{
+    justify-content: center;
+    margin: 25px;
+    height: fit-content;
+    width: fit-content;
+    align-items: center;
+    position: relative;
+}
+
+.value{
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 300;
+    margin: 0;
+    text-align: center;
+}
+.hover{
+    filter: brightness(1.2);
+    cursor: pointer;
+}
+.TextField{
+    &-container{
+        @extend .container;
+    }
+    &-label{
+        @extend .value;
+        position: absolute;
+        font-size: smaller;
+        pointer-events:none;
+        right:70px;
+        top:-20px;
+        transition:0.2s ease all;
+        -moz-transition:0.2s ease all;
+        -webkit-transition:0.2s ease all;
+        background-color: white;
+        background-size: cover;
+        transition: visibility 2s; 
+    }
+    &-input{
+        @extend .value;
+        text-align: center;
+        border: 2px solid #3993ff;
+        height: 50px;
+        width: 150px;
+        border-radius: 12px;
+        font-size: medium;
+    }
+    &-input:hover{
+        @extend .hover;
+        @extend .value;
+        background-color: #3993ff20;
+        text-align: center;
+        border: 2px solid #3993ff;
+        height: 50px;
+        width: 150px;
+        border-radius: 8px;
+        font-size: medium;
+    }
+    // &-input:focus{
+    // }
+}
 // @keyframes visibilityOnAnimation { 
 //     0% {
 //       opacity: 0;
@@ -9,65 +76,65 @@
 //     }
 //   }
 
-.text-field-label-v{
-    // animation: visibilityOnAnimation 0.1s;
-    font-size: smaller;
-    position:absolute;
-    pointer-events:none;
-    left:15px;
-    top:18px;
-    transition:0.2s ease all;
-    -moz-transition:0.2s ease all;
-    -webkit-transition:0.2s ease all;
-    background-color: white;
-    background-size: cover;
-    transition: visibility 2s; 
-}
+// .text-field-label-v{
+//     // animation: visibilityOnAnimation 0.1s;
+//     font-size: smaller;
+//     position:absolute;
+//     pointer-events:none;
+//     left:15px;
+//     top:18px;
+//     transition:0.2s ease all;
+//     -moz-transition:0.2s ease all;
+//     -webkit-transition:0.2s ease all;
+//     background-color: white;
+//     background-size: cover;
+//     transition: visibility 2s; 
+// }
 
-.text-field-label-leftcornel{
-    font-size: smaller;
-    position:relative;
-    pointer-events:none;
-    left:7px;
-    top:24px;
-    transition:0.2s ease all;
-    -moz-transition:0.2s ease all;
-    -webkit-transition:0.2s ease all;
-    background-color: white;
-    background-size: cover;
-    transition: visibility 2s; 
-}
+// .text-field-label-leftcornel{
+//     font-size: smaller;
+//     position:relative;
+//     pointer-events:none;
+//     left:7px;
+//     top:24px;
+//     transition:0.2s ease all;
+//     -moz-transition:0.2s ease all;
+//     -webkit-transition:0.2s ease all;
+//     background-color: white;
+//     background-size: cover;
+//     transition: visibility 2s; 
+// }
 
-.text-field-label-left{
-    font-size:medium;
-    margin-right: 3px;
-}
+// .text-field-label-left{
+//     font-size:medium;
+//     margin-right: 3px;
+// }
 
 
-.text-field-input-standard{
-    text-align: center;
-    border: 2px solid skyblue;
-    border-radius: 2%;
-    width: 200px;
-    height: 25px;
-    font-size: medium;
-}
+// .text-field-input-standard{
+//     text-align: center;
+//     border: 2px solid skyblue;
+//     border-radius: 2%;
+//     width: 200px;
+//     height: 25px;
+//     font-size: medium;
+// }
 
-.text-field-input-result{
-    text-align: center;
-    border: 2px solid skyblue;
-    border-radius: 4%;
-    width: 20px;
-    height: 25px;
-    font-size: larger;
-}
-.text-field-input-avarage:disabled{
-    text-align: center;
-    border: 2px solid skyblue;
-    border-radius: 2%;
-    width: 200px;
-    height: 25px;
-}
-.error{
-    color: red;
-}
+// .text-field-input-result{
+//     text-align: center;
+//     border: 2px solid skyblue;
+//     border-radius: 4%;
+//     width: 20px;
+//     height: 25px;
+//     font-size: larger;
+// }
+// .text-field-input-avarage:disabled{
+//     text-align: center;
+//     border: 2px solid skyblue;
+//     border-radius: 2%;
+//     width: 200px;
+//     height: 25px;
+// }
+// .error{
+//     color: red;
+// }
