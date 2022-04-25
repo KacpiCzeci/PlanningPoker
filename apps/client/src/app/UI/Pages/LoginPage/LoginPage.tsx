@@ -36,8 +36,7 @@ export default function LoginPage() {
           <TextField
             value={value}
             onChange={setValue}
-            placeholder={'User1'}
-            destiny="name-of-vote"
+            placeholder={'User name'}
           />
         </div>
         <div className="LoginPage-button">
