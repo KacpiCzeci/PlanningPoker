@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useCallback } from 'react';
 import TextField from '../../Componets/TextField/TextField';
 import TextArea from '../../Componets/TextArea/TextArea';
 import CardDeck from '../../Componets/CardDeck/CardDeck';
@@ -33,7 +33,9 @@ export default function GamePage() {
   const changeGlobalState = (data: Partial<GlobalStateInterface>) => {
     setState((prevSt) => ({ ...prevSt, ...data }));
   };
-
+  useEffect(()=>{
+    // console.log("Change name: ",game.data.gameName);
+    setGameNameLocal(game.data.gameName ?? "");},[game.data.gameName])
   const onChange = (e: any) => {
     setState({ resultAverange: e.target.value });
   };
@@ -76,11 +78,11 @@ export default function GamePage() {
     sessionStorage.setItem('cardPicked', '');
     changeGlobalState({cardPicked: undefined});
   }
+  const HandleNewVote =useCallback(()=> {game.startNewVoting(gameNameLocal)},[game, gameNameLocal])
   return (
     <div className="GamePage-container">
       <div className="GamePage-header">
         <h1>Planning Poker</h1>
-        {state.gameName}
       </div>
       <div className="GamePage-userinfobar">
         <div className="GamePage-gameusers">Game Users</div>
@@ -97,11 +99,11 @@ export default function GamePage() {
           />
         </div>
         <div className="GamePage-vote">
-          <Button name="Vote" value={0} onClick={()=>{CalculateResult()}} />
+          <Button name="Change name" value={0} onClick={()=>{HandleNewVote()}} />
         </div>
         <div className="GamePage-voting-results">
-          <TextArea label="Avr1:" value={state.result} />
-          <TextArea label="Avr2:" value={state.resultAverange} />
+          <TextArea label="Vote Avarege:" value={state.result} />
+          <TextArea label="Vote Result:" value={state.resultAverange} />
         </div>
       </div>
 
