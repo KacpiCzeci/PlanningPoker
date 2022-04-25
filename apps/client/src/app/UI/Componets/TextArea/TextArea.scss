@@ -1,8 +1,9 @@
 .container{
     height: 50px;
-    width: 50px;
+    width: fit-content;
     justify-content: center;
     margin: 25px;
+    position: relative;
 }
 
 .value{
@@ -28,8 +29,8 @@
         @extend .value;
         font-size: large;
         position:relative;
-        bottom: -40px;
-        left: -50px;
+        pointer-events: none;
+        left: -10px;
     }
     &-input{
         @extend .value;
@@ -40,15 +41,16 @@
         border-radius: 25%;
         font-size: medium;
         color: #3993ff;
+        pointer-events: none;
     }
-    // &-input:hover{
-    //     @extend .hover;
-    //     @extend .value;
-    //     text-align: center;
-    //     border: 2px solid #3993ff;
-    //     height: 50px;
-    //     width: 50px;
-    //     border-radius: 20%;
-    //     font-size: medium;
-    // }
+    &-input:hover{
+        @extend .hover;
+        @extend .value;
+        text-align: center;
+        border: 2px solid #3993ff;
+        height: 50px;
+        width: 50px;
+        border-radius: 20%;
+        font-size: medium;
+    }
 }

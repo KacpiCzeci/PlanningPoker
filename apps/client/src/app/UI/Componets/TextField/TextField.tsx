@@ -37,7 +37,10 @@ function getSessionStorageOrDefault(key: string, defaultValue: string) {
 
 function TextField( props : TextFieldProps) {
     const { state, setState } = useGlobalState();
+    const [val, setVal]=useState("")
 
+    useEffect(()=> setVal(`${props.value}`),[props.value])
+    
     const changeGlobalState = (data: Partial<GlobalStateInterface>) => {
         setState((prevSt) => ({...prevSt, ...data}));
     }    
@@ -45,6 +48,7 @@ function TextField( props : TextFieldProps) {
     function changeHandler(e: { target: { value: string; }; }) {
         props.onChange(e.target.value);
         changeGlobalState({gameName:e.target.value});
+        setVal(e.target.value);
     }
 
     return (
@@ -54,7 +58,10 @@ function TextField( props : TextFieldProps) {
                 <input className="TextField-input"
                     id="input"
                     placeholder={props.placeholder}
-                    onChange={changeHandler} />
+                    onChange={changeHandler} 
+                    value={val}
+                    />
+                    
                 </form>
         </div>
     )

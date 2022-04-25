@@ -15,7 +15,7 @@
     background-color: rgba(51, 51, 51, 0.717);
 }
 /* Navbar links */
-.GamePage-userinfobar div {
+.GamePage-userinfobar {
     float: left;
     display: block;
     color: #f2f2f2;
@@ -26,17 +26,12 @@
 
 /* Create colum for game info */
 .GamePage-gameinfo {
-    background-color: white;
     float: left;
     padding: 15px;
     justify-content: center;
     margin-left: auto;
     margin-right: auto;
   }
-.GamePage-gameinfo div{
-    margin-top: 10px;
-    margin-left: 10px;
-}
 /* Style of vote info (cards)*/
 .GamePage-voteinfo{
     background-color: #f1f1f1;
@@ -45,7 +40,7 @@
     justify-content: center;
     display: flex;
 }
-.GamePage-voteinfo div{
+.GamePage-voteinfo{
     flex-direction: row;
     float: left;
     color: black;
@@ -57,4 +52,5 @@ width: 100%;
 }
 
 .GamePage-voteoptions{
+
 }
