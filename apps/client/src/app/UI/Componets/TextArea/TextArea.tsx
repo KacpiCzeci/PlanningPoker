@@ -40,7 +40,7 @@ function TextArea( props : TextAreaProps) {
         <div className="TextArea-container">
             <p>
         <label className="TextArea-label" htmlFor="text">{props.label}</label>
-        <input id="text" className="TextArea-input" placeholder={"0"} value={props.value}/>
+        <input id="text" className="TextArea-input" placeholder={"-"} value={props.value}/>
         </p>
         </div>
     )

@@ -123,11 +123,11 @@ export default function GamePage() {
         </div>
 
         <div
-          className="GamePage-voting-results"
-          style={{ opacity: state.cardPicked ? undefined : 0 }}
+          className="GamePage-voting-results" 
+          //style={{ opacity: state.cardPicked ? undefined : 0 }}
         >
-          <TextArea label="Vote Avarege:" value={state.result} />
-          <TextArea label="Vote Result:" value={state.resultAverange} />
+          <TextArea label="Vote Avarege:" value={state.cardPicked ? state.result : ""} />
+          <TextArea label="Vote Result:" value={state.cardPicked ? state.resultAverange : ""} />
         </div>
       </div>
 
