@@ -93,10 +93,20 @@ export default function GamePage() {
   }, [game, gameNameLocal]);
   const results_ = useMemo(() => CalculateResult(), [CalculateResult]);
 
+  async function copyLinkToClipboard() {
+    await navigator.clipboard.writeText(location.href);
+    console.log((document.getElementsByClassName("GamePage-copyinfo") as HTMLCollectionOf<HTMLElement>)[0]);
+    (document.getElementsByClassName("GamePage-copyinfo") as HTMLCollectionOf<HTMLElement>)[0].style.display = "inline";
+    setTimeout( () => {
+      (document.getElementsByClassName("GamePage-copyinfo") as HTMLCollectionOf<HTMLElement>)[0].style.display = "none";
+    }, 1000);
+  }
+
   return (
     <div className="GamePage-container">
       <div className="GamePage-header">
-        <h1>Planning Poker</h1>
+        <img className="GamePage-image-img" src="../../../../assets/poker.png" alt="Logo.png"/>
+        <h1 className="GamePage-h1">Planning Poker</h1>
       </div>
       <div className="GamePage-userinfobar">
         <div className="GamePage-gameusers">Game Users</div>
@@ -143,6 +153,14 @@ export default function GamePage() {
               NewBoard();
               game.startNewVoting('New voting');
             }}
+          />
+          {/* <div className="GamePage-copyinfo-container"> */}
+            <span className="GamePage-copyinfo">Link copied!</span>
+          {/* </div> */}
+          <Button
+            name="Copy link"
+            value={0}
+            onClick={copyLinkToClipboard}
           />
         </div>
       </div>

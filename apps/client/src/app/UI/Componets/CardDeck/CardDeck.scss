@@ -13,7 +13,8 @@
         //flex-wrap: wrap;
         //justify-content: center;
         box-sizing: border-box;
-        overflow: scroll;
+        overflow-x: scroll;
+        overflow-y: hidden;
         padding: 0px;
         margin: 0px;
 
@@ -21,5 +22,24 @@
 
     &-item{
         list-style: none;
+    }
+
+    &-subcontainer::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+    &-subcontainer::-webkit-scrollbar-track {
+        border-radius: 10px;
+        background: rgba(0,0,0,0.1);
+    }
+    &-subcontainer::-webkit-scrollbar-thumb{
+        border-radius: 10px;
+        background: rgba(0,0,0,0.2);
+    }
+    &-subcontainer::-webkit-scrollbar-thumb:hover{
+        background: rgba(0,0,0,0.4);
+    }
+    &-subcontainer::-webkit-scrollbar-thumb:active{
+        background: rgba(0,0,0,.9);
     }
 }
