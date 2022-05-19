@@ -2,7 +2,6 @@
     &-container{
         display: flex;
         align-items: center;
-        justify-content: center;
         padding: 20px;
     }
 
@@ -30,16 +29,16 @@
     }
     &-subcontainer::-webkit-scrollbar-track {
         border-radius: 10px;
-        background: rgba(0,0,0,0.1);
+        background: #FFFFFF;
     }
     &-subcontainer::-webkit-scrollbar-thumb{
         border-radius: 10px;
-        background: rgba(0,0,0,0.2);
+        background: #A5A5A5;
     }
     &-subcontainer::-webkit-scrollbar-thumb:hover{
-        background: rgba(0,0,0,0.4);
+        background: #636363;
     }
     &-subcontainer::-webkit-scrollbar-thumb:active{
-        background: rgba(0,0,0,.9);
+        background: #636363;
     }
 }

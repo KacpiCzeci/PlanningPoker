@@ -3,6 +3,7 @@ import { GlobalStateProvider, useGlobalState } from './GlobalStateProvider';
 import LoginPage from './UI/Pages/LoginPage/LoginPage';
 import { useState } from 'react';
 import LoadingPage from './UI/Pages/LoadingPage/LoadingPage';
+import NotFoundPage from './UI/Pages/NotFoundPage/NotFoundPage';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 export function App() {
@@ -13,6 +14,7 @@ export function App() {
         <Routes>
           <Route path="/" element={<LoginPage/>}/>
           <Route path="/:id" element={<GamePage/>}/>
+          <Route path="/*" element={<NotFoundPage/>}/>
         </Routes>
       </BrowserRouter>
     </GlobalStateProvider>

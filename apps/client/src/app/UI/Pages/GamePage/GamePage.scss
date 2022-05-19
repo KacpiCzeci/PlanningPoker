@@ -40,10 +40,13 @@
         display: flex;
         flex-direction: column;
         text-align: center;
+        // margin-right: 20px;
+        // margin-left: 10px;
     }
 
     &-gameusers{
         @extend .txt;
+
         font-size: 15px;
         color: #A5A5A5;
     }
@@ -61,14 +64,49 @@
         flex-direction: row;
     }
 
+    &-voteavg{
+        display: flex;
+        flex-direction: row;
+        margin: 30px;
+    }
+
+    &-p{
+        @extend .txt;
+        font-size: 20px;
+        margin-right: 20px;
+        color: #A5A5A5;
+    }
+
+    &-pval{
+        @extend .txt;
+        font-size: 20px;
+    }
+
+    &-voterlt{
+        display: flex;
+        flex-direction: row;
+        margin: 30px;
+    }
+
     &-voteinfo{
-        display: inline;
-        // flex-direction: row;
+        display: flex;
+        flex-direction: row;
         padding: 10px;
         text-align: center;
         justify-content: center;
         align-items: center;
         width: 100%;
+    }
+
+    &--voteoptions{
+        display: flex;
+        // overflow: auto;
+        text-align: center;
+    }
+
+    &-newvote{
+        display: flex;
+        flex-direction: column;
     }
 
     &-copyinfo{

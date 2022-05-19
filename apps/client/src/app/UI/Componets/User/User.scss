@@ -43,15 +43,17 @@
         }
         &-noshow{
             @extend .container;
-            background-color: #3993ff;
+            background-color: #A5A5A5;
+            border-color: #A5A5A5;
         }
         &-voted{
             @extend .container;
-            background-color: #38c509;
+            background-color: #3993ff;
         }
         &-novoted{
             @extend .container;
-            background-color: #c50909;
+            background-color: #A5A5A5;
+            border-color: #A5A5A5;
         }
     }
 
