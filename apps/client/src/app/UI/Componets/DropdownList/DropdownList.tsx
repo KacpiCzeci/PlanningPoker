@@ -1,8 +1,8 @@
 import "./DropdownList.scss"
 import Issue from '../Issue/Issue';
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo} from 'react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import NavItem from "../NavItem/NavItem";
+// import NavItem from "../NavItem/NavItem";
 import Button from "../Button/Button";
 import { TextField } from "@mui/material";
 
@@ -10,6 +10,9 @@ import { ReactComponent as ArrowIcon } from '../../../../assets/icons/arrow.svg'
 import { ReactComponent as BoltIcon } from '../../../../assets/icons/bolt.svg';
 import { ReactComponent as UploadIcon } from '../../../../assets/icons/upload.svg';
 import { ReactComponent as DownloadIcon } from '../../../../assets/icons/download.svg';
+import { ReactComponent as DeleteIcon } from '../../../../assets/icons/delete.svg';
+
+
 export default function DropdownList(){
 
     // UseState - issue data
@@ -17,6 +20,9 @@ export default function DropdownList(){
     const [issueDescriptionHandler,setIssueDescriptionHandler]=useState("");
     const [issueStoryPointsHandler,setIssueStoryPointsHandler]=useState("");
     const [selectedIssueIndexHandler,setSelectedIssueIndexHandler] =useState(-1);
+        //Seclected Issue color helpers
+    const [selectedIssueColorHandler,setSelectedIssueColorHandler]=useState(["",""]);
+    const [colorHandler, setColorHandler] = useState(false);
     // UseState - issue list
     const [issues, setIssues] = useState([{"title" : "Issue1" , "description" : "undefined","storyPoints":"0"},
     {"title" : "Issue2" , "description" : "2","storyPoints":"0"}]);
@@ -31,7 +37,7 @@ export default function DropdownList(){
     const [detailsView, setDetailsView] = useState('details-exit');
 
     // Function onClick
-    const SeleceIssue = (props:any)=>{
+    const SelectedIssue = (props:any)=>{
 
         // console.log(issues.indexOf(props))
         // console.log(props)
@@ -39,18 +45,28 @@ export default function DropdownList(){
         //Set handlers variable
         setIssueTitleHandler(props.title)
         setIssueDescriptionHandler(props.description)
+        setIssueStoryPointsHandler(props.storyPoints)
 
         //Set view variable
         setViewIssueDetails(true);
     }
     const SaveChanges=()=>{
-        const newObj={"title" : issueTitleHandler , "description" : issueDescriptionHandler, "storyPoints" : issueStoryPointsHandler}
+        const newObj={"title" : issueTitleHandler , "description" : issueDescriptionHandler, "storyPoints" : issueStoryPointsHandler};
+        // console.log(newObj);
         issues[selectedIssueIndexHandler]=newObj;
+        setViewList(true); 
+        setViewIssueDetails(false)
     }
     const AddNewIssue = ()=>{
-        setIssues([...issues,{"title" : issueTitleHandler , "description" : issueDescriptionHandler, "storyPoints" : issueStoryPointsHandler}])
-        console.log(issues)
+        setIssues([...issues,{"title" : issueTitleHandler , "description" : issueDescriptionHandler, "storyPoints" : "0"}])
         setViewList(true)
+    }
+
+    const DeleteThisIssue =(e:any) => {
+        console.log(e.title);
+        const name = e.title;
+        setIssues(issues.filter(item => item.title !== name));
+
     }
 
     const GoToAddView = () =>{
@@ -58,9 +74,29 @@ export default function DropdownList(){
         setIssueDescriptionHandler("")
         setViewList(false)
     }
-
-    const test=()=>{
-        console.log("test")
+    /**
+     * Change color of selected issue and set name 
+     * @param e Issue Object
+     */
+    const SetVotingNameToThisIssue=(e:any)=>{
+        // console.log(issues.indexOf(e));
+        if(!colorHandler){
+            const index=issues.indexOf(e);
+            const issueColorArray = [];
+            for(let i = 0; i < issues.length; i++) {
+                issueColorArray.push("");
+            }
+            issueColorArray[index]="#1976D2";
+            setSelectedIssueColorHandler(issueColorArray);
+            setColorHandler(true);
+        }else{
+            const issueColorArray = [];
+            for(let i = 0; i < issues.length; i++) {
+                issueColorArray.push("");
+            }
+            setSelectedIssueColorHandler(issueColorArray);
+            setColorHandler(false);
+        }
     }
 
     /**
@@ -81,7 +117,7 @@ export default function DropdownList(){
      * @param props 
      * @returns DropdownItem
      */
-    function DropdownItem(props: { onClick1: (arg0: any) => void; onClick2?: (arg0: any) => void; leftIcon?: any; rightIcon?:any; children: any; })
+    function DropdownItem(props: { onClick1: (arg0: any) => void; onClick2?: (arg0: any) => void;onClick3?: (arg0: any) => void; leftIcon?: any; leftIconColorOnClick?:any; rightIcon?:any; rightRightIcon?:any; children: any; })
     {
         let onlyOneInTheSameTime=false; // if you click "changeHandler2" you block functionality of "changeHandler1"
         function changeHandler1(e:any) {
@@ -94,28 +130,37 @@ export default function DropdownList(){
             if(props.onClick2) props.onClick2(e.target.value); // test if onClick2 exist
             onlyOneInTheSameTime=true;
         }
+        function changeHandler3(e:any){
+            if(props.onClick3) props.onClick3(e.target.value); // test if onClick3 exist
+            onlyOneInTheSameTime=true;
+        }
 
         return(
             <div className="menu-item" onClick={changeHandler1}>
-            <div onClick={changeHandler2} className="icon-button-dropdown-item">{props.leftIcon}</div>
+            {props.rightIcon && <div style={{background: props.leftIconColorOnClick}} onClick={changeHandler2} className="icon-button-dropdown-item">{props.leftIcon}</div>}
+
+            {!props.rightIcon &&<div onClick={changeHandler2} className="icon-button-dropdown-item">{props.leftIcon}</div>}
             {props.children}
-            <div className="icon-right">{props.rightIcon}</div>
+            {props.rightIcon && <div className="icon-right">{props.rightIcon}</div>}
+            {props.onClick3 && <div onClick={changeHandler3} className="icon-right-2">{props.rightRightIcon}</div>}
           </div>
         );
     }
-    /**
-     *  Componets for Issue list only
-     */
 
-     // Create issue list
+    /**
+     * Created issue list
+     */
     const issueList = issues.map((val)=>{
         return(
             <DropdownItem
             leftIcon={<BoltIcon />}
-            rightIcon={"0"}
+            leftIconColorOnClick={selectedIssueColorHandler[issues.indexOf(val)]}
+            rightIcon={val.storyPoints}
             key={val.title.toString()} 
-            onClick1={()=>{SeleceIssue(val)}}
-            onClick2={()=>{test()}}
+            onClick1={()=>{SelectedIssue(val)}}
+            onClick2={()=>{SetVotingNameToThisIssue(val)}}
+            onClick3={()=>{DeleteThisIssue(val)}}
+            rightRightIcon={<DeleteIcon/>}
             >
                 <Issue title={val.title} description={val.description} storyPoints={val.storyPoints}/>
             </DropdownItem>
@@ -142,6 +187,7 @@ export default function DropdownList(){
 
     return(
         <div className="dropdown">
+            {/* LIST VIEW */}
             <div className={"dropdown-issue-"+listView}>
                 <div className="dropdown-issue-list">
                     {issueList}
@@ -174,6 +220,7 @@ export default function DropdownList(){
                         </div>
                     </div>
             </div>
+            {/* ADD VIEW */}
             <div className={"dropdown-issue-"+addNewView}>
             <DropdownItem 
             leftIcon={<ArrowIcon/>}
@@ -181,27 +228,34 @@ export default function DropdownList(){
             onClick2={()=>{setViewList(true); setViewIssueDetails(false) }}>
                 Back
             </DropdownItem>
-                <div className="dropdown-issue-add-view-textfield">
-                <TextField
-                    placeholder="Issue Name"
-                    value={issueTitleHandler}
-                    onChange={e=>setIssueTitleHandler(e.target.value)}
-                    name="New Issue name"
-                />
-                <TextField
-                    placeholder="Issue Description"
-                    value={issueDescriptionHandler}
-                    onChange={e=>setIssueDescriptionHandler(e.target.value)}
-                    name="New Issue description"
-                />
+                <div className="dropdown-issue-add-view-row1">
+                    <div>
+                    <TextField
+                        placeholder="Issue Name"
+                        value={issueTitleHandler}
+                        onChange={e=>setIssueTitleHandler(e.target.value)}
+                        name="New Issue name"
+                    />
+                    </div>
                 </div>
-                <div className="dropdown-issue-add-view-button">
+                <div className="dropdown-issue-add-view-row2">
+                    <div>
+                        <textarea
+                        placeholder="Issue Description..."
+                        className="dropdown-issue-details-textarea"
+                        value={issueDescriptionHandler}
+                        onChange={e=>setIssueDescriptionHandler(e.target.value)}>
+                        </textarea>
+                    </div>
+                </div>
+                <div className="dropdown-issue-button">
                 <Button 
                     name="Add New Issue"
                     value={0}
                     onClick={() => { AddNewIssue(); } } />
                 </div>
             </div>
+            {/* Details View */}
             <div className={"dropdown-issue-"+detailsView}>
                 <DropdownItem 
                 leftIcon={<ArrowIcon/>}
@@ -209,22 +263,35 @@ export default function DropdownList(){
                 onClick2={()=>{setViewList(true); setViewIssueDetails(false) }}>
                     Back
                 </DropdownItem>
-                <div className="dropdown-issue-details-text">
-                <TextField
-                    value={issueTitleHandler}
-                    onChange={e=>setIssueTitleHandler(e.target.value)} 
-                />
-                <textarea 
-                className="dropdown-issue-textarea-details"
-                value={issueDescriptionHandler}
-                onChange={e=>setIssueDescriptionHandler(e.target.value)}>
-                </textarea>
+                <div className="dropdown-issue-details-row1">
+                    <div className="dropdown-issue-details-text">
+                        <TextField
+                            value={issueTitleHandler}
+                            onChange={e=>setIssueTitleHandler(e.target.value)} 
+                        />
+                        
+                    </div>
+                    <div className="dropdown-issue-details-storypoints">
+                            <TextField
+                                value={issueStoryPointsHandler}
+                                onChange={e=>setIssueStoryPointsHandler(e.target.value)}
+                            />
+                    </div>
                 </div>
-                <div className="dropdown-issue-add-view-button">
-                <Button 
-                    name="Save changes"
-                    value={0}
-                    onClick={() => { SaveChanges(); } } />
+                <div className="dropdown-issue-details-row2">
+                    <textarea 
+                        className="dropdown-issue-details-textarea"
+                        value={issueDescriptionHandler}
+                        onChange={e=>setIssueDescriptionHandler(e.target.value)}>
+                    </textarea>
+                </div>
+                <div className="dropdown-issue-details-row3">
+                    <div className="dropdown-issue-button">
+                        <Button 
+                            name="Save changes"
+                            value={0}
+                            onClick={() => { SaveChanges(); } } />
+                    </div>
                 </div>
             </div>
         </div>
