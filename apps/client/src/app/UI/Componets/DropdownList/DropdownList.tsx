@@ -66,10 +66,16 @@ export default function DropdownList(){
         setViewList(true)
     }
 
-    const DeleteThisIssue =(e:any) => {
-        console.log(e.title);
+    const DeleteThisIssue =(e:any,i:number) => {
+        console.log(e);
         const name = e.title;
-        setIssues(issues.filter(item => item.title !== name));
+        const temp = issues;
+        temp.splice(i,1);
+        setIssues(temp);
+        console.log(issues);
+        setViewList(false); 
+        setViewList(true); 
+       // setIssues(issues.filter(item => item.title !== name));
 
     }
 
@@ -218,16 +224,16 @@ setViewList(true);
     /**
      * Created issue list
      */
-    const issueList = issues.map((val)=>{
+    const issueList = issues.map((val,i)=>{
         return(
             <DropdownItem
             leftIcon={<BoltIcon />}
             leftIconColorOnClick={selectedIssueColorHandler[issues.indexOf(val)]}
             rightIcon={val.storyPoints}
-            key={val.title.toString()} 
+            key={i} 
             onClick1={()=>{SelectedIssue(val)}}
             onClick2={()=>{SetVotingNameToThisIssue(val)}}
-            onClick3={()=>{DeleteThisIssue(val)}}
+            onClick3={()=>{DeleteThisIssue(val,i)}}
             rightRightIcon={<DeleteIcon/>}
             >
                 <Issue title={val.title} description={val.description} storyPoints={val.storyPoints}/>
