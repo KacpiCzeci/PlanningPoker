@@ -108,7 +108,8 @@ export default function DropdownList(){
      * @param props 
      */
     const UploadJiraList = (props:any )=>{
-    if(props!=null){
+    console.log(props);
+        if(props!=null){
         //setImporter(props.target.files[0]);
         const reader = new FileReader();
         reader.onload = function(event) {
@@ -158,11 +159,14 @@ export default function DropdownList(){
         console.log(newObj);
         console.log(issues);
         setCsvArray(importedissues);
-        setIssues(importedissues)
+
         console.log(issues);
     //console.log(csvArray);
     }
 
+    setIssues(importedissues)
+setViewList(false); 
+setViewList(true); 
     }
 }
   };
@@ -270,7 +274,10 @@ export default function DropdownList(){
                                     id="inputJira"
                                     className="dropdown-issue-add-jira-upload-input" 
                                     type='file' 
-                                    onChange={e=>UploadJiraList(e)}/>
+                                    onChange={e=>UploadJiraList(e)}
+                                    onClick={e=>(e.target as HTMLInputElement).value=""}
+                                    />
+                                    
                                 <label htmlFor="inputJira" className="dropdown-issue-add-jira-upload-label">
                                     <UploadIcon/>
                                 </label>
