@@ -11,7 +11,7 @@ export interface GlobalStateInterface {
 
 let initState: GlobalStateInterface = {
     gameName: "Game Name",
-    userName: undefined,
+    userName: sessionStorage.getItem('userName') as unknown as string || undefined,
     result: undefined,
     resultAverange: undefined,
     gameEnded: sessionStorage.getItem('gameEnded') as unknown as boolean || undefined,

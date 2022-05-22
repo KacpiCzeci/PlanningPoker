@@ -1,0 +1,56 @@
+.CreateGamePage{
+    &-container{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    &-subcontainer{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    &-image{
+        &-container{
+            display: flex;
+            justify-content: center;
+        }
+
+        &-img{
+            max-width: 128px;
+        }
+    }
+
+    &-text{
+        &-container{
+            display: flex;
+            justify-content: center;
+        }
+
+        &-txt{
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+            'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            font-weight: 600;
+            font-size: 50px;
+            color: #636363;
+            margin: 15px;
+        }
+    }
+
+    &-input{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0px 0px 0px 0px;
+        width: 100%;
+    }
+
+    &-button{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+    }
+}

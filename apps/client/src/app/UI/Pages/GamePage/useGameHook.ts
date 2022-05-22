@@ -66,7 +66,7 @@ export const useGameHook = () => {
 
   const voteFn = useCallback(
     function voteFNN(value: number|undefined) {
-      console.log('vote', value);
+      console.log('vote', g.state.userName);
       if (g.state.userName) {
         vote.mutateAsync({ data: { player: g.state.userName, score: value??null } });
       }
