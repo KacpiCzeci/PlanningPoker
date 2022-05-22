@@ -11,6 +11,7 @@ import { ReactComponent as BoltIcon } from '../../../../assets/icons/bolt.svg';
 import { ReactComponent as UploadIcon } from '../../../../assets/icons/upload.svg';
 import { ReactComponent as DownloadIcon } from '../../../../assets/icons/download.svg';
 import { ReactComponent as DeleteIcon } from '../../../../assets/icons/delete.svg';
+import { type } from "os";
 
 
 export default function DropdownList(){
@@ -35,7 +36,10 @@ export default function DropdownList(){
     const [listView, setListView] = useState('list-enter');
     const [addNewView, setAddNewView] = useState('add-view-exit');
     const [detailsView, setDetailsView] = useState('details-exit');
-
+    //UseState - import/export
+   // const [importFile , setImporter] = useState<object>(null);
+   // const [exportFile, setExporter] = useState(null);
+   const [csvArray, setCsvArray] = useState<any>([]);
     // Function onClick
     const SelectedIssue = (props:any)=>{
 
@@ -103,9 +107,69 @@ export default function DropdownList(){
      * Function for adding file from Jira
      * @param props 
      */
-    const UploadJiraList = (props:any)=>{
-        console.log("no implementaion")
-        console.log(props.target.file)
+    const UploadJiraList = (props:any )=>{
+    if(props!=null){
+        //setImporter(props.target.files[0]);
+        const reader = new FileReader();
+        reader.onload = function(event) {
+    // The file's text will be printed here
+    if(event.target!=null){
+    if(event.target.result!=null){
+    const rawcsv=event.target.result.toString();
+    const csvsplits = rawcsv.split("\n");
+    const csvheader= csvsplits[0].split(",");
+    let sum=-1;
+    let desc=-1;
+    let spts=-1;
+    for(let i=0;i<csvheader.length;i++){
+        if(csvheader[i]=="Podsumowanie" || csvheader[i]=="title" ){
+            sum=i;
+        }
+        else if (csvheader[i]=="Pole niestandardowe (Story point estimate)" || csvheader[i]=="storyPoints" ){
+            spts=i;
+        }
+        else if (csvheader[i]=="Opis" || csvheader[i]=="description" ){
+            desc=i;
+        }
+    }
+    
+    const importedissues=issues;
+    for (let i=1;i<csvsplits.length;i++)
+    {
+        console.log(csvsplits[i])
+        const linesplit= csvsplits[i].split(",");
+        let temptitle= "";
+        let tempdescription= "";
+        let tempstoryPoints= "0";
+        if(sum>=0){
+            temptitle=linesplit[sum];
+        }
+        if(desc>=0){
+            tempdescription=linesplit[desc];
+        }
+        if(spts>=0){
+            if(linesplit[spts]!=""){
+                tempstoryPoints=linesplit[spts];
+            }
+
+        }
+        const newObj={"title" : temptitle , "description" : tempdescription, "storyPoints" : tempstoryPoints};
+        importedissues.push(newObj);
+        console.log(newObj);
+        console.log(issues);
+        setCsvArray(importedissues);
+        setIssues(importedissues)
+        console.log(issues);
+    //console.log(csvArray);
+    }
+
+    }
+}
+  };
+
+  reader.readAsText(props.target.files[0]);
+    }
+    else{console.log("null import");}
     }
 
     const DownloadJiraList = () =>{
