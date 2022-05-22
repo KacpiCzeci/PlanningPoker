@@ -1,0 +1,188 @@
+/* Dropdown Menu */
+
+.dropdown {
+    position: absolute;
+    top: 158px; // Move down by 58px
+    width: 320px;
+    height: 325px;
+    transform: translateX(-45%);
+    background-color: var(--bg);
+    border: var(--border);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    overflow: hidden;
+    transition: height var(--speed) ease;
+}
+.menu {
+    width: 100%;
+    color: aliceblue;
+}
+.menu-item {
+    height: 50px;
+    display: flex;
+    align-items: center;
+    border-radius: var(--border-radius);
+    transition: background var(--speed);
+    padding: 0.5rem;
+    color: var(--text-color);
+}
+/* Dropdown item*/
+
+.icon-button-dropdown-item {
+  // --button-size: calc(var(--nav-item-size) * 0.5);
+  width: calc(var(--nav-item-size)*0.25);
+  height: calc(var(--nav-item-size)*0.25);
+  background-color: #484a4d;
+  border-radius: 12px; //if icon will be give this
+  padding: 5px;
+  margin: 2px;
+  // margin-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: filter 300ms;
+}
+.menu-item .icon-button-dropdown-item {
+  margin-right: 0.5rem;
+}
+.menu-item .icon-button-dropdown-item:hover {
+  filter: brightness(1.2);
+  // filter: none;
+}
+.icon-button-dropdown-item svg { 
+  fill: var(--text-color);
+  width: 20px;
+  height: 20px;
+}
+  
+.menu-item:hover {
+    background-color: #525357;
+}
+  
+.icon-right {
+    margin-left: auto;
+    fill: var(--text-color);
+}
+
+/* Dropdown issue*/
+
+.dropdown-issue{
+    &-list{
+      display: block;
+      height: 250px;
+      overflow: scroll;
+    }
+    &-list-enter{
+      display: block;
+    }
+    &-list-exit{
+      display: none;
+      position: absolute;
+      transform: translateX(-110%);
+    }
+    // &-list-exit-active{
+    //   // transform: translateX(-110%);
+    //   // transition: all var(--speed) ease;
+    //   // transition: display var(--speed) 600ms;
+    //   display: none;
+    // }
+    &-add-view-exit{
+    display: none;
+    }
+    &-add-view-enter{
+      display: block;
+    }
+    &-details-enter{
+      display: block;
+    }
+    &-details-exit{
+      display: none;
+    }
+}
+.dropdown-issue-add{
+  display: flex; 
+}
+.dropdown-issue-add-button{
+  flex: 50%;
+}
+/* Jira file inputs*/
+.dropdown-issue-add-jira{
+  flex: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &-col1{
+    flex:50%;
+  }
+  &-col2{
+    flex:50%;
+  }
+  //Download
+  &-download{
+    @extend .icon-button-dropdown-item;
+    margin: 0;
+    width: calc(var(--nav-item-size)*0.5);
+    height: calc(var(--nav-item-size)*0.5);
+  }
+  &-download svg { 
+    fill: var(--text-color);
+    width: 40px;
+    height: 40px;
+  }
+
+  &-download:hover{
+    filter: brightness(1.2);
+    // filter: none;
+  }
+
+  //Upload
+  &-upload-input{
+    opacity: 0;
+    width: 0.1px;
+    height: 0.1px;
+    position: absolute;
+  }
+
+  &-upload-label{
+    @extend .icon-button-dropdown-item;
+    margin: 0;
+    width: calc(var(--nav-item-size)*0.5);
+    height: calc(var(--nav-item-size)*0.5);
+  }
+  &-upload-label:hover{
+    filter: brightness(1.2);
+    // filter: none;
+  }
+
+  &-upload-label svg { 
+    fill: var(--text-color);
+    width: 40px;
+    height: 40px;
+  }
+}
+// .dropdown-issue-add-view-textfield{
+//   // margin: auto;
+//   // display: flex;
+//   // justify-content: center;
+// }
+.dropdown-issue-add-view-button{
+  margin: auto;
+  display: flex;
+  justify-content: center;
+}
+
+.dropdown-issue-details-text{
+  height: 200px;
+}
+.dropdown-issue-textarea-details {
+  width: 100%;
+  height: 125px;
+  padding: 12px 20px;
+  margin: 10px;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+  font-size: 16px;
+  resize: none;
+}

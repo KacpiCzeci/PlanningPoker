@@ -3,6 +3,7 @@ import TextField from '../../Componets/TextField/TextField';
 import TextArea from '../../Componets/TextArea/TextArea';
 import CardDeck from '../../Componets/CardDeck/CardDeck';
 import Button from '../../Componets/Button/Button';
+import NavBar from '../../Componets/NavBar/NavBar';
 import './GamePage.scss';
 import { stringify } from 'querystring';
 import {
@@ -11,6 +12,8 @@ import {
 } from '../../../GlobalStateProvider';
 import { useGameHook } from './useGameHook';
 import UserList from '../../Componets/UserList/UserList';
+import NavItem from '../../Componets/NavItem/NavItem';
+import DropdownList from '../../Componets/DropdownList/DropdownList';
 
 function getSessionStorageOrDefault(key: string, defaultValue: string) {
   const stored = sessionStorage.getItem(key);
@@ -97,6 +100,13 @@ export default function GamePage() {
     <div className="GamePage-container">
       <div className="GamePage-header">
         <h1>Planning Poker</h1>
+        <div>
+          <NavBar>
+            <NavItem icon="Issue List">
+              <DropdownList/>
+            </NavItem>
+          </NavBar>
+        </div>
       </div>
       <div className="GamePage-userinfobar">
         <div className="GamePage-gameusers">Game Users</div>
