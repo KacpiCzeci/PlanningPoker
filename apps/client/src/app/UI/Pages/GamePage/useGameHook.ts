@@ -10,8 +10,9 @@ import { useQueryClient } from 'react-query';
 
 export const useGameResult = (onError?: () => void) => {
   const [etag, setEtag] = useState<string>('etag');
+  const room = sessionStorage.getItem('room')||'global';
 
-  const currentResult = useVotingControllerGetResult(
+  const currentResult = useVotingControllerGetResult(room,
     { etag },
     { query: { retry: false, queryKey: 'currentResult', onError } }
   );
@@ -42,6 +43,7 @@ export const useGameResult = (onError?: () => void) => {
 
 export const useGameHook = () => {
   const g = useGlobalState();
+  const room = sessionStorage.getItem('room')||'global';
 
   const vote = useVotingControllerVote({
     mutation: { onSettled: () => result.fetch() },
@@ -49,16 +51,16 @@ export const useGameHook = () => {
   const startNew = useVotingControllerStartNew();
   const startNewVoting = useCallback(
     function startNew_(name: string) {
-      return startNew.mutateAsync({ data: { name } });
+      return startNew.mutateAsync({ roomID: room, data: { name } });
     },
     [startNew]
   );
-  const result = useGameResult(() => startNewVoting('newVoting'));
+  const result = useGameResult(() => startNewVoting(g.state.gameName||'newVoting'));
 
   const loginToVoting = useCallback(
     function loginToVoting() {
-      return vote.mutateAsync({
-        data: { player: g.state.userName ?? '', score: null },
+      return vote.mutateAsync({ roomID: room,
+        data: { player: g.state.userName ?? '', score: undefined },
       });
     },
     [g.state.userName, vote]
@@ -68,7 +70,7 @@ export const useGameHook = () => {
     function voteFNN(value: number|undefined) {
       console.log('vote', g.state.userName);
       if (g.state.userName) {
-        vote.mutateAsync({ data: { player: g.state.userName, score: value??null } });
+        vote.mutateAsync({ roomID: room, data: { player: g.state.userName, score: value??undefined } });
       }
     },
     [g.state.userName, vote]

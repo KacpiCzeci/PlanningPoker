@@ -20,6 +20,7 @@ export default function CreateGamePage() {
       sessionStorage.setItem('userName', user);
       sessionStorage.setItem('gameName', game);
       let id = generateRoomID();
+      sessionStorage.setItem('room', id.toString());
       gameHook.startNewVoting(game);
       navigate('/' + id);
     }
@@ -33,10 +34,6 @@ export default function CreateGamePage() {
     }
     return id;
   }
-
-  useEffect(() => {
-    console.log(generateRoomID());
-  }, [])
 
   return (
     <div className="CreateGamePage-container">

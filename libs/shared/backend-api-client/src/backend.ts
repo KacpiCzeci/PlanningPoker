@@ -67,10 +67,11 @@ export const useAppControllerGetData = <TData = AsyncReturnType<typeof appContro
 
 
 export const votingControllerStartNew = (
+    roomID: string,
     restartRequest: RestartRequest,
  ) => {
       return customInstance<void>(
-      {url: `/api/voting/startNew`, method: 'post',
+      {url: `/api/voting/${roomID}/startNew`, method: 'post',
       headers: {'Content-Type': 'application/json'},
       data: restartRequest
     },
@@ -85,53 +86,56 @@ export const votingControllerStartNew = (
 
     export const useVotingControllerStartNew = <TError = ErrorType<unknown>,
     
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<AsyncReturnType<typeof votingControllerStartNew>, TError,{data: RestartRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<AsyncReturnType<typeof votingControllerStartNew>, TError,{roomID: string;data: RestartRequest}, TContext>, }
 ) => {
       const {mutation: mutationOptions} = options || {}
 
       
 
 
-      const mutationFn: MutationFunction<AsyncReturnType<typeof votingControllerStartNew>, {data: RestartRequest}> = (props) => {
-          const {data} = props || {};
+      const mutationFn: MutationFunction<AsyncReturnType<typeof votingControllerStartNew>, {roomID: string;data: RestartRequest}> = (props) => {
+          const {roomID,data} = props || {};
 
-          return  votingControllerStartNew(data,)
+          return  votingControllerStartNew(roomID,data,)
         }
 
-      return useMutation<AsyncReturnType<typeof votingControllerStartNew>, TError, {data: RestartRequest}, TContext>(mutationFn, mutationOptions)
+      return useMutation<AsyncReturnType<typeof votingControllerStartNew>, TError, {roomID: string;data: RestartRequest}, TContext>(mutationFn, mutationOptions)
     }
     
 export const votingControllerGetResult = (
+    roomID: string,
     params?: VotingControllerGetResultParams,
  ) => {
       return customInstance<GetResultSuccessDto>(
-      {url: `/api/voting/getResult`, method: 'get',
+      {url: `/api/voting/${roomID}/getResult`, method: 'get',
         params,
     },
       );
     }
   
 
-export const getVotingControllerGetResultQueryKey = (params?: VotingControllerGetResultParams,) => [`/api/voting/getResult`, ...(params ? [params]: [])];
+export const getVotingControllerGetResultQueryKey = (roomID: string,
+    params?: VotingControllerGetResultParams,) => [`/api/voting/${roomID}/getResult`, ...(params ? [params]: [])];
 
     
 export type VotingControllerGetResultQueryResult = NonNullable<AsyncReturnType<typeof votingControllerGetResult>>
 export type VotingControllerGetResultQueryError = ErrorType<void>
 
 export const useVotingControllerGetResult = <TData = AsyncReturnType<typeof votingControllerGetResult>, TError = ErrorType<void>>(
- params?: VotingControllerGetResultParams, options?: { query?:UseQueryOptions<AsyncReturnType<typeof votingControllerGetResult>, TError, TData>, }
+ roomID: string,
+    params?: VotingControllerGetResultParams, options?: { query?:UseQueryOptions<AsyncReturnType<typeof votingControllerGetResult>, TError, TData>, }
 
   ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
 
   const {query: queryOptions} = options || {}
 
-  const queryKey = queryOptions?.queryKey ?? getVotingControllerGetResultQueryKey(params);
+  const queryKey = queryOptions?.queryKey ?? getVotingControllerGetResultQueryKey(roomID,params);
 
   
 
-  const queryFn: QueryFunction<AsyncReturnType<typeof votingControllerGetResult>> = () => votingControllerGetResult(params, );
+  const queryFn: QueryFunction<AsyncReturnType<typeof votingControllerGetResult>> = () => votingControllerGetResult(roomID,params, );
 
-  const query = useQuery<AsyncReturnType<typeof votingControllerGetResult>, TError, TData>(queryKey, queryFn, queryOptions)
+  const query = useQuery<AsyncReturnType<typeof votingControllerGetResult>, TError, TData>(queryKey, queryFn, {enabled: !!(roomID), ...queryOptions})
 
   return {
     queryKey,
@@ -141,10 +145,11 @@ export const useVotingControllerGetResult = <TData = AsyncReturnType<typeof voti
 
 
 export const votingControllerVote = (
+    roomID: string,
     playerDto: PlayerDto,
  ) => {
       return customInstance<void>(
-      {url: `/api/voting/vote`, method: 'post',
+      {url: `/api/voting/${roomID}/vote`, method: 'post',
       headers: {'Content-Type': 'application/json'},
       data: playerDto
     },
@@ -159,19 +164,19 @@ export const votingControllerVote = (
 
     export const useVotingControllerVote = <TError = ErrorType<unknown>,
     
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<AsyncReturnType<typeof votingControllerVote>, TError,{data: PlayerDto}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<AsyncReturnType<typeof votingControllerVote>, TError,{roomID: string;data: PlayerDto}, TContext>, }
 ) => {
       const {mutation: mutationOptions} = options || {}
 
       
 
 
-      const mutationFn: MutationFunction<AsyncReturnType<typeof votingControllerVote>, {data: PlayerDto}> = (props) => {
-          const {data} = props || {};
+      const mutationFn: MutationFunction<AsyncReturnType<typeof votingControllerVote>, {roomID: string;data: PlayerDto}> = (props) => {
+          const {roomID,data} = props || {};
 
-          return  votingControllerVote(data,)
+          return  votingControllerVote(roomID,data,)
         }
 
-      return useMutation<AsyncReturnType<typeof votingControllerVote>, TError, {data: PlayerDto}, TContext>(mutationFn, mutationOptions)
+      return useMutation<AsyncReturnType<typeof votingControllerVote>, TError, {roomID: string;data: PlayerDto}, TContext>(mutationFn, mutationOptions)
     }
     
