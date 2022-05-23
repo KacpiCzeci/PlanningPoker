@@ -39,7 +39,6 @@ export default function DropdownList(){
     //UseState - import/export
    // const [importFile , setImporter] = useState<object>(null);
    // const [exportFile, setExporter] = useState(null);
-   const [csvArray, setCsvArray] = useState<any>([]);
     // Function onClick
     const SelectedIssue = (props:any)=>{
 
@@ -134,9 +133,9 @@ export default function DropdownList(){
                                 desc=i;
                             }
                         }
-                        const importedissues=issues;
                         for (let i=1;i<csvsplits.length;i++)
                         {
+                            console.log(i)
                             // console.log(csvsplits[i])
                             const linesplit= csvsplits[i].split(",");
                             let temptitle= "";
@@ -155,24 +154,17 @@ export default function DropdownList(){
 
                             }
                             const newObj={"title" : temptitle , "description" : tempdescription, "storyPoints" : tempstoryPoints};
-                            importedissues.push(newObj);
-                            // console.log(newObj);
+                            issues.push(newObj);
                             // console.log(issues);
-                            setCsvArray(importedissues);
-
-                            // console.log(issues);
-                            //console.log(csvArray);
                         }
-                        setIssues(importedissues);
-                        // Rerender view
-                        setViewList(false);
-                        setViewList(true);
+                        setIssues([...issues]);
                     }
                 }
             };
             reader.readAsText(props.target.files[0]);
         }
         else{console.log("null import");}
+        // console.log(issues);
     }
 
     /**
