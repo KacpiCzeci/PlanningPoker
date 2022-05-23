@@ -169,8 +169,7 @@ export default function DropdownList(){
         console.log(issues);
     //console.log(csvArray);
     }
-
-    setIssues(importedissues)
+    setIssues(importedissues);
 setViewList(false); 
 setViewList(true); 
     }
@@ -183,8 +182,34 @@ setViewList(true);
     }
 
     const DownloadJiraList = () =>{
-        console.log("no implementaion")
+        const csvString = [
+            [
+              "title",
+              "description",
+              "storyPoints"
+            ],
+            ...issues.map(item => [
+              item.title,
+              item.description,
+              item.storyPoints
+            ])
+          ].map(e => e.join(",")).join("\n");
+          console.log(csvString);
+        const blob = new Blob([csvString]);
+  const fileName = `exportedissues.csv`;
+
+    const link = document.createElement('a');
+    if (link.download !== undefined) {
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', fileName);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
+
+}
   
     /**
      * Component for items in DropDown compontent
