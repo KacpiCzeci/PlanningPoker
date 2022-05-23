@@ -66,17 +66,11 @@ export default function DropdownList(){
         setViewList(true)
     }
 
-    const DeleteThisIssue =(e:any,i:number) => {
-        console.log(e);
-        const name = e.title;
-        const temp = issues;
-        temp.splice(i,1);
-        setIssues(temp);
-        console.log(issues);
-        setViewList(false); 
-        setViewList(true); 
-       // setIssues(issues.filter(item => item.title !== name));
-
+    const DeleteThisIssue =(i:number) => {
+        setIssues([
+            ...issues.slice(0, i),
+            ...issues.slice(i + 1, issues.length)
+          ]);
     }
 
     const GoToAddView = () =>{
@@ -113,75 +107,79 @@ export default function DropdownList(){
      * Function for adding file from Jira
      * @param props 
      */
-    const UploadJiraList = (props:any )=>{
-    console.log(props);
-        if(props!=null){
-        //setImporter(props.target.files[0]);
-        const reader = new FileReader();
-        reader.onload = function(event) {
-    // The file's text will be printed here
-    if(event.target!=null){
-    if(event.target.result!=null){
-    const rawcsv=event.target.result.toString();
-    const csvsplits = rawcsv.split("\n");
-    const csvheader= csvsplits[0].split(",");
-    let sum=-1;
-    let desc=-1;
-    let spts=-1;
-    for(let i=0;i<csvheader.length;i++){
-        if(csvheader[i]=="Podsumowanie" || csvheader[i]=="title" ){
-            sum=i;
-        }
-        else if (csvheader[i]=="Pole niestandardowe (Story point estimate)" || csvheader[i]=="storyPoints" ){
-            spts=i;
-        }
-        else if (csvheader[i]=="Opis" || csvheader[i]=="description" ){
-            desc=i;
-        }
-    }
-    
-    const importedissues=issues;
-    for (let i=1;i<csvsplits.length;i++)
+    const UploadJiraList = (props:any )=>
     {
-        console.log(csvsplits[i])
-        const linesplit= csvsplits[i].split(",");
-        let temptitle= "";
-        let tempdescription= "";
-        let tempstoryPoints= "0";
-        if(sum>=0){
-            temptitle=linesplit[sum];
+        // console.log(props);
+        if(props!=null){
+            //setImporter(props.target.files[0]);
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                // The file's text will be printed here
+                if(event.target!=null){
+                    if(event.target.result!=null){
+                        const rawcsv=event.target.result.toString();
+                        const csvsplits = rawcsv.split("\n");
+                        const csvheader= csvsplits[0].split(",");
+                        let sum=-1;
+                        let desc=-1;
+                        let spts=-1;
+                        for(let i=0;i<csvheader.length;i++){
+                            if(csvheader[i]=="Podsumowanie" || csvheader[i]=="title" ){
+                                sum=i;
+                            }
+                            else if (csvheader[i]=="Pole niestandardowe (Story point estimate)" || csvheader[i]=="storyPoints" ){
+                                spts=i;
+                            }
+                            else if (csvheader[i]=="Opis" || csvheader[i]=="description" ){
+                                desc=i;
+                            }
+                        }
+                        const importedissues=issues;
+                        for (let i=1;i<csvsplits.length;i++)
+                        {
+                            // console.log(csvsplits[i])
+                            const linesplit= csvsplits[i].split(",");
+                            let temptitle= "";
+                            let tempdescription= "";
+                            let tempstoryPoints= "0";
+                            if(sum>=0){
+                                temptitle=linesplit[sum];
+                            }
+                            if(desc>=0){
+                                tempdescription=linesplit[desc];
+                            }
+                            if(spts>=0){
+                                if(linesplit[spts]!==""){
+                                    tempstoryPoints=linesplit[spts];
+                                }
+
+                            }
+                            const newObj={"title" : temptitle , "description" : tempdescription, "storyPoints" : tempstoryPoints};
+                            importedissues.push(newObj);
+                            // console.log(newObj);
+                            // console.log(issues);
+                            setCsvArray(importedissues);
+
+                            // console.log(issues);
+                            //console.log(csvArray);
+                        }
+                        setIssues(importedissues);
+                        // Rerender view
+                        setViewList(false);
+                        setViewList(true);
+                    }
+                }
+            };
+            reader.readAsText(props.target.files[0]);
         }
-        if(desc>=0){
-            tempdescription=linesplit[desc];
-        }
-        if(spts>=0){
-            if(linesplit[spts]!=""){
-                tempstoryPoints=linesplit[spts];
-            }
-
-        }
-        const newObj={"title" : temptitle , "description" : tempdescription, "storyPoints" : tempstoryPoints};
-        importedissues.push(newObj);
-        console.log(newObj);
-        console.log(issues);
-        setCsvArray(importedissues);
-
-        console.log(issues);
-    //console.log(csvArray);
-    }
-    setIssues(importedissues);
-setViewList(false); 
-setViewList(true); 
-    }
-}
-  };
-
-  reader.readAsText(props.target.files[0]);
-    }
-    else{console.log("null import");}
+        else{console.log("null import");}
     }
 
-    const DownloadJiraList = () =>{
+    /**
+     * Download list of issue in csv
+     */
+    const DownloadJiraList = () =>
+    {
         const csvString = [
             [
               "title",
@@ -193,23 +191,22 @@ setViewList(true);
               item.description,
               item.storyPoints
             ])
-          ].map(e => e.join(",")).join("\n");
-          console.log(csvString);
+        ].map(e => e.join(",")).join("\n");
+        // console.log(csvString);
         const blob = new Blob([csvString]);
-  const fileName = `exportedissues.csv`;
+        const fileName = `exportedissues.csv`;
+        const link = document.createElement('a');
+        if (link.download !== undefined) {
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', fileName);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
 
-    const link = document.createElement('a');
-    if (link.download !== undefined) {
-      const url = URL.createObjectURL(blob);
-      link.setAttribute('href', url);
-      link.setAttribute('download', fileName);
-      link.style.visibility = 'hidden';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
     }
-
-}
   
     /**
      * Component for items in DropDown compontent
@@ -249,16 +246,16 @@ setViewList(true);
     /**
      * Created issue list
      */
-    const issueList = issues.map((val,i)=>{
+    const issueList = issues.map((val,index)=>{
         return(
             <DropdownItem
             leftIcon={<BoltIcon />}
             leftIconColorOnClick={selectedIssueColorHandler[issues.indexOf(val)]}
             rightIcon={val.storyPoints}
-            key={i} 
+            key={index} 
             onClick1={()=>{SelectedIssue(val)}}
             onClick2={()=>{SetVotingNameToThisIssue(val)}}
-            onClick3={()=>{DeleteThisIssue(val,i)}}
+            onClick3={()=>{DeleteThisIssue(index)}}
             rightRightIcon={<DeleteIcon/>}
             >
                 <Issue title={val.title} description={val.description} storyPoints={val.storyPoints}/>
