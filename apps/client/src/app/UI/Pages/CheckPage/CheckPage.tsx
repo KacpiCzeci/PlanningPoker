@@ -1,7 +1,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import GamePage from "../GamePage/GamePage";
-import { Navigate } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import LoginPage from "../LoginPage/LoginPage";
 import LoadingPage from '../LoadingPage/LoadingPage';
 import { useGlobalState } from "../../../GlobalStateProvider";
@@ -12,9 +12,16 @@ export default function CheckPage() {
     const [userInGame, setUserInGame] = useState(false);
     const globalstate = useGlobalState();
 
+    const params = useParams();
+
+    const checkGame = () => {
+        console.log(params.id);
+        return true;
+    }
+
     useEffect(() => {
         async function fetchData() {
-            const game = true;//await checkToken();
+            const game = checkGame();
             const user = globalstate.state.userName? true: false;//await (sessionStorage.getItem('userName'))? true: false;
             console.log(sessionStorage.getItem('userName'));
 

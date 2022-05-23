@@ -30,7 +30,7 @@ export default function GamePage() {
   const { state, setState } = useGlobalState();
   const [vote, setVote] = useState();
   useEffect(
-    () => game.vote(state.cardPicked),
+    () => {game.vote(state.cardPicked), console.log(game.data.players)},
     [state.cardPicked, game.data.players]
   );
   const changeGlobalState = (data: Partial<GlobalStateInterface>) => {
