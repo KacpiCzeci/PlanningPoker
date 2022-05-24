@@ -18,7 +18,9 @@ import type {
   RestartRequest,
   GetResultSuccessDto,
   VotingControllerGetResultParams,
-  PlayerDto
+  PlayerDto,
+  SetIssuesBody,
+  SetCurrentIssueBody
 } from './schemas'
 import { customInstance, ErrorType } from './custom-instance'
 
@@ -178,5 +180,110 @@ export const votingControllerVote = (
         }
 
       return useMutation<AsyncReturnType<typeof votingControllerVote>, TError, {roomID: string;data: PlayerDto}, TContext>(mutationFn, mutationOptions)
+    }
+    
+export const votingControllerFinish = (
+    roomID: string,
+ ) => {
+      return customInstance<void>(
+      {url: `/api/voting/${roomID}/finish`, method: 'post'
+    },
+      );
+    }
+  
+
+
+    export type VotingControllerFinishMutationResult = NonNullable<AsyncReturnType<typeof votingControllerFinish>>
+    
+    export type VotingControllerFinishMutationError = ErrorType<unknown>
+
+    export const useVotingControllerFinish = <TError = ErrorType<unknown>,
+    
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<AsyncReturnType<typeof votingControllerFinish>, TError,{roomID: string}, TContext>, }
+) => {
+      const {mutation: mutationOptions} = options || {}
+
+      
+
+
+      const mutationFn: MutationFunction<AsyncReturnType<typeof votingControllerFinish>, {roomID: string}> = (props) => {
+          const {roomID} = props || {};
+
+          return  votingControllerFinish(roomID,)
+        }
+
+      return useMutation<AsyncReturnType<typeof votingControllerFinish>, TError, {roomID: string}, TContext>(mutationFn, mutationOptions)
+    }
+    
+export const votingControllerSetIssues = (
+    roomID: string,
+    setIssuesBody: SetIssuesBody,
+ ) => {
+      return customInstance<void>(
+      {url: `/api/voting/${roomID}/setIssues`, method: 'post',
+      headers: {'Content-Type': 'application/json'},
+      data: setIssuesBody
+    },
+      );
+    }
+  
+
+
+    export type VotingControllerSetIssuesMutationResult = NonNullable<AsyncReturnType<typeof votingControllerSetIssues>>
+    export type VotingControllerSetIssuesMutationBody = SetIssuesBody
+    export type VotingControllerSetIssuesMutationError = ErrorType<unknown>
+
+    export const useVotingControllerSetIssues = <TError = ErrorType<unknown>,
+    
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<AsyncReturnType<typeof votingControllerSetIssues>, TError,{roomID: string;data: SetIssuesBody}, TContext>, }
+) => {
+      const {mutation: mutationOptions} = options || {}
+
+      
+
+
+      const mutationFn: MutationFunction<AsyncReturnType<typeof votingControllerSetIssues>, {roomID: string;data: SetIssuesBody}> = (props) => {
+          const {roomID,data} = props || {};
+
+          return  votingControllerSetIssues(roomID,data,)
+        }
+
+      return useMutation<AsyncReturnType<typeof votingControllerSetIssues>, TError, {roomID: string;data: SetIssuesBody}, TContext>(mutationFn, mutationOptions)
+    }
+    
+export const votingControllerSetCurrentIssue = (
+    roomID: string,
+    setCurrentIssueBody: SetCurrentIssueBody,
+ ) => {
+      return customInstance<void>(
+      {url: `/api/voting/${roomID}/setCurrentIssue`, method: 'post',
+      headers: {'Content-Type': 'application/json'},
+      data: setCurrentIssueBody
+    },
+      );
+    }
+  
+
+
+    export type VotingControllerSetCurrentIssueMutationResult = NonNullable<AsyncReturnType<typeof votingControllerSetCurrentIssue>>
+    export type VotingControllerSetCurrentIssueMutationBody = SetCurrentIssueBody
+    export type VotingControllerSetCurrentIssueMutationError = ErrorType<unknown>
+
+    export const useVotingControllerSetCurrentIssue = <TError = ErrorType<unknown>,
+    
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<AsyncReturnType<typeof votingControllerSetCurrentIssue>, TError,{roomID: string;data: SetCurrentIssueBody}, TContext>, }
+) => {
+      const {mutation: mutationOptions} = options || {}
+
+      
+
+
+      const mutationFn: MutationFunction<AsyncReturnType<typeof votingControllerSetCurrentIssue>, {roomID: string;data: SetCurrentIssueBody}> = (props) => {
+          const {roomID,data} = props || {};
+
+          return  votingControllerSetCurrentIssue(roomID,data,)
+        }
+
+      return useMutation<AsyncReturnType<typeof votingControllerSetCurrentIssue>, TError, {roomID: string;data: SetCurrentIssueBody}, TContext>(mutationFn, mutationOptions)
     }
     
