@@ -32,12 +32,10 @@ export default function GamePage() {
 
   const { state, setState } = useGlobalState();
   const [vote, setVote] = useState();
-  useEffect(
-    () => {game.vote(state.cardPicked), console.log(game.data.players)},
-    [state.cardPicked, game.data.players]
-  );
-
-
+  useEffect(() => {
+    game.vote(state.cardPicked);
+    console.log(game.data.players);
+  }, [JSON.stringify(state.cardPicked), JSON.stringify(game.data.players)]);
   const changeGlobalState = (data: Partial<GlobalStateInterface>) => {
     setState((prevSt) => ({ ...prevSt, ...data }));
   };
@@ -70,17 +68,13 @@ export default function GamePage() {
     //     (prevValue, currentValue) => prevValue + currentValue,
     //     0
     //   ) / localResults.length;
-
     // const cardsValues = [0, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89];
     // const goal = Math.round(average);
-
     // const closest = cardsValues.reduce(function (prev, curr) {
     //   return Math.abs(curr - goal) < Math.abs(prev - goal) ? curr : prev;
     // });
-
     // console.log(`Average: ${average}`);
     // console.log(`Average in fibo: ${closest}`);
-
     // changeGlobalState({ result: average.toString() });
     // changeGlobalState({ resultAverange: closest.toString() });
     // return { average, closest };
@@ -99,24 +93,42 @@ export default function GamePage() {
   const results_ = useMemo(() => CalculateResult(), [CalculateResult]);
 
   async function copyLinkToClipboard() {
-    await navigator.clipboard.writeText(location.href);
-    console.log((document.getElementsByClassName("GamePage-copyinfo") as HTMLCollectionOf<HTMLElement>)[0]);
-    (document.getElementsByClassName("GamePage-copyinfo") as HTMLCollectionOf<HTMLElement>)[0].style.display = "inline";
-    setTimeout( () => {
-      (document.getElementsByClassName("GamePage-copyinfo") as HTMLCollectionOf<HTMLElement>)[0].style.display = "none";
+    await navigator.clipboard.writeText(window.location.href);
+    console.log(
+      (
+        document.getElementsByClassName(
+          'GamePage-copyinfo'
+        ) as HTMLCollectionOf<HTMLElement>
+      )[0]
+    );
+    (
+      document.getElementsByClassName(
+        'GamePage-copyinfo'
+      ) as HTMLCollectionOf<HTMLElement>
+    )[0].style.display = 'inline';
+    setTimeout(() => {
+      (
+        document.getElementsByClassName(
+          'GamePage-copyinfo'
+        ) as HTMLCollectionOf<HTMLElement>
+      )[0].style.display = 'none';
     }, 1000);
   }
 
   return (
     <div className="GamePage-container">
       <div className="GamePage-header">
-        <img className="GamePage-image-img" src="../../../../assets/poker.png" alt="Logo.png"/>
+        <img
+          className="GamePage-image-img"
+          src="../../../../assets/poker.png"
+          alt="Logo.png"
+        />
         <h1 className="GamePage-h1">Planning Poker</h1>
         <h1>Planning Poker</h1>
         <div>
           <NavBar>
             <NavItem icon="Issue List">
-              <DropdownList/>
+              <DropdownList />
             </NavItem>
           </NavBar>
         </div>
@@ -153,15 +165,20 @@ export default function GamePage() {
           />
         </div>
 
-        <div className="GamePage-voting-results" //style={{ opacity: state.cardPicked ? undefined : 0 }}
-          >
+        <div
+          className="GamePage-voting-results" //style={{ opacity: state.cardPicked ? undefined : 0 }}
+        >
           <div className="GamePage-voteavg">
             <p className="GamePage-p">Vote Averange:</p>
-            <p className="GamePage-pval">{state.cardPicked ? state.result : '-'}</p>
+            <p className="GamePage-pval">
+              {state.cardPicked ? state.result : '-'}
+            </p>
           </div>
           <div className="GamePage-voterlt">
             <p className="GamePage-p">Vote Result:</p>
-            <p className="GamePage-pval">{state.cardPicked ? state.resultAverange : '-'}</p>
+            <p className="GamePage-pval">
+              {state.cardPicked ? state.resultAverange : '-'}
+            </p>
           </div>
           {/* <TextArea label="Vote Avarege:" value={state.cardPicked ? state.result : ""} /> */}
           {/* <TextArea label="Vote Result:" value={state.cardPicked ? state.resultAverange : ""} /> */}
@@ -182,13 +199,9 @@ export default function GamePage() {
             }}
           />
           {/* <div className="GamePage-copyinfo-container"> */}
-            <span className="GamePage-copyinfo">Link copied!</span>
+          <span className="GamePage-copyinfo">Link copied!</span>
           {/* </div> */}
-          <Button
-            name="Copy link"
-            value={0}
-            onClick={copyLinkToClipboard}
-          />
+          <Button name="Copy link" value={0} onClick={copyLinkToClipboard} />
         </div>
       </div>
     </div>
