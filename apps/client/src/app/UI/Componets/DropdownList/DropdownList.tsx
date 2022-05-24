@@ -16,17 +16,30 @@ import { type } from "os";
 
 export default function DropdownList(){
 
+    //sesion storage 
+    function getSessionStorageOrDefault(key: string, defaultValue: any) {
+        const stored = sessionStorage.getItem(key);
+        if (!stored) {
+          return JSON.parse(defaultValue);
+        }
+        // console.log("-----------")
+        // console.log(stored)
+        // console.log("-----------")
+        return JSON.parse(stored);
+    }
+
     // UseState - issue data
     const [issueTitleHandler,setIssueTitleHandler]=useState("");
     const [issueDescriptionHandler,setIssueDescriptionHandler]=useState("");
     const [issueStoryPointsHandler,setIssueStoryPointsHandler]=useState("");
     const [selectedIssueIndexHandler,setSelectedIssueIndexHandler] =useState(-1);
-        //Seclected Issue color helpers
-    const [selectedIssueColorHandler,setSelectedIssueColorHandler]=useState(["",""]);
     const [colorHandler, setColorHandler] = useState(false);
-    // UseState - issue list
-    const [issues, setIssues] = useState([{"title" : "Issue1" , "description" : "undefined","storyPoints":"0"},
-    {"title" : "Issue2" , "description" : "2","storyPoints":"0"}]);
+
+    //UseState - store
+    //---issue list
+    const [issuesSessionStorage, setIssuesSessionStorage] = useState(getSessionStorageOrDefault('listOfIssue',"[]"))
+    //---Seclected Issue color helpers
+    const [selectedIssueColorHandlerSessionStorage, setSelectedIssueColorHandlerSessionStorage] = useState(getSessionStorageOrDefault('selectedIssue','[]'))
 
     // UseState - view data
     const [viewList, setViewList] = useState(true);
@@ -36,70 +49,11 @@ export default function DropdownList(){
     const [listView, setListView] = useState('list-enter');
     const [addNewView, setAddNewView] = useState('add-view-exit');
     const [detailsView, setDetailsView] = useState('details-exit');
-    //UseState - import/export
-   // const [importFile , setImporter] = useState<object>(null);
-   // const [exportFile, setExporter] = useState(null);
-    // Function onClick
-    const SelectedIssue = (props:any)=>{
-
-        // console.log(issues.indexOf(props))
-        // console.log(props)
-        setSelectedIssueIndexHandler(issues.indexOf(props))
-        //Set handlers variable
-        setIssueTitleHandler(props.title)
-        setIssueDescriptionHandler(props.description)
-        setIssueStoryPointsHandler(props.storyPoints)
-
-        //Set view variable
-        setViewIssueDetails(true);
-    }
-    const SaveChanges=()=>{
-        const newObj={"title" : issueTitleHandler , "description" : issueDescriptionHandler, "storyPoints" : issueStoryPointsHandler};
-        // console.log(newObj);
-        issues[selectedIssueIndexHandler]=newObj;
-        setViewList(true); 
-        setViewIssueDetails(false)
-    }
-    const AddNewIssue = ()=>{
-        setIssues([...issues,{"title" : issueTitleHandler , "description" : issueDescriptionHandler, "storyPoints" : "0"}])
-        setViewList(true)
-    }
-
-    const DeleteThisIssue =(i:number) => {
-        setIssues([
-            ...issues.slice(0, i),
-            ...issues.slice(i + 1, issues.length)
-          ]);
-    }
 
     const GoToAddView = () =>{
         setIssueTitleHandler("")
         setIssueDescriptionHandler("")
         setViewList(false)
-    }
-    /**
-     * Change color of selected issue and set name 
-     * @param e Issue Object
-     */
-    const SetVotingNameToThisIssue=(e:any)=>{
-        // console.log(issues.indexOf(e));
-        if(!colorHandler){
-            const index=issues.indexOf(e);
-            const issueColorArray = [];
-            for(let i = 0; i < issues.length; i++) {
-                issueColorArray.push("");
-            }
-            issueColorArray[index]="#1976D2";
-            setSelectedIssueColorHandler(issueColorArray);
-            setColorHandler(true);
-        }else{
-            const issueColorArray = [];
-            for(let i = 0; i < issues.length; i++) {
-                issueColorArray.push("");
-            }
-            setSelectedIssueColorHandler(issueColorArray);
-            setColorHandler(false);
-        }
     }
 
     /**
@@ -108,7 +62,7 @@ export default function DropdownList(){
      */
     const UploadJiraList = (props:any )=>
     {
-        // console.log(props);
+        console.log(props);
         if(props!=null){
             //setImporter(props.target.files[0]);
             const reader = new FileReader();
@@ -154,17 +108,15 @@ export default function DropdownList(){
 
                             }
                             const newObj={"title" : temptitle , "description" : tempdescription, "storyPoints" : tempstoryPoints};
-                            issues.push(newObj);
-                            // console.log(issues);
+                            issuesSessionStorage.push(newObj)
                         }
-                        setIssues([...issues]);
+                        setIssuesSessionStorage([...issuesSessionStorage]);
                     }
                 }
             };
             reader.readAsText(props.target.files[0]);
         }
         else{console.log("null import");}
-        // console.log(issues);
     }
 
     /**
@@ -178,7 +130,7 @@ export default function DropdownList(){
               "description",
               "storyPoints"
             ],
-            ...issues.map(item => [
+            ...issuesSessionStorage.map((item: { title: any; description: any; storyPoints: any; }) => [
               item.title,
               item.description,
               item.storyPoints
@@ -205,12 +157,12 @@ export default function DropdownList(){
      * @param props 
      * @returns DropdownItem
      */
-    function DropdownItem(props: { onClick1: (arg0: any) => void; onClick2?: (arg0: any) => void;onClick3?: (arg0: any) => void; leftIcon?: any; leftIconColorOnClick?:any; rightIcon?:any; rightRightIcon?:any; children: any; })
+    function DropdownItem(props: { onClick1?: (arg0: any) => void; onClick2?: (arg0: any) => void;onClick3?: (arg0: any) => void; leftIcon?: any; leftIconColorOnClick?:any; rightIcon?:any; rightRightIcon?:any; children?: any; })
     {
         let onlyOneInTheSameTime=false; // if you click "changeHandler2" you block functionality of "changeHandler1"
         function changeHandler1(e:any) {
             if(!onlyOneInTheSameTime){
-            props.onClick1(e.target.value);
+                if(props.onClick1) props.onClick1(e.target.value);
             }
             onlyOneInTheSameTime=false;
         }
@@ -238,11 +190,14 @@ export default function DropdownList(){
     /**
      * Created issue list
      */
-    const issueList = issues.map((val,index)=>{
+    const issueList = issuesSessionStorage.map((val:any,index: any)=>{
+        // console.log("---- issueList: "+issuesTEST);
         return(
             <DropdownItem
             leftIcon={<BoltIcon />}
-            leftIconColorOnClick={selectedIssueColorHandler[issues.indexOf(val)]}
+            // Local
+            // leftIconColorOnClick={selectedIssueColorHandler[issues.indexOf(val)]}
+            leftIconColorOnClick={selectedIssueColorHandlerSessionStorage[index]}
             rightIcon={val.storyPoints}
             key={index} 
             onClick1={()=>{SelectedIssue(val)}}
@@ -254,6 +209,85 @@ export default function DropdownList(){
             </DropdownItem>
         );
     })
+
+    /**
+     * Add new issue to list
+     */
+    const AddNewIssue =()=>{
+
+        // Adding to store
+        setIssuesSessionStorage([...issuesSessionStorage,{"title" : issueTitleHandler , "description" : issueDescriptionHandler, "storyPoints" : "0"}]); 
+        setSelectedIssueColorHandlerSessionStorage([...selectedIssueColorHandlerSessionStorage,""]);
+
+        // console.log("Adding to store")
+        // console.log("----Adding to store: issuesTEST")
+        console.log(issuesSessionStorage)
+        // console.log("----Adding to store: selectedIssueColorHandlerTEST")
+        console.log(selectedIssueColorHandlerSessionStorage)
+        //--Change view
+        setViewList(true)
+
+    }
+    /**
+     * Delete issue from list 
+     * @param i index
+     */
+    const DeleteThisIssue =(i:number) => {
+        setIssuesSessionStorage([
+            ...issuesSessionStorage.slice(0, i),
+            ...issuesSessionStorage.slice(i + 1, issuesSessionStorage.length)
+          ]);
+    }
+
+    /**
+     * Change color of selected issue and set name 
+     * @param e Issue Object
+     */
+    const SetVotingNameToThisIssue=(e:any)=>{
+        // console.log(issues.indexOf(e));
+        if(!colorHandler){
+            const index=issuesSessionStorage.indexOf(e);
+            const issueColorArray = [];
+            for(let i = 0; i < issuesSessionStorage.length; i++) {
+                issueColorArray.push("");
+            }
+            issueColorArray[index]="#1976D2";
+            setSelectedIssueColorHandlerSessionStorage(issueColorArray);
+            setColorHandler(true);
+        }else{
+            const issueColorArray = [];
+            for(let i = 0; i < issuesSessionStorage.length; i++) {
+                issueColorArray.push("");
+            }
+            setSelectedIssueColorHandlerSessionStorage(issueColorArray);
+            setColorHandler(false);
+        }
+    }
+    /**
+     * 
+     * @param props 
+     */
+    const SelectedIssue = (props:any)=>{
+
+        // console.log(issues.indexOf(props))
+        // console.log(props)
+        setSelectedIssueIndexHandler(issuesSessionStorage.indexOf(props))
+        //Set handlers variable
+        setIssueTitleHandler(props.title)
+        setIssueDescriptionHandler(props.description)
+        setIssueStoryPointsHandler(props.storyPoints)
+
+        //Set view variable
+        setViewIssueDetails(true);
+    }
+
+    const SaveChanges=()=>{
+        const newObj={"title" : issueTitleHandler , "description" : issueDescriptionHandler, "storyPoints" : issueStoryPointsHandler};
+        // console.log(newObj);
+        issuesSessionStorage[selectedIssueIndexHandler]=newObj;
+        setViewList(true); 
+        setViewIssueDetails(false)
+    }
 
     useEffect(() => {
         if(viewList===false){
@@ -271,13 +305,17 @@ export default function DropdownList(){
             setAddNewView('add-view-exit')
             setDetailsView('details-enter')
         }
-    }, [viewList, viewIssueDetails])
+        sessionStorage.setItem('listOfIssue', JSON.stringify(issuesSessionStorage));
+        sessionStorage.setItem('selectedIssue', JSON.stringify(selectedIssueColorHandlerSessionStorage));
+
+    }, [viewList, viewIssueDetails, issuesSessionStorage, selectedIssueColorHandlerSessionStorage])
 
     return(
         <div className="dropdown">
             {/* LIST VIEW */}
             <div className={"dropdown-issue-"+listView}>
                 <div className="dropdown-issue-list">
+                    {/* {issueListTEST()} */}
                     {issueList}
                 </div>
                 <div className="dropdown-issue-add">
@@ -285,7 +323,7 @@ export default function DropdownList(){
                             <Button 
                                 name="New Issue"
                                 value={0}
-                                onClick={() => { GoToAddView(); } } />
+                                onClick={() => { GoToAddView();} } />
                         </div>
                         <div className="dropdown-issue-add-jira">
                         <div className="dropdown-issue-add-jira-col1">
@@ -294,7 +332,7 @@ export default function DropdownList(){
                                     id="inputJira"
                                     className="dropdown-issue-add-jira-upload-input" 
                                     type='file' 
-                                    onChange={e=>UploadJiraList(e)}
+                                    onChange={e=>{UploadJiraList(e);console.log("TEST upload")}}
                                     onClick={e=>(e.target as HTMLInputElement).value=""}
                                     />
                                     
@@ -343,7 +381,7 @@ export default function DropdownList(){
                 <Button 
                     name="Add New Issue"
                     value={0}
-                    onClick={() => { AddNewIssue(); } } />
+                    onClick={() => {AddNewIssue();}} />
                 </div>
             </div>
             {/* Details View */}

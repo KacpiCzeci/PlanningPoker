@@ -12,6 +12,7 @@
     padding: 1rem;
     overflow: hidden;
     transition: height var(--speed) ease;
+    z-index: 100;
 }
 .menu {
     width: 100%;
