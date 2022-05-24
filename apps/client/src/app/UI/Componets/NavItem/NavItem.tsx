@@ -6,9 +6,9 @@ export default function NavItem(props:any){
 
     return(
         <li key={Math.random()} className="nav-item">
-            <a href="#" className="icon-button" onClick={()=>setOpen(!open)}>
+            <button  className="icon-button" onClick={()=>setOpen(!open)}>
                 {props.icon}
-            </a>
+            </button>
             {/* Show dropdown list */}
             {open && props.children}
         </li>

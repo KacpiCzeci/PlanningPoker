@@ -19,6 +19,7 @@ export default function CreateGamePage() {
       g.setState((p) => ({ ...p, gameName: game, userName: user }));
       sessionStorage.setItem('userName', user);
       sessionStorage.setItem('gameName', game);
+      sessionStorage.setItem('master', 'true');
       let id = generateRoomID();
       sessionStorage.setItem('room', id.toString());
       gameHook.startNewVoting(game);

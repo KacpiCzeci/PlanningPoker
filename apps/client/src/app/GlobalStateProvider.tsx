@@ -7,6 +7,7 @@ export interface GlobalStateInterface {
     resultAverange?: string;
     gameEnded?: boolean;
     cardPicked?: number;
+    master:boolean;
 }
 
 let initState: GlobalStateInterface = {
@@ -15,7 +16,8 @@ let initState: GlobalStateInterface = {
     result: undefined,
     resultAverange: undefined,
     gameEnded: sessionStorage.getItem('gameEnded') as unknown as boolean || undefined,
-    cardPicked: sessionStorage.getItem('cardPicked') as unknown as number || undefined
+    cardPicked: sessionStorage.getItem('cardPicked') as unknown as number || undefined,
+    master: sessionStorage.getItem('master') as unknown as boolean || false
 }
 
 const GlobalStateContext = createContext({

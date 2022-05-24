@@ -46,7 +46,7 @@ export default function Card(props: CardProps) {
         setMyState('notclicked');
       }
     }
-  },[state.cardPicked])
+  },[state.cardPicked,state.gameEnded])
 
   return (
     <div className={"Card-container-"+mystate} onClick={() => {changeState()}}>

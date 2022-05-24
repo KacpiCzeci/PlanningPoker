@@ -1,14 +1,25 @@
 import React, { useState } from "react";
 import "./User.scss";
 import { GlobalStateInterface, useGlobalState } from "../../../GlobalStateProvider";
+import {PlayerDto} from "@planning-poker/shared/backend-api-client"
 export interface UserProps{
 value?:number;
 userName?:string;
+players?:PlayerDto[];
 }
     
 export default function User(props: UserProps){
     const { state, setState } = useGlobalState();
-    if(state.cardPicked!==undefined){
+    let allvoted=0;
+    if(props.players !== undefined) {
+        for(let i =0;i<props.players.length;i++)
+        {
+            if(props.players[i].score!==undefined)
+            allvoted++;
+        }
+    }
+
+    if((state.gameEnded!==undefined&&state.gameEnded!==false) || allvoted===props.players?.length){
         if (props.value!==undefined){
             return(
                 <div className="User-container">
