@@ -7,9 +7,11 @@ export interface GlobalStateInterface {
     resultAverange?: string;
     gameEnded?: boolean;
     cardPicked?: number;
+    room: string
 }
 
-let initState: GlobalStateInterface = {
+const initState: GlobalStateInterface = {
+    room: "global",
     gameName: "Game Name",
     userName: sessionStorage.getItem('userName') as unknown as string || undefined,
     result: undefined,

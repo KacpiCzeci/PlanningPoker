@@ -1,3 +1,4 @@
+import { useParams } from 'react-router-dom';
 import { useCallback, useEffect, useState } from 'react';
 import {
   useVotingControllerVote,
@@ -7,10 +8,12 @@ import {
 } from '@planning-poker/shared/backend-api-client';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { useQueryClient } from 'react-query';
+import { useLocation } from 'react-router-dom';
 
 export const useGameResult = (onError?: () => void) => {
   const [etag, setEtag] = useState<string>('etag');
-  const room = sessionStorage.getItem('room')||'global';
+    const params = useParams()
+  const room = params['id']!
 
   const currentResult = useVotingControllerGetResult(room,
     { etag },
@@ -43,7 +46,8 @@ export const useGameResult = (onError?: () => void) => {
 
 export const useGameHook = () => {
   const g = useGlobalState();
-  const room = sessionStorage.getItem('room')||'global';
+  const params = useParams()
+  const room = params['id']!
 
   const vote = useVotingControllerVote({
     mutation: { onSettled: () => result.fetch() },
