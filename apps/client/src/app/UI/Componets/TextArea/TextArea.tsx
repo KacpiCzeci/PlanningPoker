@@ -38,10 +38,8 @@ function TextArea( props : TextAreaProps) {
       }    
     return(
         <div className="TextArea-container">
-            <p>
         <label className="TextArea-label" htmlFor="text">{props.label}</label>
         <input id="text" className="TextArea-input" placeholder={"-"} value={props.value}/>
-        </p>
         </div>
     )
     // return(<p>Here shoud be a textarea <p className="error">{props.name}</p></p>)

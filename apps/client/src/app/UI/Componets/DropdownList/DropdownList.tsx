@@ -12,28 +12,34 @@ import { ReactComponent as UploadIcon } from '../../../../assets/icons/upload.sv
 import { ReactComponent as DownloadIcon } from '../../../../assets/icons/download.svg';
 import { ReactComponent as DeleteIcon } from '../../../../assets/icons/delete.svg';
 import { type } from "os";
+import { GlobalStateInterface,useGlobalState } from "../../../GlobalStateProvider";
 
 
 export default function DropdownList(){
 
-    //sesion storage 
+    //global store
+    const { state: globalStore, setState: setGlobalStore } = useGlobalState();
+    const changeGlobalState = useCallback((data: Partial<GlobalStateInterface>) => {
+        setGlobalStore((prevSt) => ({ ...prevSt, ...data }));
+      },[setGlobalStore]);
+
+    //session storage 
     function getSessionStorageOrDefault(key: string, defaultValue: any) {
         const stored = sessionStorage.getItem(key);
         if (!stored) {
           return JSON.parse(defaultValue);
         }
-        // console.log("-----------")
-        // console.log(stored)
-        // console.log("-----------")
         return JSON.parse(stored);
     }
 
-    // UseState - issue data
+    // UseState - issue data handlers
     const [issueTitleHandler,setIssueTitleHandler]=useState("");
     const [issueDescriptionHandler,setIssueDescriptionHandler]=useState("");
     const [issueStoryPointsHandler,setIssueStoryPointsHandler]=useState("");
     const [selectedIssueIndexHandler,setSelectedIssueIndexHandler] =useState(-1);
     const [colorHandler, setColorHandler] = useState(false);
+    const [colorHandlerDeleteOperation, setColorHandlerDeleteOperation] = useState(false);
+    const [globalStoreHandlerSaveOperation, setGlobalStoreHandlerSaveOperation] = useState(false);
 
     //UseState - store
     //---issue list
@@ -200,7 +206,7 @@ export default function DropdownList(){
             leftIconColorOnClick={selectedIssueColorHandlerSessionStorage[index]}
             rightIcon={val.storyPoints}
             key={index} 
-            onClick1={()=>{SelectedIssue(val)}}
+            onClick1={()=>{ShowDetailsOfSelectedIssue(val)}}
             onClick2={()=>{SetVotingNameToThisIssue(val)}}
             onClick3={()=>{DeleteThisIssue(index)}}
             rightRightIcon={<DeleteIcon/>}
@@ -237,37 +243,20 @@ export default function DropdownList(){
             ...issuesSessionStorage.slice(0, i),
             ...issuesSessionStorage.slice(i + 1, issuesSessionStorage.length)
           ]);
-    }
-
-    /**
-     * Change color of selected issue and set name 
-     * @param e Issue Object
-     */
-    const SetVotingNameToThisIssue=(e:any)=>{
-        // console.log(issues.indexOf(e));
-        if(!colorHandler){
-            const index=issuesSessionStorage.indexOf(e);
-            const issueColorArray = [];
-            for(let i = 0; i < issuesSessionStorage.length; i++) {
-                issueColorArray.push("");
-            }
-            issueColorArray[index]="#1976D2";
-            setSelectedIssueColorHandlerSessionStorage(issueColorArray);
-            setColorHandler(true);
-        }else{
-            const issueColorArray = [];
-            for(let i = 0; i < issuesSessionStorage.length; i++) {
-                issueColorArray.push("");
-            }
-            setSelectedIssueColorHandlerSessionStorage(issueColorArray);
-            setColorHandler(false);
+        setSelectedIssueColorHandlerSessionStorage([
+            ...selectedIssueColorHandlerSessionStorage.slice(0, i),
+            ...selectedIssueColorHandlerSessionStorage.slice(i + 1, selectedIssueColorHandlerSessionStorage.length)
+          ]);
+        if(selectedIssueColorHandlerSessionStorage.indexOf("#1976D2")===i){
+            console.log("--1----KOLOR USUNIETY");
+            setColorHandlerDeleteOperation(true);
         }
     }
     /**
-     * 
-     * @param props 
+     * Showing details of selected issue from list
+     * @param props Issue Object
      */
-    const SelectedIssue = (props:any)=>{
+    const ShowDetailsOfSelectedIssue = (props:any)=>{
 
         // console.log(issues.indexOf(props))
         // console.log(props)
@@ -280,16 +269,63 @@ export default function DropdownList(){
         //Set view variable
         setViewIssueDetails(true);
     }
-
+    /**
+     * Save changes in selecetd issue 
+     */ 
     const SaveChanges=()=>{
         const newObj={"title" : issueTitleHandler , "description" : issueDescriptionHandler, "storyPoints" : issueStoryPointsHandler};
         // console.log(newObj);
         issuesSessionStorage[selectedIssueIndexHandler]=newObj;
         setViewList(true); 
         setViewIssueDetails(false)
+        if(selectedIssueIndexHandler===selectedIssueColorHandlerSessionStorage.indexOf("#1976D2")){
+            setGlobalStoreHandlerSaveOperation(true)
+        }else{
+            setGlobalStoreHandlerSaveOperation(false)
+        }
+    }
+
+    /**
+     * Change color of selected issue and set a textfield in GamePage-issuename
+     * @param e Issue Object
+     */
+    const SetVotingNameToThisIssue=(e:any)=>{
+        if(!colorHandler){
+            const index=issuesSessionStorage.indexOf(e);
+            const issueColorArray = [];
+            for(let i = 0; i < issuesSessionStorage.length; i++) {
+                issueColorArray.push("");
+            }
+            issueColorArray[index]="#1976D2";
+            setSelectedIssueColorHandlerSessionStorage(issueColorArray);
+            setColorHandler(!colorHandler);
+        }
+        // if(colorHandler){
+        //     console.log("---err---colorHandler: "+ colorHandler);
+        //     const issueColorArray = [];
+        //     for(let i = 0; i < issuesSessionStorage.length; i++) {
+        //         issueColorArray.push("");
+        //     }
+        //     setSelectedIssueColorHandlerSessionStorage(issueColorArray);
+        //     setColorHandler(false);
+        // }
     }
 
     useEffect(() => {
+        //Selected issue set it title
+        if(colorHandler){
+            const index=selectedIssueColorHandlerSessionStorage.indexOf("#1976D2");
+            changeGlobalState({selectedIssue : issuesSessionStorage[index].title});
+        }
+        //Deleted selected issue set default name
+        if(colorHandlerDeleteOperation){
+            changeGlobalState({selectedIssue : "Issue name"});
+        }
+        //Saved changes of selected issue set in selectedIssue
+        if(globalStoreHandlerSaveOperation){
+            const index=selectedIssueColorHandlerSessionStorage.indexOf("#1976D2");
+            changeGlobalState({selectedIssue : issuesSessionStorage[index].title});
+        }
         if(viewList===false){
             setListView('list-exit')
             setAddNewView('add-view-enter')
@@ -304,11 +340,12 @@ export default function DropdownList(){
             setListView('list-exit')
             setAddNewView('add-view-exit')
             setDetailsView('details-enter')
+
         }
         sessionStorage.setItem('listOfIssue', JSON.stringify(issuesSessionStorage));
         sessionStorage.setItem('selectedIssue', JSON.stringify(selectedIssueColorHandlerSessionStorage));
 
-    }, [viewList, viewIssueDetails, issuesSessionStorage, selectedIssueColorHandlerSessionStorage])
+    }, [viewList, viewIssueDetails, issuesSessionStorage, selectedIssueColorHandlerSessionStorage, colorHandler, changeGlobalState, colorHandlerDeleteOperation, globalStoreHandlerSaveOperation, selectedIssueIndexHandler])
 
     return(
         <div className="dropdown">

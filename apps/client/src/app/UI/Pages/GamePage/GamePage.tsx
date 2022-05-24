@@ -36,6 +36,8 @@ export default function GamePage() {
     () => {game.vote(state.cardPicked), console.log(game.data.players)},
     [state.cardPicked, game.data.players]
   );
+
+
   const changeGlobalState = (data: Partial<GlobalStateInterface>) => {
     setState((prevSt) => ({ ...prevSt, ...data }));
   };
@@ -131,6 +133,14 @@ export default function GamePage() {
             value={gameNameLocal}
             onChange={setGameNameLocal}
             name="Name of vote"
+          />
+        </div>
+        <div className="GamePage-issuename">
+          <TextArea
+            placeholder="Issue name"
+            value={state.selectedIssue}
+            onChange={(e)=>changeGlobalState({selectedIssue : e})}
+            name="Title of Issue"
           />
         </div>
         <div className="GamePage-vote">
