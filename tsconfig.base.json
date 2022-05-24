@@ -21,6 +21,9 @@
       ],
       "@planning-poker/shared/backend-api-client": [
         "libs/shared/backend-api-client/src/index.ts"
+      ],
+      "@planning-poker/shared/interfaces": [
+        "libs/shared/interfaces/src/index.ts"
       ]
     }
   },

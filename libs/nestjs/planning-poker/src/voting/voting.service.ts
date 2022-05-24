@@ -19,20 +19,24 @@ export class VotingRoomInterceptor {
       if (votings[req.params.roomID]) return votings[req.params.roomID];
       else {
         votings[req.params.roomID] = {
-          finished: false,
-          onFinish: [],
-          participants: [],
-          question: '',
+          onFinishCurrentIssue: [],
+          currentIssue: {
+            finished: false,
+            players: [],
+            gameName: '',
+            tasks: [],
+          },
+          issues: [],
         };
-        return votings[req.params.roomID]
+        return votings[req.params.roomID];
       }
     })();
 
     // const metaValue = this.reflector.get('SomeAnnotedDecorator', context.getHandler());
     req.votingUpdated = () => {
       console.log('Updated');
-      voting.onFinish.forEach((x) => x());
-      voting.onFinish = [];
+      voting.onFinishCurrentIssue.forEach((x) => x());
+      voting.onFinishCurrentIssue = [];
     };
 
     req.getVoting = () => voting;

@@ -4,13 +4,8 @@
  * Planning Poker API
  * OpenAPI spec version: 1.0
  */
-import type { PlayerDto } from './playerDto';
 import type { IssueDto } from './issueDto';
 
-export interface GetResultSuccessDto {
-  finished: boolean;
-  gameName: string;
-  players: PlayerDto[];
-  tasks: string[];
+export interface SetIssuesBody {
   issues: IssueDto[];
 }
