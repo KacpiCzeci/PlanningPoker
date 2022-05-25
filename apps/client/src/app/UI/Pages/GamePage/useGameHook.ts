@@ -13,7 +13,6 @@ import {
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { useQueryClient } from 'react-query';
 import { useLocation } from 'react-router-dom';
-import { useVotingControllerFinish } from 'libs/shared/backend-api-client/src';
 
 export const useGameResult = (onError?: () => void) => {
   const [etag, setEtag] = useState<string>('etag');

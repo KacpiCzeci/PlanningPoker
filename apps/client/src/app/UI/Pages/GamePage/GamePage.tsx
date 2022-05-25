@@ -167,7 +167,7 @@ export default function GamePage() {
           alt="Logo.png"
         />
         <h1 className="GamePage-h1">Planning Poker</h1>
-        <div>
+        <div className="GamePage-navv">
           <NavBar>
             <NavItem icon="Issue List">
               <DropdownList
@@ -292,7 +292,36 @@ export default function GamePage() {
         <div className="GamePage-navv">
           <NavBar>
             <NavItem icon="Issue List">
-              <DropdownList issues={game.data.issues}/>
+            <DropdownList
+                issues={game.data.issues.map((i) => ({
+                  description: i.tasks[0],
+                  storyPoints: (
+                    i.players.reduce((a, b) => a + (b.score || 0), 0) /
+                    i.players.length
+                  ).toString(),
+                  title: i.gameName,
+                  active: i.current,
+                  id: i.id,
+                }))}
+                onAdd={(issue) =>
+                  game.setIssues.mutateAsync({
+                    issues: [
+                      ...game.data.issues,
+                      {
+                        current: false,
+                        finished: false,
+                        gameName: issue.title,
+                        id: new Date().toISOString(),
+                        players: [],
+                        tasks: [issue.description],
+                      },
+                    ],
+                  })
+                }
+                onSelectActive={(item) =>
+                  game.setActiveIssue.mutateAsync(item.id)
+                }
+              />
             </NavItem>
           </NavBar>
         </div>
