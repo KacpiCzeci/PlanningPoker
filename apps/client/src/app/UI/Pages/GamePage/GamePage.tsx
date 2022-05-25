@@ -114,7 +114,110 @@ export default function GamePage() {
       )[0].style.display = 'none';
     }, 1000);
   }
+  function changeGameState(){
+    if (state.gameEnded)
+   {
+     changeGlobalState({ gameEnded: false });
+   }
+   else{
+     changeGlobalState({ gameEnded: true });
+   }
+  }
+ if(state.master){
+  return (
+    <div className="GamePage-container">
+      <div className="GamePage-header">
+        <img
+          className="GamePage-image-img"
+          src="../../../../assets/poker.png"
+          alt="Logo.png"
+        />
+        <h1 className="GamePage-h1">Planning Poker</h1>
+        <h1>Planning Poker</h1>
+        <div>
+          <NavBar>
+            <NavItem icon="Issue List">
+              <DropdownList issues={game.data.issues}/>
+            </NavItem>
+          </NavBar>
+        </div>
+      </div>
+      <div className="GamePage-userinfobar">
+        {/* <div className="GamePage-gameusers">Game Users</div> */}
+        <UserList users={game.data.players} />
+      </div>
+      <div className="GamePage-gameinfo">
+        <p>{vote}</p>
+        <div className="GamePage-gamename">
+          <TextField
+            placeholder="Game Name"
+            value={gameNameLocal}
+            onChange={setGameNameLocal}
+            name="Name of vote"
+          />
+        </div>
+        <div className="GamePage-issuename">
+          <TextArea
+            placeholder="Issue name"
+            value={state.selectedIssue}
+            onChange={(e)=>changeGlobalState({selectedIssue : e})}
+            name="Title of Issue"
+          />
+        </div>
+        <div className="GamePage-vote">
+          <Button
+            name="Change name"
+            value={0}
+            onClick={() => {
+              HandleNewVote();
+            }}
+          />
+        </div>
 
+        <div
+          className="GamePage-voting-results" //style={{ opacity: state.cardPicked ? undefined : 0 }}
+        >
+          <div className="GamePage-voteavg">
+            <p className="GamePage-p">Vote Averange:</p>
+            <p className="GamePage-pval">
+              {state.cardPicked ? state.result : '-'}
+            </p>
+          </div>
+          <div className="GamePage-voterlt">
+            <p className="GamePage-p">Vote Result:</p>
+            <p className="GamePage-pval">
+              {state.cardPicked ? state.resultAverange : '-'}
+            </p>
+          </div>
+          {/* <TextArea label="Vote Avarege:" value={state.cardPicked ? state.result : ""} /> */}
+          {/* <TextArea label="Vote Result:" value={state.cardPicked ? state.resultAverange : ""} /> */}
+        </div>
+      </div>
+
+      <div className="GamePage-voteinfo">
+        <div className="GamePage-voteoptions">
+          <CardDeck onChange={(v) => game.vote(v)} />
+        </div>
+        <div className="GamePage-newvote">
+          <Button
+            name="New Game"
+            value={0}
+            onClick={() => {
+              NewBoard();
+              game.startNewVoting('New voting');
+            }}
+          />
+          {/* <div className="GamePage-copyinfo-container"> */}
+          <span className="GamePage-copyinfo">Link copied!</span>
+          {/* </div> */}
+          <Button name="Copy link" value={0} onClick={copyLinkToClipboard} />
+          <Button name="End/unend game" value={0} onClick={changeGameState} />
+        </div>
+      </div>
+    </div>
+  );
+ }
+ else{
   return (
     <div className="GamePage-container">
       <div className="GamePage-header">
@@ -206,4 +309,5 @@ export default function GamePage() {
       </div>
     </div>
   );
+ }
 }
