@@ -10,6 +10,7 @@ import {
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { useQueryClient } from 'react-query';
 import { useLocation } from 'react-router-dom';
+import { useVotingControllerFinish } from 'libs/shared/backend-api-client/src';
 
 export const useGameResult = (onError?: () => void) => {
   const [etag, setEtag] = useState<string>('etag');
@@ -87,7 +88,7 @@ export const useGameHook = () => {
     },
     [g.state.userName, vote]
   );
-
+ 
   useEffect(function loginToVotingAtStartup() {
     //loginToVoting();
     result.fetch();

@@ -14,6 +14,8 @@ import { useGameHook } from './useGameHook';
 import UserList from '../../Componets/UserList/UserList';
 import NavItem from '../../Componets/NavItem/NavItem';
 import DropdownList from '../../Componets/DropdownList/DropdownList';
+import { useVotingControllerFinish, votingControllerFinish } from 'libs/shared/backend-api-client/src';
+import { finished } from 'stream';
 
 function getSessionStorageOrDefault(key: string, defaultValue: string) {
   const stored = sessionStorage.getItem(key);
@@ -114,13 +116,22 @@ export default function GamePage() {
       )[0].style.display = 'none';
     }, 1000);
   }
+  const xddd = useVotingControllerFinish();
+  useEffect(
+    ()=>{console.log(sessionStorage.getItem('room'))
+      if (sessionStorage.getItem('room')!==null)
+      xddd.mutateAsync({roomID:sessionStorage.getItem('room')||""})
+    },[state.gameEnded])
+  
   function changeGameState(){
     if (state.gameEnded)
    {
      changeGlobalState({ gameEnded: false });
+     console.log(game.data.finished)
    }
    else{
      changeGlobalState({ gameEnded: true });
+     console.log(game.data.finished)
    }
   }
  if(state.master){
