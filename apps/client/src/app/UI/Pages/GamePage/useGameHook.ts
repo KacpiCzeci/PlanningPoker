@@ -1,4 +1,4 @@
-import { useVotingControllerSetCurrentIssue } from './../../../../../../../libs/shared/backend-api-client/src/backend';
+import { useVotingControllerFinish, useVotingControllerSetCurrentIssue } from '@planning-poker/shared/backend-api-client';
 import { SetIssuesBody } from '@planning-poker/shared/backend-api-client';
 import { useVotingControllerSetIssues } from '@planning-poker/shared/backend-api-client';
 import { useParams } from 'react-router-dom';
@@ -65,6 +65,13 @@ const setActiveIssue = useVotingControllerSetCurrentIssue();
   };
 
 
+  const finishGame = useVotingControllerFinish();
+  const mutateFinishGame = () => {
+    return finishGame.mutateAsync({ roomID: room });
+  };
+
+
+
   const vote = useVotingControllerVote({
     mutation: { onSettled: () => result.fetch() },
   });
@@ -121,6 +128,7 @@ const setActiveIssue = useVotingControllerSetCurrentIssue();
     startNewVoting,
     vote: voteFn,
     setIssues: {...setIssues, mutateAsync: mutateSetIssues},
-    setActiveIssue: {...setActiveIssue, mutateAsync: mutateSetActiveIssue}
+    setActiveIssue: {...setActiveIssue, mutateAsync: mutateSetActiveIssue},
+    finishGame: {...finishGame, mutateAsync: mutateFinishGame}
   };
 };

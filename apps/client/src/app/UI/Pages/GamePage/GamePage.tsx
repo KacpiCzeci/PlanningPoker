@@ -76,8 +76,8 @@ export default function GamePage() {
     });
     console.log(`Average: ${average}`);
     console.log(`Average in fibo: ${closest}`);
-    changeGlobalState({ result: average.toString() });
-    changeGlobalState({ resultAverange: closest.toString() });
+    // changeGlobalState({ result: average.toString() });
+    // changeGlobalState({ resultAverange: closest.toString() });
     return { average, closest };
     // // console.log("-----------END-----------")
   }, [game.data.players]);
@@ -201,13 +201,13 @@ export default function GamePage() {
           <div className="GamePage-voteavg">
             <p className="GamePage-p">Vote Averange:</p>
             <p className="GamePage-pval">
-              {state.cardPicked ? results_.average : '-'}
+              {state.cardPicked || game.data.finished ? results_.average : '-'}
             </p>
           </div>
           <div className="GamePage-voterlt">
             <p className="GamePage-p">Vote Result:</p>
             <p className="GamePage-pval">
-              {state.cardPicked ? results_.closest : '-'}
+              {state.cardPicked || game.data.finished ? results_.closest : '-'}
             </p>
           </div>
           {/* <TextArea label="Vote Avarege:" value={state.cardPicked ? state.result : ""} /> */}
@@ -232,6 +232,11 @@ export default function GamePage() {
           <span className="GamePage-copyinfo">Link copied!</span>
           {/* </div> */}
           <Button name="Copy link" value={0} onClick={copyLinkToClipboard} />
+          <Button
+            name="End/unend game"
+            value={0}
+            onClick={() => game.finishGame.mutateAsync()}
+          />
         </div>
       </div>
     </div>
