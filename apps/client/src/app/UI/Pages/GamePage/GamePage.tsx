@@ -61,7 +61,7 @@ export default function GamePage() {
         console.log(votessum)
     }
   },[game.data.players])
-  const CalculateResult = useCallback(() => {
+  useEffect(() => {
     
     // console.log("-----------CalculateResult-----------")
     //----Get data---
@@ -83,16 +83,18 @@ export default function GamePage() {
         (prevValue, currentValue) => prevValue + currentValue,
         0
       ) / localResults.length;
-    const cardsValues = [0, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89];
-    const goal = Math.round(average);
-    const closest = cardsValues.reduce(function (prev, curr) {
-      return Math.abs(curr - goal) < Math.abs(prev - goal) ? curr : prev;
-    });
-    console.log(`Average: ${average}`);
-    console.log(`Average in fibo: ${closest}`);
-    changeGlobalState({ result: average.toString() });
-    changeGlobalState({ resultAverange: closest.toString() });
-    return { average, closest };
+        if(average<=89){
+          const cardsValues = [0, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89];
+          const goal = Math.round(average);
+          const closest = cardsValues.reduce(function (prev, curr) {
+            return Math.abs(curr - goal) < Math.abs(prev - goal) ? curr : prev;
+          });
+          console.log(`Average: ${average}`);
+          console.log(`Average in fibo: ${closest}`);
+          changeGlobalState({ result: average.toString() });
+          changeGlobalState({ resultAverange: closest.toString() });
+        }
+    //return { average, closest };
     // console.log("-----------END-----------")
   }, [game.data.finished,game.data.players]);
 
@@ -105,7 +107,7 @@ export default function GamePage() {
   const HandleNewVote = useCallback(() => {
     game.startNewVoting(gameNameLocal);
   }, [game, gameNameLocal]);
-  const results_ = useMemo(() => CalculateResult(), [CalculateResult]);
+  //const results_ = useMemo(() => CalculateResult(), [CalculateResult]);
 
   async function copyLinkToClipboard() {
     await navigator.clipboard.writeText(window.location.href);
@@ -150,6 +152,7 @@ export default function GamePage() {
    }
    else{
      changeGlobalState({ gameEnded: true });
+     changeGlobalState({result: undefined, resultAverange: undefined})
      console.log(game.data.finished)
    }
   }
@@ -163,7 +166,6 @@ export default function GamePage() {
           alt="Logo.png"
         />
         <h1 className="GamePage-h1">Planning Poker</h1>
-        <h1>Planning Poker</h1>
         <div>
           <NavBar>
             <NavItem icon="Issue List">
@@ -210,13 +212,13 @@ export default function GamePage() {
           <div className="GamePage-voteavg">
             <p className="GamePage-p">Vote Averange:</p>
             <p className="GamePage-pval">
-              {(game.data.finished||game.data.players.length ===votessum) ? state.result : '-'}
+              {(game.data.finished||game.data.players.length ===votessum) ? state.result : ''}
             </p>
           </div>
           <div className="GamePage-voterlt">
             <p className="GamePage-p">Vote Result:</p>
             <p className="GamePage-pval">
-              {(game.data.finished||game.data.players.length===votessum) ? state.resultAverange : '-'}
+              {(game.data.finished||game.data.players.length===votessum) ? state.resultAverange : ''}
             </p>
           </div>
           {/* <TextArea label="Vote Avarege:" value={state.cardPicked ? state.result : ""} /> */}
@@ -257,8 +259,7 @@ export default function GamePage() {
           alt="Logo.png"
         />
         <h1 className="GamePage-h1">Planning Poker</h1>
-        <h1>Planning Poker</h1>
-        <div>
+        <div className="GamePage-navv">
           <NavBar>
             <NavItem icon="Issue List">
               <DropdownList issues={game.data.issues}/>
@@ -304,13 +305,13 @@ export default function GamePage() {
           <div className="GamePage-voteavg">
             <p className="GamePage-p">Vote Averange:</p>
             <p className="GamePage-pval">
-              {(game.data.finished||game.data.players.length===votessum) ? state.result : '-'}
+              {(game.data.finished||game.data.players.length===votessum) ? state.result : ''}
             </p>
           </div>
           <div className="GamePage-voterlt">
             <p className="GamePage-p">Vote Result:</p>
             <p className="GamePage-pval">
-              {(game.data.finished||game.data.players.length===votessum) ? state.resultAverange : '-'}
+              {(game.data.finished||game.data.players.length===votessum) ? state.resultAverange : ''}
             </p>
           </div>
           {/* <TextArea label="Vote Avarege:" value={state.cardPicked ? state.result : ""} /> */}

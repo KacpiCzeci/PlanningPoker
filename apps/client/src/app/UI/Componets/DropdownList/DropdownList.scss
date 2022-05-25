@@ -2,17 +2,19 @@
 
 .dropdown {
     position: absolute;
-    top: 158px; // Move down by 58px
+    top: 100px; // Move down by 58px
     width: 320px;
     height: 325px;
     transform: translateX(-45%);
-    background-color: var(--bg);
+    // background-color: var(--bg);
+    background-color: #242426;
     border: var(--border);
     border-radius: var(--border-radius);
     padding: 1rem;
     overflow: hidden;
     transition: height var(--speed) ease;
     z-index: 100;
+    right: -155px;
 }
 .menu {
     width: 100%;

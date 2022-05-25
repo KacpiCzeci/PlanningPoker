@@ -38,6 +38,8 @@ export default function Card(props: CardProps) {
   useEffect(() => {
     if(game.data.finished == true){
       setMyState('blocked');
+      changeGlobalState({cardPicked: undefined});
+      sessionStorage.setItem('cardPicked', '');
     }
     else{
       if(state.cardPicked == props.value){
