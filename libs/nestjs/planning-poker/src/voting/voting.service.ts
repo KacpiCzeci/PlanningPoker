@@ -48,10 +48,8 @@ export class VotingRoomInterceptor {
       voting.onFinishCurrentIssue = [];
     };
 
-    req.getVoting = () => ({
-      ...voting,
-      currentIssue: voting.issues.find((i) => i.id === voting.currentIssueId)!,
-    });
+    req.getVoting = () => voting;
+    req.getCurrentIssue = () => voting.issues.find( i => i.id === voting.currentIssueId)!
 
     return next.handle();
   }

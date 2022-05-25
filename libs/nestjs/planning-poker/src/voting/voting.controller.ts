@@ -57,11 +57,12 @@ export class VotingController {
   ) {
     const voting = req.getVoting();
 
+    const currentIssue = req.getCurrentIssue();
     console.log({ req });
     // room.update();
-    if (voting.currentIssue) {
-      voting.currentIssue.gameName = name;
-      voting.currentIssue.players = [];
+    if (currentIssue) {
+      currentIssue.gameName = name;
+      currentIssue.players = [];
       req.votingUpdated();
     }
   }
@@ -75,25 +76,26 @@ export class VotingController {
     @Query() { etag }: GetResultRequest
   ): Promise<GetResultSuccessDto> {
     const voting = req.getVoting();
-
+    const currentIssue = req.getCurrentIssue();
     const waitForUpdate = () =>
       new Promise<void>((res) => voting.onFinishCurrentIssue.push(res));
 
     const [result, update] = ((): [GetResultSuccessDto, () => void] => {
       const mapPlayers = () =>
-        req.getVoting().currentIssue.players.map((x) => ({
+        req.getCurrentIssue().players.map((x) => ({
           player: x.player,
           score: x.score,
         }));
       const result: GetResultSuccessDto = {
-        ...req.getVoting().currentIssue,
-        issues: [...voting.issues],
+        ...currentIssue,
+        issues: [...req.getVoting().issues],
       };
       return [
         result,
         function update() {
-          result.gameName = req.getVoting().currentIssue.gameName;
+          result.gameName = req.getCurrentIssue().gameName;
           result.players = mapPlayers();
+          result.issues = req.getVoting().issues;
         },
       ];
     })();
@@ -119,11 +121,10 @@ export class VotingController {
     @Req() req: VotingRequest
   ) {
     const voting = req.getVoting();
-    const participant = voting.currentIssue.players.find(
-      (p) => p.player === player
-    );
+    const currentIssue = req.getCurrentIssue();
+    const participant = currentIssue.players.find((p) => p.player === player);
     if (participant === undefined) {
-      voting.currentIssue.players.push({ player, score });
+      currentIssue.players.push({ player, score });
     } else {
       participant.score = score;
     }
@@ -136,7 +137,8 @@ export class VotingController {
   @Post('finish')
   finish(@Param('roomID') room: string, @Req() req: VotingRequest) {
     const voting = req.getVoting();
-    voting.currentIssue.finished = true;
+    const currentIssue = req.getCurrentIssue();
+    currentIssue.finished = true;
     req.votingUpdated();
 
     return 'ok';
