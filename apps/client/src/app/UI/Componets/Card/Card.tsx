@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { GlobalStateInterface, useGlobalState } from "../../../GlobalStateProvider";
 import "./Card.scss";
-
+import { useGameHook } from '../../Pages/GamePage/useGameHook';
 export interface CardProps {
   value: number;
   onClick: (st: string) => void;
@@ -16,6 +16,7 @@ function getSessionStorageOrDefault(key: string, defaultValue: string) {
 }
 
 export default function Card(props: CardProps) {
+  const game = useGameHook();
   const { state, setState } = useGlobalState();
   const [mystate, setMyState] = useState(state.cardPicked == props.value? 'clicked': 'notclicked');
 
@@ -35,7 +36,7 @@ export default function Card(props: CardProps) {
   }
 
   useEffect(() => {
-    if(state.gameEnded == true){
+    if(game.data.finished == true){
       setMyState('blocked');
     }
     else{
@@ -46,7 +47,7 @@ export default function Card(props: CardProps) {
         setMyState('notclicked');
       }
     }
-  },[state.cardPicked])
+  },[state.cardPicked,game.data.finished])
 
   return (
     <div className={"Card-container-"+mystate} onClick={() => {changeState()}}>
