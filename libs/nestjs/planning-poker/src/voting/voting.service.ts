@@ -1,3 +1,4 @@
+import { Issue } from './../../../../shared/interfaces/src/lib/issue';
 import { Voting } from './voting.controller';
 import {
   CallHandler,
@@ -8,6 +9,10 @@ import {
   Request,
 } from '@nestjs/common';
 import { VotingRequest } from './voting.request';
+
+export type VotingWithCurrentIssue = Voting & {
+  readonly currentIssue: Issue;
+};
 
 const votings: Record<string, Voting> = {};
 
@@ -20,13 +25,17 @@ export class VotingRoomInterceptor {
       else {
         votings[req.params.roomID] = {
           onFinishCurrentIssue: [],
-          currentIssue: {
-            finished: false,
-            players: [],
-            gameName: '',
-            tasks: [],
-          },
-          issues: [],
+          currentIssueId: 'default',
+          issues: [
+            {
+              id: 'default',
+              current: true,
+              gameName: 'Question1',
+              finished: false,
+              players: [],
+              tasks: [],
+            },
+          ],
         };
         return votings[req.params.roomID];
       }
@@ -39,7 +48,10 @@ export class VotingRoomInterceptor {
       voting.onFinishCurrentIssue = [];
     };
 
-    req.getVoting = () => voting;
+    req.getVoting = () => ({
+      ...voting,
+      currentIssue: voting.issues.find((i) => i.id === voting.currentIssueId)!,
+    });
 
     return next.handle();
   }

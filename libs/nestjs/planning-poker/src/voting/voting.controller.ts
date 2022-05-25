@@ -32,8 +32,8 @@ import { Issue } from '@planning-poker/shared/interfaces';
 
 export type Voting = {
   onFinishCurrentIssue: (() => void)[];
+  currentIssueId: string | undefined;
   issues: Issue[];
-  currentIssue: Issue;
 };
 
 export class RestartRequest {
@@ -59,12 +59,11 @@ export class VotingController {
 
     console.log({ req });
     // room.update();
-    voting.currentIssue.gameName = name;
-    voting.currentIssue.players = [];
-    if (voting.issues.length === 0) {
-      voting.issues.push(voting.currentIssue);
+    if (voting.currentIssue) {
+      voting.currentIssue.gameName = name;
+      voting.currentIssue.players = [];
+      req.votingUpdated();
     }
-    req.votingUpdated();
   }
 
   @Get('getResult')
@@ -77,28 +76,24 @@ export class VotingController {
   ): Promise<GetResultSuccessDto> {
     const voting = req.getVoting();
 
-    if (voting.currentIssue.gameName === '') {
-      throw new HttpException('voting is not started', 409);
-    }
-
     const waitForUpdate = () =>
       new Promise<void>((res) => voting.onFinishCurrentIssue.push(res));
 
     const [result, update] = ((): [GetResultSuccessDto, () => void] => {
       const mapPlayers = () =>
-        voting.currentIssue.players.map((x) => ({
+        req.getVoting().currentIssue.players.map((x) => ({
           player: x.player,
           score: x.score,
         }));
       const result: GetResultSuccessDto = {
-        ...voting.currentIssue,
-        issues: voting.issues,
+        ...req.getVoting().currentIssue,
+        issues: [...voting.issues],
       };
       return [
         result,
-        () => {
-          (result.gameName = voting.currentIssue.gameName),
-            (result.players = mapPlayers());
+        function update() {
+          result.gameName = req.getVoting().currentIssue.gameName;
+          result.players = mapPlayers();
         },
       ];
     })();
@@ -167,10 +162,8 @@ export class VotingController {
     @Req() req: VotingRequest
   ) {
     const voting = req.getVoting();
-    if (voting.issues[id]) {
-      voting.currentIssue = voting.issues[id];
-      req.votingUpdated();
-    }
+    voting.currentIssueId = id;
+    req.votingUpdated();
 
     return 'ok';
   }
