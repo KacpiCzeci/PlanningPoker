@@ -1,7 +1,7 @@
 import { Issue } from '@planning-poker/shared/interfaces';
 import { ApiProperty, OmitType, PickType } from '@nestjs/swagger';
 
-export type Player = { player: string; score: number };
+export type Player = { player: string; score: number|undefined };
 
 export class PlayerDto implements Player {
   @ApiProperty()
@@ -23,9 +23,16 @@ export class IssueDto implements Issue {
 
   @ApiProperty()
   tasks: string[];
+
+  @ApiProperty()
+  current: boolean;
+
+  @ApiProperty()
+  id: string;
 }
 
-export class GetResultSuccessDto extends IssueDto {
+export const IssuesSlim = OmitType(IssueDto, ['current']);
+export class GetResultSuccessDto extends IssuesSlim {
   @ApiProperty({ type: [IssueDto] })
   issues: Issue[];
 }
@@ -37,5 +44,5 @@ export class SetIssuesBody {
 
 export class SetCurrentIssueBody {
   @ApiProperty()
-  id: number;
+  id: string;
 }
