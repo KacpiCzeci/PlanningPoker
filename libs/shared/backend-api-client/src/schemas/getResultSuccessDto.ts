@@ -12,5 +12,6 @@ export interface GetResultSuccessDto {
   gameName: string;
   players: PlayerDto[];
   tasks: string[];
+  id: string;
   issues: IssueDto[];
 }

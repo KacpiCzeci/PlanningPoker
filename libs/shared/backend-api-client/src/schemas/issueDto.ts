@@ -11,4 +11,6 @@ export interface IssueDto {
   gameName: string;
   players: PlayerDto[];
   tasks: string[];
+  current: boolean;
+  id: string;
 }

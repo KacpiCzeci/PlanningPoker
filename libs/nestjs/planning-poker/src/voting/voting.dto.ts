@@ -1,14 +1,14 @@
 import { Issue } from '@planning-poker/shared/interfaces';
 import { ApiProperty, OmitType, PickType } from '@nestjs/swagger';
 
-export type Player = { player: string; score: number|undefined };
+export type Player = { player: string; score: number | null };
 
 export class PlayerDto implements Player {
   @ApiProperty()
   player: string;
 
-  @ApiProperty({ required: false })
-  score: number | undefined;
+  @ApiProperty({ nullable: true })
+  score: number | null;
 }
 
 export class IssueDto implements Issue {

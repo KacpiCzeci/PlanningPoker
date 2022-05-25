@@ -5,3 +5,4 @@ export * from './votingControllerGetResultParams';
 export * from './issueDto';
 export * from './setIssuesBody';
 export * from './setCurrentIssueBody';
+export * from './playerDtoScore';

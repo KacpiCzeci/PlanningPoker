@@ -33,7 +33,7 @@ export default function GamePage() {
   const { state, setState } = useGlobalState();
   const [vote, setVote] = useState();
   useEffect(() => {
-    game.vote(state.cardPicked);
+    game.vote(state.cardPicked ?? null);
     console.log(game.data.players);
   }, [JSON.stringify(state.cardPicked), JSON.stringify(game.data.players)]);
   const changeGlobalState = (data: Partial<GlobalStateInterface>) => {
@@ -128,7 +128,7 @@ export default function GamePage() {
         <div>
           <NavBar>
             <NavItem icon="Issue List">
-              <DropdownList />
+              <DropdownList issues={game.data.issues}/>
             </NavItem>
           </NavBar>
         </div>

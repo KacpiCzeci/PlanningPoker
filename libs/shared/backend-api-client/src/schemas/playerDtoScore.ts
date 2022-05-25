@@ -5,6 +5,4 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface SetCurrentIssueBody {
-  id: string;
-}
+export type PlayerDtoScore = unknown | number;
