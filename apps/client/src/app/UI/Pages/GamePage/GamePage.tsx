@@ -14,6 +14,7 @@ import { useGameHook } from './useGameHook';
 import UserList from '../../Componets/UserList/UserList';
 import NavItem from '../../Componets/NavItem/NavItem';
 import DropdownList from '../../Componets/DropdownList/DropdownList';
+import { votingControllerSetIssues } from '@planning-poker/shared/backend-api-client';
 
 function getSessionStorageOrDefault(key: string, defaultValue: string) {
   const stored = sessionStorage.getItem(key);
@@ -35,7 +36,7 @@ export default function GamePage() {
   useEffect(() => {
     game.vote(state.cardPicked ?? null);
     console.log(game.data.players);
-  }, [JSON.stringify(state.cardPicked), JSON.stringify(game.data.players)]);
+  }, [JSON.stringify(state.cardPicked)]);
   const changeGlobalState = (data: Partial<GlobalStateInterface>) => {
     setState((prevSt) => ({ ...prevSt, ...data }));
   };
@@ -128,7 +129,33 @@ export default function GamePage() {
         <div>
           <NavBar>
             <NavItem icon="Issue List">
-              <DropdownList issues={game.data.issues}/>
+              <DropdownList
+                issues={game.data.issues.map((i) => ({
+                  description: i.tasks[0],
+                  storyPoints: i.players
+                    .reduce((a, b) => a + (b.score || 0), 0)
+                    .toString(),
+                  title: i.gameName,
+                  active: i.current,
+                  id: i.id
+                }))}
+                onAdd={(issue) =>
+                  game.setIssues.mutateAsync({
+                    issues: [
+                      ...game.data.issues,
+                      {
+                        current: false,
+                        finished: false,
+                        gameName: issue.title,
+                        id: new Date().toISOString(),
+                        players: [],
+                        tasks: [issue.description],
+                      },
+                    ],
+                  })
+                }
+                onSelectActive={(item) => game.setActiveIssue.mutateAsync(item.id)}
+              />
             </NavItem>
           </NavBar>
         </div>
@@ -151,7 +178,7 @@ export default function GamePage() {
           <TextArea
             placeholder="Issue name"
             value={state.selectedIssue}
-            onChange={(e)=>changeGlobalState({selectedIssue : e})}
+            onChange={(e) => changeGlobalState({ selectedIssue: e })}
             name="Title of Issue"
           />
         </div>
