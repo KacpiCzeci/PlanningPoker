@@ -1,5 +1,4 @@
 import { roomID } from './roomID.decorator';
-import { DatastoreService } from './../datastore/datastore.service';
 import {
   Body,
   Controller,
@@ -12,7 +11,13 @@ import {
   Req,
   UseInterceptors,
 } from '@nestjs/common';
-import { PlayerDto, GetResultSuccessDto } from './voting.dto';
+import {
+  PlayerDto,
+  GetResultSuccessDto,
+  IssueDto,
+  SetIssuesBody,
+  SetCurrentIssueBody,
+} from './voting.dto';
 import {
   ApiConflictResponse,
   ApiHeader,
@@ -23,12 +28,12 @@ import {
 import { calculateEtag } from '@planning-poker/shared/backend-api-client';
 import { VotingRoomInterceptor } from './voting.service';
 import { VotingRequest } from './voting.request';
+import { Issue } from '@planning-poker/shared/interfaces';
 
 export type Voting = {
-  question: string;
-  finished: boolean;
-  participants: { name: string; score: number }[];
-  onFinish: (() => void)[];
+  onFinishCurrentIssue: (() => void)[];
+  currentIssueId: string | undefined;
+  issues: Issue[];
 };
 
 export class RestartRequest {
@@ -44,14 +49,6 @@ export class GetResultRequest {
 @UseInterceptors(new VotingRoomInterceptor())
 @Controller('voting/:roomID')
 export class VotingController {
-  constructor(private datastore: DatastoreService) {
-    console.log('Create');
-  }
-
-  private getCurrentVoting(@Param('roomID') roomID) {
-    return this.datastore.getCurrentVoting();
-  }
-
   @Post('/startNew')
   startNew(
     @Body() { name }: RestartRequest,
@@ -62,9 +59,11 @@ export class VotingController {
 
     console.log({ req });
     // room.update();
-    voting.question = name;
-    voting.participants = [];
-    req.votingUpdated();
+    if (voting.currentIssue) {
+      voting.currentIssue.gameName = name;
+      voting.currentIssue.players = [];
+      req.votingUpdated();
+    }
   }
 
   @Get('getResult')
@@ -77,27 +76,24 @@ export class VotingController {
   ): Promise<GetResultSuccessDto> {
     const voting = req.getVoting();
 
-    if (voting.question === '') {
-      throw new HttpException('voting is not started', 409);
-    }
-
     const waitForUpdate = () =>
-      new Promise<void>((res) => voting.onFinish.push(res));
+      new Promise<void>((res) => voting.onFinishCurrentIssue.push(res));
 
     const [result, update] = ((): [GetResultSuccessDto, () => void] => {
       const mapPlayers = () =>
-        voting.participants.map((x) => ({
-          player: x.name,
+        req.getVoting().currentIssue.players.map((x) => ({
+          player: x.player,
           score: x.score,
         }));
-      const result = {
-        gameName: voting.question,
-        players: mapPlayers(),
+      const result: GetResultSuccessDto = {
+        ...req.getVoting().currentIssue,
+        issues: [...voting.issues],
       };
       return [
         result,
-        () => {
-          (result.gameName = voting.question), (result.players = mapPlayers());
+        function update() {
+          result.gameName = req.getVoting().currentIssue.gameName;
+          result.players = mapPlayers();
         },
       ];
     })();
@@ -123,13 +119,50 @@ export class VotingController {
     @Req() req: VotingRequest
   ) {
     const voting = req.getVoting();
-    const participant = voting.participants.find((p) => p.name === player);
+    const participant = voting.currentIssue.players.find(
+      (p) => p.player === player
+    );
     if (participant === undefined) {
-      voting.participants.push({ name: player, score });
+      voting.currentIssue.players.push({ player, score });
     } else {
       participant.score = score;
     }
 
+    req.votingUpdated();
+
+    return 'ok';
+  }
+
+  @Post('finish')
+  finish(@Param('roomID') room: string, @Req() req: VotingRequest) {
+    const voting = req.getVoting();
+    voting.currentIssue.finished = true;
+    req.votingUpdated();
+
+    return 'ok';
+  }
+
+  @Post('setIssues')
+  setIssues(
+    @Body() { issues }: SetIssuesBody,
+    @Param('roomID') room: string,
+    @Req() req: VotingRequest
+  ) {
+    const voting = req.getVoting();
+    voting.issues = issues;
+    req.votingUpdated();
+
+    return 'ok';
+  }
+
+  @Post('setCurrentIssue')
+  setCurrentIssue(
+    @Body() { id }: SetCurrentIssueBody,
+    @Param('roomID') room: string,
+    @Req() req: VotingRequest
+  ) {
+    const voting = req.getVoting();
+    voting.currentIssueId = id;
     req.votingUpdated();
 
     return 'ok';

@@ -1,3 +1,4 @@
+import { Issue } from './../../../../shared/interfaces/src/lib/issue';
 import { Voting } from './voting.controller';
 import {
   CallHandler,
@@ -9,6 +10,10 @@ import {
 } from '@nestjs/common';
 import { VotingRequest } from './voting.request';
 
+export type VotingWithCurrentIssue = Voting & {
+  readonly currentIssue: Issue;
+};
+
 const votings: Record<string, Voting> = {};
 
 @Injectable()
@@ -19,23 +24,34 @@ export class VotingRoomInterceptor {
       if (votings[req.params.roomID]) return votings[req.params.roomID];
       else {
         votings[req.params.roomID] = {
-          finished: false,
-          onFinish: [],
-          participants: [],
-          question: '',
+          onFinishCurrentIssue: [],
+          currentIssueId: 'default',
+          issues: [
+            {
+              id: 'default',
+              current: true,
+              gameName: 'Question1',
+              finished: false,
+              players: [],
+              tasks: [],
+            },
+          ],
         };
-        return votings[req.params.roomID]
+        return votings[req.params.roomID];
       }
     })();
 
     // const metaValue = this.reflector.get('SomeAnnotedDecorator', context.getHandler());
     req.votingUpdated = () => {
       console.log('Updated');
-      voting.onFinish.forEach((x) => x());
-      voting.onFinish = [];
+      voting.onFinishCurrentIssue.forEach((x) => x());
+      voting.onFinishCurrentIssue = [];
     };
 
-    req.getVoting = () => voting;
+    req.getVoting = () => ({
+      ...voting,
+      currentIssue: voting.issues.find((i) => i.id === voting.currentIssueId)!,
+    });
 
     return next.handle();
   }

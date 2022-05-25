@@ -4,8 +4,8 @@
  * Planning Poker API
  * OpenAPI spec version: 1.0
  */
+import type { IssueDto } from './issueDto';
 
-export interface PlayerDto {
-  player: string;
-  score: number | null;
+export interface SetIssuesBody {
+  issues: IssueDto[];
 }

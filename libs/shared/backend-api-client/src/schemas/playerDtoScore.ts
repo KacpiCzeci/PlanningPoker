@@ -5,7 +5,4 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface PlayerDto {
-  player: string;
-  score: number | null;
-}
+export type PlayerDtoScore = unknown | number;

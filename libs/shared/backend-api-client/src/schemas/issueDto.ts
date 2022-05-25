@@ -5,13 +5,12 @@
  * OpenAPI spec version: 1.0
  */
 import type { PlayerDto } from './playerDto';
-import type { IssueDto } from './issueDto';
 
-export interface GetResultSuccessDto {
+export interface IssueDto {
   finished: boolean;
   gameName: string;
   players: PlayerDto[];
   tasks: string[];
+  current: boolean;
   id: string;
-  issues: IssueDto[];
 }

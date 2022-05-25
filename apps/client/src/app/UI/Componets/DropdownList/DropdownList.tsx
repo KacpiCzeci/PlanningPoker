@@ -13,9 +13,10 @@ import { ReactComponent as DownloadIcon } from '../../../../assets/icons/downloa
 import { ReactComponent as DeleteIcon } from '../../../../assets/icons/delete.svg';
 import { type } from "os";
 import { GlobalStateInterface,useGlobalState } from "../../../GlobalStateProvider";
+import { Issue as IssueType } from "@planning-poker/shared/interfaces";
 
 
-export default function DropdownList(){
+export default function DropdownList({issues}: {issues: IssueType[]}){
 
     //global store
     const { state: globalStore, setState: setGlobalStore } = useGlobalState();
@@ -43,7 +44,22 @@ export default function DropdownList(){
 
     //UseState - store
     //---issue list
-    const [issuesSessionStorage, setIssuesSessionStorage] = useState(getSessionStorageOrDefault('listOfIssue',"[]"))
+    const [issuesSessionStorage, setIssuesSessionStorage] = useState<
+      {
+        title: string;
+        description: string;
+        storyPoints: string;
+      }[]
+    >(
+      issues.map((i) => ({
+        description: '',
+        title: i.gameName,
+        storyPoints: `${
+          i.players.filter((x) => x.score).reduce((s, x) => s + x.score!, 0) /
+          i.players.length
+        }`,
+      }))
+    );
     //---Seclected Issue color helpers
     const [selectedIssueColorHandlerSessionStorage, setSelectedIssueColorHandlerSessionStorage] = useState(getSessionStorageOrDefault('selectedIssue','[]'))
 

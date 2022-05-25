@@ -5,6 +5,7 @@ import {
   useVotingControllerGetResult,
   useVotingControllerStartNew,
   calculateEtag,
+  GetResultSuccessDto,
 } from '@planning-poker/shared/backend-api-client';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { useQueryClient } from 'react-query';
@@ -12,10 +13,11 @@ import { useLocation } from 'react-router-dom';
 
 export const useGameResult = (onError?: () => void) => {
   const [etag, setEtag] = useState<string>('etag');
-    const params = useParams()
-  const room = params['id']!
+  const params = useParams();
+  const room = params['id']!;
 
-  const currentResult = useVotingControllerGetResult(room,
+  const currentResult = useVotingControllerGetResult(
+    room,
     { etag },
     { query: { retry: false, queryKey: 'currentResult', onError } }
   );
@@ -46,8 +48,8 @@ export const useGameResult = (onError?: () => void) => {
 
 export const useGameHook = () => {
   const g = useGlobalState();
-  const params = useParams()
-  const room = params['id']!
+  const params = useParams();
+  const room = params['id']!;
 
   const vote = useVotingControllerVote({
     mutation: { onSettled: () => result.fetch() },
@@ -59,22 +61,28 @@ export const useGameHook = () => {
     },
     [startNew]
   );
-  const result = useGameResult(() => startNewVoting(g.state.gameName||'newVoting'));
+  const result = useGameResult(() =>
+    startNewVoting(g.state.gameName || 'newVoting')
+  );
 
   const loginToVoting = useCallback(
     function loginToVoting() {
-      return vote.mutateAsync({ roomID: room,
-        data: { player: g.state.userName ?? '', score: undefined },
+      return vote.mutateAsync({
+        roomID: room,
+        data: { player: g.state.userName ?? '', score: null },
       });
     },
     [g.state.userName, vote]
   );
 
   const voteFn = useCallback(
-    function voteFNN(value: number|undefined) {
+    function voteFNN(value: number | null) {
       console.log('vote', g.state.userName);
       if (g.state.userName) {
-        vote.mutateAsync({ roomID: room, data: { player: g.state.userName, score: value??undefined } });
+        vote.mutateAsync({
+          roomID: room,
+          data: { player: g.state.userName, score: value ?? null },
+        });
       }
     },
     [g.state.userName, vote]
@@ -86,7 +94,16 @@ export const useGameHook = () => {
   }, []);
 
   return {
-    data: result.data ?? { gameName: undefined, players: [] },
+    data:
+      result.data ??
+      ({
+        gameName: '',
+        players: [],
+        finished: false,
+        id: '',
+        issues: [],
+        tasks: [],
+      } as GetResultSuccessDto),
     startNewVoting,
     vote: voteFn,
   };
