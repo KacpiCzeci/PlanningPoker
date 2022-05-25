@@ -1,3 +1,6 @@
+import { useVotingControllerFinish, useVotingControllerSetCurrentIssue } from '@planning-poker/shared/backend-api-client';
+import { SetIssuesBody } from '@planning-poker/shared/backend-api-client';
+import { useVotingControllerSetIssues } from '@planning-poker/shared/backend-api-client';
 import { useParams } from 'react-router-dom';
 import { useCallback, useEffect, useState } from 'react';
 import {
@@ -51,6 +54,24 @@ export const useGameHook = () => {
   const g = useGlobalState();
   const params = useParams();
   const room = params['id']!;
+
+  const setIssues = useVotingControllerSetIssues();
+  const mutateSetIssues = (x: SetIssuesBody) => {
+    return setIssues.mutateAsync({ roomID: room, data: x });
+  };
+
+const setActiveIssue = useVotingControllerSetCurrentIssue();
+  const mutateSetActiveIssue = (id: string) => {
+    return setActiveIssue.mutateAsync({ roomID: room, data: {id} });
+  };
+
+
+  const finishGame = useVotingControllerFinish();
+  const mutateFinishGame = () => {
+    return finishGame.mutateAsync({ roomID: room });
+  };
+
+
 
   const vote = useVotingControllerVote({
     mutation: { onSettled: () => result.fetch() },
@@ -107,5 +128,8 @@ export const useGameHook = () => {
       } as GetResultSuccessDto),
     startNewVoting,
     vote: voteFn,
+    setIssues: {...setIssues, mutateAsync: mutateSetIssues},
+    setActiveIssue: {...setActiveIssue, mutateAsync: mutateSetActiveIssue},
+    finishGame: {...finishGame, mutateAsync: mutateFinishGame}
   };
 };
