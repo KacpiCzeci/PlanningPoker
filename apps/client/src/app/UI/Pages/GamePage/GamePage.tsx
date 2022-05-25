@@ -49,36 +49,36 @@ export default function GamePage() {
   };
 
   const CalculateResult = useCallback(() => {
-    // // console.log("-----------CalculateResult-----------")
-    // //----Get data---
-    // let localResultsWithNull: (number | null)[] = [];
-    // game.data.players.map(({ player, score }) =>
-    //   localResultsWithNull.push(score)
-    // );
-    // //----Erase null value---
-    // localResultsWithNull = localResultsWithNull.filter((s) => s != null);
-    // const localResults = localResultsWithNull.map((i: any) => {
-    //   return i;
-    // });
-    // // console.log("-----results-----");
-    // console.log(localResultsWithNull);
-    // // console.log("-----end-----");
-    // //----calculate result---
-    // const average =
-    //   localResults.reduce(
-    //     (prevValue, currentValue) => prevValue + currentValue,
-    //     0
-    //   ) / localResults.length;
-    // const cardsValues = [0, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89];
-    // const goal = Math.round(average);
-    // const closest = cardsValues.reduce(function (prev, curr) {
-    //   return Math.abs(curr - goal) < Math.abs(prev - goal) ? curr : prev;
-    // });
-    // console.log(`Average: ${average}`);
-    // console.log(`Average in fibo: ${closest}`);
-    // changeGlobalState({ result: average.toString() });
-    // changeGlobalState({ resultAverange: closest.toString() });
-    // return { average, closest };
+    // console.log("-----------CalculateResult-----------")
+    //----Get data---
+    let localResultsWithNull: (number | null)[] = [];
+    game.data.players.map(({ player, score }) =>
+      localResultsWithNull.push(score)
+    );
+    //----Erase null value---
+    localResultsWithNull = localResultsWithNull.filter((s) => s != null);
+    const localResults = localResultsWithNull.map((i: any) => {
+      return i;
+    });
+    // console.log("-----results-----");
+    console.log(localResultsWithNull);
+    // console.log("-----end-----");
+    //----calculate result---
+    const average =
+      localResults.reduce(
+        (prevValue, currentValue) => prevValue + currentValue,
+        0
+      ) / localResults.length;
+    const cardsValues = [0, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89];
+    const goal = Math.round(average);
+    const closest = cardsValues.reduce(function (prev, curr) {
+      return Math.abs(curr - goal) < Math.abs(prev - goal) ? curr : prev;
+    });
+    console.log(`Average: ${average}`);
+    console.log(`Average in fibo: ${closest}`);
+    changeGlobalState({ result: average.toString() });
+    changeGlobalState({ resultAverange: closest.toString() });
+    return { average, closest };
     // // console.log("-----------END-----------")
   }, [game.data.players]);
 
@@ -132,12 +132,13 @@ export default function GamePage() {
               <DropdownList
                 issues={game.data.issues.map((i) => ({
                   description: i.tasks[0],
-                  storyPoints: i.players
-                    .reduce((a, b) => a + (b.score || 0), 0)
-                    .toString(),
+                  storyPoints: (
+                    i.players.reduce((a, b) => a + (b.score || 0), 0) /
+                    i.players.length
+                  ).toString(),
                   title: i.gameName,
                   active: i.current,
-                  id: i.id
+                  id: i.id,
                 }))}
                 onAdd={(issue) =>
                   game.setIssues.mutateAsync({
@@ -154,7 +155,9 @@ export default function GamePage() {
                     ],
                   })
                 }
-                onSelectActive={(item) => game.setActiveIssue.mutateAsync(item.id)}
+                onSelectActive={(item) =>
+                  game.setActiveIssue.mutateAsync(item.id)
+                }
               />
             </NavItem>
           </NavBar>
@@ -198,13 +201,13 @@ export default function GamePage() {
           <div className="GamePage-voteavg">
             <p className="GamePage-p">Vote Averange:</p>
             <p className="GamePage-pval">
-              {state.cardPicked ? state.result : '-'}
+              {state.cardPicked ? results_.average : '-'}
             </p>
           </div>
           <div className="GamePage-voterlt">
             <p className="GamePage-p">Vote Result:</p>
             <p className="GamePage-pval">
-              {state.cardPicked ? state.resultAverange : '-'}
+              {state.cardPicked ? results_.closest : '-'}
             </p>
           </div>
           {/* <TextArea label="Vote Avarege:" value={state.cardPicked ? state.result : ""} /> */}
