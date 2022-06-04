@@ -28,8 +28,6 @@ import {
 } from '@nestjs/swagger';
 import { sha1 } from 'object-hash';
 
-
-
 import { VotingRoomInterceptor } from './voting.service';
 import { VotingRequest } from './voting.request';
 
@@ -131,12 +129,7 @@ export class VotingController {
   ) {
     const voting = req.getVoting();
     const currentIssue = req.getCurrentIssue();
-    const participant = currentIssue.players.find((p) => p.player === player);
-    if (participant === undefined) {
-      currentIssue.players.push({ player, score });
-    } else {
-      participant.score = score;
-    }
+    currentIssue.players.push({ player, score });
 
     req.votingUpdated();
 
