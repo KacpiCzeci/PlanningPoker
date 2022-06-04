@@ -1,3 +1,4 @@
+import { AuthGuard } from '@nestjs/passport';
 import { roomID } from './roomID.decorator';
 import {
   Body,
@@ -9,6 +10,7 @@ import {
   Post,
   Query,
   Req,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import {
@@ -28,10 +30,9 @@ import {
 } from '@nestjs/swagger';
 import { sha1 } from 'object-hash';
 
-
-
 import { VotingRoomInterceptor } from './voting.service';
 import { VotingRequest } from './voting.request';
+import { UsersService } from '@planning-poker/nestjs/auth';
 
 export const calculateEtag = (voting: GetResultSuccessDto) => {
   return sha1({
@@ -58,12 +59,18 @@ export class GetResultRequest {
 @UseInterceptors(new VotingRoomInterceptor())
 @Controller('voting/:roomID')
 export class VotingController {
+
+  constructor(private users: UsersService){}
+
+  @UseGuards(AuthGuard('jwt'))
   @Post('/startNew')
-  startNew(
+  async startNew(
     @Body() { name }: RestartRequest,
     @Param('roomID') room: string,
-    @Req() req: VotingRequest
+    @Req() req: VotingRequest & {user: any}
   ) {
+    const user = await this.users.findId(req.user.userId)
+    user?.rooms.push(room)
     const voting = req.getVoting();
 
     const currentIssue = req.getCurrentIssue();
@@ -131,12 +138,7 @@ export class VotingController {
   ) {
     const voting = req.getVoting();
     const currentIssue = req.getCurrentIssue();
-    const participant = currentIssue.players.find((p) => p.player === player);
-    if (participant === undefined) {
-      currentIssue.players.push({ player, score });
-    } else {
-      participant.score = score;
-    }
+    currentIssue.players.push({ player, score });
 
     req.votingUpdated();
 
@@ -147,7 +149,16 @@ export class VotingController {
   finish(@Param('roomID') room: string, @Req() req: VotingRequest) {
     const voting = req.getVoting();
     const currentIssue = req.getCurrentIssue();
-    currentIssue.finished = !currentIssue.finished;
+    currentIssue.finished = true;
+    req.votingUpdated();
+
+    return 'ok';
+  }
+
+  @Post('resume')
+  resume(@Param('roomID') room: string, @Req() req: VotingRequest) {
+    const currentIssue = req.getCurrentIssue();
+    currentIssue.finished = false;
     req.votingUpdated();
 
     return 'ok';

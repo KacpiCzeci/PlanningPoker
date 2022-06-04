@@ -1,6 +1,6 @@
 import { HttpException, HttpCode, HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { DatastoreService } from '../datastore/datastore.service';
+// import { DatastoreService } from '../datastore/datastore.service';
 import { VotingController } from './voting.controller';
 
 describe('VotingController', () => {
