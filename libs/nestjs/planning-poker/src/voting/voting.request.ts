@@ -1,6 +1,6 @@
-import { Issue } from '@planning-poker/shared/interfaces';
 import { VotingWithCurrentIssue } from './voting.service';
 import { Voting } from './voting.controller';
+import { Issue } from './voting.dto';
 
 
 

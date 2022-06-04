@@ -1,5 +1,13 @@
-import { Issue } from '@planning-poker/shared/interfaces';
 import { ApiProperty, OmitType, PickType } from '@nestjs/swagger';
+
+export type Issue = {
+  finished: boolean;
+  gameName: string;
+  players: { player: string; score: number|null }[];
+  tasks: string[];
+  id: string;
+  current: boolean;
+};
 
 export type Player = { player: string; score: number | null };
 

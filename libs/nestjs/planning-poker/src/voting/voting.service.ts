@@ -1,4 +1,3 @@
-import { Issue } from './../../../../shared/interfaces/src/lib/issue';
 import { Voting } from './voting.controller';
 import {
   CallHandler,
@@ -9,6 +8,7 @@ import {
   Request,
 } from '@nestjs/common';
 import { VotingRequest } from './voting.request';
+import { Issue } from './voting.dto';
 
 export type VotingWithCurrentIssue = Voting & {
   readonly currentIssue: Issue;

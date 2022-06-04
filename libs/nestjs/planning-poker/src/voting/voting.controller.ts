@@ -17,6 +17,7 @@ import {
   IssueDto,
   SetIssuesBody,
   SetCurrentIssueBody,
+  Issue,
 } from './voting.dto';
 import {
   ApiConflictResponse,
@@ -25,10 +26,18 @@ import {
   ApiParam,
   ApiProperty,
 } from '@nestjs/swagger';
-import { calculateEtag } from '@planning-poker/shared/backend-api-client';
+import { sha1 } from 'object-hash';
+
+
+
 import { VotingRoomInterceptor } from './voting.service';
 import { VotingRequest } from './voting.request';
-import { Issue } from '@planning-poker/shared/interfaces';
+
+export const calculateEtag = (voting: GetResultSuccessDto) => {
+  return sha1({
+    ...voting,
+  });
+};
 
 export type Voting = {
   onFinishCurrentIssue: (() => void)[];

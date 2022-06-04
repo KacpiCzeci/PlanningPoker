@@ -10,7 +10,8 @@
         "outputPath": "dist/apps/backend",
         "main": "apps/backend/src/main.ts",
         "tsConfig": "apps/backend/tsconfig.app.json",
-        "assets": ["apps/backend/src/assets"]
+        "assets": ["apps/backend/src/assets"],
+        "outputFileName": "server.js"
       },
       "configurations": {
         "production": {
@@ -47,6 +48,16 @@
       "options": {
         "jestConfig": "apps/backend/jest.config.js",
         "passWithNoTests": true
+      }
+    },
+    "deploy": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "gcloud app deploy ./dist/apps/backend --appyaml=./apps/backend/app.yaml"
+        ],
+        "color": true,
+        "parallel": false
       }
     }
   },
