@@ -149,7 +149,16 @@ export class VotingController {
   finish(@Param('roomID') room: string, @Req() req: VotingRequest) {
     const voting = req.getVoting();
     const currentIssue = req.getCurrentIssue();
-    currentIssue.finished = !currentIssue.finished;
+    currentIssue.finished = true;
+    req.votingUpdated();
+
+    return 'ok';
+  }
+
+  @Post('resume')
+  resume(@Param('roomID') room: string, @Req() req: VotingRequest) {
+    const currentIssue = req.getCurrentIssue();
+    currentIssue.finished = false;
     req.votingUpdated();
 
     return 'ok';
