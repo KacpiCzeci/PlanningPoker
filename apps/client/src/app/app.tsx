@@ -1,5 +1,6 @@
 import { GlobalStateProvider, useGlobalState } from './GlobalStateProvider';
 import LoginPage from './UI/Pages/LoginPage/LoginPage';
+import GamePage from './UI/Pages/GamePage/GamePage';
 import { useState } from 'react';
 import NotFoundPage from './UI/Pages/NotFoundPage/NotFoundPage';
 import CreateGamePage from './UI/Pages/CreateGamePage/CreteGamePage';
@@ -12,7 +13,7 @@ export function App() {
       {/* <AppInner /> */}
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<CreateGamePage/>}/>
+          <Route path="/" element={<GamePage/>}/>
           <Route path="/:id" element={<CheckPage/>}/>
           <Route path="/*" element={<NotFoundPage/>}/>
         </Routes>
