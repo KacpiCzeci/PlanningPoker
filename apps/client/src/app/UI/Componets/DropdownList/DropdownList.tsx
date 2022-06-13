@@ -5,6 +5,7 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
 // import NavItem from "../NavItem/NavItem";
 import Button from '../Button/Button';
 import { TextField } from '@mui/material';
+import Popup from '../Popup/Popup';
 
 import { ReactComponent as ArrowIcon } from '../../../../assets/icons/arrow.svg';
 import { ReactComponent as BoltIcon } from '../../../../assets/icons/bolt.svg';
@@ -31,7 +32,7 @@ export type IssuesListItem = {
 export type DropdownListProps = {
   issues: IssuesListItem[];
   onAdd: (item: IssuesListItem) => void;
-  onRemove?: (item: IssuesListItem) => void;
+  onRemove: (item: number) => void;
   onSelectActive: (item: IssuesListItem) => void;
 };
 
@@ -58,13 +59,14 @@ export default function DropdownList({ issues, ...props }: DropdownListProps) {
   const [issueTitleHandler, setIssueTitleHandler] = useState('');
   const [issueDescriptionHandler, setIssueDescriptionHandler] = useState('');
   const [issueStoryPointsHandler, setIssueStoryPointsHandler] = useState('');
-  const [selectedIssueIndexHandler, setSelectedIssueIndexHandler] =
-    useState(-1);
+  const [selectedIssueIndexHandler, setSelectedIssueIndexHandler] = useState(-1);
+
+  const [popupShow,setPopupShow]=useState(false);
+  const [popupShowIndex,setPopupShowIndex]=useState(-1);
+
   const [colorHandler, setColorHandler] = useState(false);
-  const [colorHandlerDeleteOperation, setColorHandlerDeleteOperation] =
-    useState(false);
-  const [globalStoreHandlerSaveOperation, setGlobalStoreHandlerSaveOperation] =
-    useState(false);
+  const [colorHandlerDeleteOperation, setColorHandlerDeleteOperation] = useState(false);
+  const [globalStoreHandlerSaveOperation, setGlobalStoreHandlerSaveOperation] = useState(false);
 
   //UseState - store
   //---issue list
@@ -271,7 +273,9 @@ export default function DropdownList({ issues, ...props }: DropdownListProps) {
           SetVotingNameToThisIssue(val);
         }}
         onClick3={() => {
-          DeleteThisIssue(index);
+          // DeleteThisIssue(index);
+          setPopupShow(true)
+          setPopupShowIndex(index)
         }}
         rightRightIcon={<DeleteIcon />}
       >
@@ -312,9 +316,9 @@ export default function DropdownList({ issues, ...props }: DropdownListProps) {
 
     // console.log("Adding to store")
     // console.log("----Adding to store: issuesTEST")
-    console.log(issuesSessionStorage);
+    // console.log(issuesSessionStorage);
     // console.log("----Adding to store: selectedIssueColorHandlerTEST")
-    console.log(selectedIssueColorHandlerSessionStorage);
+    // console.log(selectedIssueColorHandlerSessionStorage);
     //--Change view
     setViewList(true);
   };
@@ -323,10 +327,13 @@ export default function DropdownList({ issues, ...props }: DropdownListProps) {
    * @param i index
    */
   const DeleteThisIssue = (i: number) => {
+    console.log("----Before delete---"+issuesSessionStorage.toString())
+    props.onRemove(i)
     setIssuesSessionStorage([
       ...issuesSessionStorage.slice(0, i),
       ...issuesSessionStorage.slice(i + 1, issuesSessionStorage.length),
     ]);
+    console.log("----After delete---"+issuesSessionStorage.toString())
     setSelectedIssueColorHandlerSessionStorage([
       ...selectedIssueColorHandlerSessionStorage.slice(0, i),
       ...selectedIssueColorHandlerSessionStorage.slice(
@@ -454,6 +461,16 @@ export default function DropdownList({ issues, ...props }: DropdownListProps) {
   ]);
 
   return (
+    <div>
+      {/* POPUP */}
+      <Popup trigger={popupShow} setTrigger={setPopupShow}>
+            <h1>
+            Are you sure you want to delete ?
+            </h1>
+            <Button 
+            name="Confirm" 
+            onClick={()=>{DeleteThisIssue(popupShowIndex);setPopupShow(false)} }></Button>
+      </Popup>
     <div className="dropdown">
       {/* LIST VIEW */}
       <div className={'dropdown-issue-' + listView}>
@@ -597,6 +614,7 @@ export default function DropdownList({ issues, ...props }: DropdownListProps) {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }

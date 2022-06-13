@@ -196,6 +196,16 @@ export default function GamePage() {
                     ],
                   })
                 }
+                onRemove={(index)=>{
+                  game.setIssues.mutateAsync({
+                    issues: [
+                      ...game.data.issues.slice(0,index),
+                      ...game.data.issues.slice(index +1,game.data.issues.length),
+                    ]
+                    // ...issuesSessionStorage.slice(0, i),
+                    // ...issuesSessionStorage.slice(i + 1, issuesSessionStorage.length),
+                });
+                }}
                 onSelectActive={(item) =>
                   game.setActiveIssue.mutateAsync(item.id)
                 }
@@ -318,6 +328,14 @@ export default function GamePage() {
                     ],
                   })
                 }
+                onRemove={(index)=>{
+                  game.setIssues.mutateAsync({
+                    issues: [
+                      ...game.data.issues.slice(0,index),
+                      ...game.data.issues.slice(index +1,game.data.issues.length),
+                    ]
+                  })
+                }}
                 onSelectActive={(item) =>
                   game.setActiveIssue.mutateAsync(item.id)
                 }
