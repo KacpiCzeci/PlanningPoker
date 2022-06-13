@@ -2,7 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import GamePage from "../GamePage/GamePage";
 import { Navigate, useParams } from "react-router-dom";
-import LoginPage from "../LoginPage/LoginPage";
+import LoginPage from "../LoginPage1/LoginPage";
 import LoadingPage from '../LoadingPage/LoadingPage';
 import { useGlobalState } from "../../../GlobalStateProvider";
 
