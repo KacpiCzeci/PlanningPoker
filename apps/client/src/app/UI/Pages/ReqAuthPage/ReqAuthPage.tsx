@@ -4,10 +4,13 @@ import { Navigate } from "react-router-dom";
 import { useState } from "react";
 import LoadingPage from "../LoadingPage/LoadingPage";
 
+export interface ReqAth{
+    element: JSX.Element
+}
 
-export default function ReqAuthRoute({ element }) {
+export default function ReqAuthRoute(props: ReqAth): JSX.Element {
     const [loading, setLoading] = useState(true);
-    const [isTokenOk, setIsTokenOk] = useState(false);
+    const [isTokenOk, setIsTokenOk] = useState<boolean|undefined>(false);
 
     useEffect(() => {
         async function fetchData() {
@@ -20,5 +23,5 @@ export default function ReqAuthRoute({ element }) {
         fetchData();
     }, [])
 
-    return (isTokenOk)? element: (loading)? <LoadingPage/>  : <Navigate to="/login" replace/>;
+    return (isTokenOk)? props.element: (loading)? <LoadingPage/> : <Navigate to="/login" replace/>;
 }
