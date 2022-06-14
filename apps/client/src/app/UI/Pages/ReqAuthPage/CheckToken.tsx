@@ -1,4 +1,4 @@
-async function fetchT(source, timeout, options){
+async function fetchT(source: string, timeout: number, options: any){
     const controller = new AbortController();
 
     const id = setTimeout(() => controller.abort(), timeout);
@@ -14,7 +14,7 @@ async function fetchT(source, timeout, options){
 }
 
 
-export default async function checkToken() {
+export default async function checkToken(): Promise<boolean> {
   const url = 'http://localhost:3333/api/auth/profile';
   const options = {
     mode: 'cors',
@@ -28,6 +28,9 @@ export default async function checkToken() {
     const response = await fetchT(url, timeout, options);
     if (response.ok) {
       return true; 
+    }
+    else{
+      return false;
     }
   } catch (e) {
     return false;
