@@ -18,6 +18,9 @@ import {
   useGlobalState,
 } from '../../../GlobalStateProvider';
 import { Issue as IssueType } from '@planning-poker/shared/interfaces';
+import { resolve } from 'path';
+import { rejects } from 'assert';
+import { GetResultSuccessDto, IssueDto } from '@planning-poker/shared/backend-api-client';
 
 const getIssueId = () => new Date().toString()+Math.random()
 
@@ -34,6 +37,7 @@ export type DropdownListProps = {
   onAdd: (item: IssuesListItem) => void;
   onRemove: (item: number) => void;
   onSelectActive: (item: IssuesListItem) => void;
+  onAddMany: (items:IssueDto[]) => void;
 };
 
 export default function DropdownList({ issues, ...props }: DropdownListProps) {
@@ -68,6 +72,7 @@ export default function DropdownList({ issues, ...props }: DropdownListProps) {
   const [colorHandlerDeleteOperation, setColorHandlerDeleteOperation] = useState(false);
   const [globalStoreHandlerSaveOperation, setGlobalStoreHandlerSaveOperation] = useState(false);
 
+
   //UseState - store
   //---issue list
   const [issuesSessionStorage, setIssuesSessionStorage] =
@@ -93,75 +98,90 @@ export default function DropdownList({ issues, ...props }: DropdownListProps) {
     setViewList(false);
   };
 
-  /**
-   * Function for adding file from Jira
-   * @param props
-   */
-  const UploadJiraList = (props: any) => {
-    console.log(props);
-    if (props != null) {
-      //setImporter(props.target.files[0]);
-      const reader = new FileReader();
-      reader.onload = function (event) {
-        // The file's text will be printed here
-        if (event.target != null) {
-          if (event.target.result != null) {
-            const rawcsv = event.target.result.toString();
-            const csvsplits = rawcsv.split('\n');
-            const csvheader = csvsplits[0].split(',');
-            let sum = -1;
-            let desc = -1;
-            let spts = -1;
-            for (let i = 0; i < csvheader.length; i++) {
-              if (csvheader[i] == 'Podsumowanie' || csvheader[i] == 'title') {
-                sum = i;
-              } else if (
-                csvheader[i] == 'Pole niestandardowe (Story point estimate)' ||
-                csvheader[i] == 'storyPoints'
-              ) {
-                spts = i;
-              } else if (
-                csvheader[i] == 'Opis' ||
-                csvheader[i] == 'description'
-              ) {
-                desc = i;
-              }
-            }
-            for (let i = 1; i < csvsplits.length; i++) {
-              console.log(i);
-              // console.log(csvsplits[i])
-              const linesplit = csvsplits[i].split(',');
-              let temptitle = '';
-              let tempdescription = '';
-              let tempstoryPoints = '0';
-              if (sum >= 0) {
-                temptitle = linesplit[sum];
-              }
-              if (desc >= 0) {
-                tempdescription = linesplit[desc];
-              }
-              if (spts >= 0) {
-                if (linesplit[spts] !== '') {
-                  tempstoryPoints = linesplit[spts];
-                }
-              }
-              const newObj = {
-                title: temptitle,
-                description: tempdescription,
-                storyPoints: tempstoryPoints,
-                id: getIssueId()
-              };
-              issuesSessionStorage.push(newObj);
-            }
-            setIssuesSessionStorage([...issuesSessionStorage]);
+
+
+const readUploadedFileAsText = (inputFile:any) => {
+  const temporaryFileReader = new FileReader();
+
+  return new Promise((resolve, reject) => {
+    temporaryFileReader.onerror = () => {
+      temporaryFileReader.abort();
+      reject(new DOMException("Problem parsing input file."));
+    };
+
+    temporaryFileReader.onload = () => {
+      resolve(temporaryFileReader.result);
+    };
+    temporaryFileReader.readAsText(inputFile);
+  });
+};
+  //UseSate Backend - gowno klasa
+  const[issueDtoClassArrayHandler,setIssueDtoClassArrayHandler]=useState<IssueDto[]>([]);
+/**
+ * Function for adding file from Jira
+ * @param propsLocal 
+ */
+const UploadJiraList = async (propsLocal: any) => {
+  const file = propsLocal.target.files[0];
+
+  try {
+    const fileContents = await readUploadedFileAsText(file)
+    if(typeof fileContents==="string"){
+      const rawcsv = fileContents.toString();
+      const csvsplits = rawcsv.split('\n');
+      const csvheader = csvsplits[0].split(',');
+      let sum = -1;
+      let desc = -1;
+      let spts = -1;
+      for (let i = 0; i < csvheader.length; i++) {
+        if (csvheader[i] == 'Podsumowanie' || csvheader[i] == 'title') {
+          sum = i;
+        } else if (
+          csvheader[i] == 'Pole niestandardowe (Story point estimate)' ||
+          csvheader[i] == 'storyPoints'
+        ) {
+          spts = i;
+        } else if (
+          csvheader[i] == 'Opis' ||
+          csvheader[i] == 'description'
+        ) {
+          desc = i;
+        }
+      }
+      for (let i = 1; i < csvsplits.length; i++) {
+        console.log(i);
+        // console.log(csvsplits[i])
+        const linesplit = csvsplits[i].split(',');
+        let temptitle = '';
+        let tempdescription = '';
+        let tempstoryPoints = '0';
+        if (sum >= 0) {
+          temptitle = linesplit[sum];
+        }
+        if (desc >= 0) {
+          tempdescription = linesplit[desc];
+        }
+        if (spts >= 0) {
+          if (linesplit[spts] !== '') {
+            tempstoryPoints = linesplit[spts];
           }
         }
-      };
-      reader.readAsText(props.target.files[0]);
-    } else {
-      console.log('null import');
+        const newObj = {
+          current: false,
+          finished: false,
+          gameName: temptitle,
+          id: new Date().toISOString(),
+          players: [],
+          tasks: [tempdescription],
+        };
+        issueDtoClassArrayHandler.push(newObj)
+      }
     }
-  };
+    props.onAddMany(issueDtoClassArrayHandler);
+  } catch (e) {
+    console.warn(propsLocal.message)
+  }
+};
 
   /**
    * Download list of issue in csv

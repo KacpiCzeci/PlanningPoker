@@ -196,6 +196,15 @@ export default function GamePage() {
                     ],
                   })
                 }
+                onAddMany={(issuess) =>{
+                    game.setIssues.mutateAsync({
+                      issues: [
+                        ...game.data.issues,
+                        ...issuess
+                      ],
+                    })
+                }
+                }
                 onRemove={(index)=>{
                   game.setIssues.mutateAsync({
                     issues: [
@@ -327,6 +336,15 @@ export default function GamePage() {
                       },
                     ],
                   })
+                }
+                onAddMany={(issuess) =>{
+                  game.setIssues.mutateAsync({
+                    issues: [
+                      ...game.data.issues,
+                      ...issuess
+                    ],
+                  })
+              }
                 }
                 onRemove={(index)=>{
                   game.setIssues.mutateAsync({
