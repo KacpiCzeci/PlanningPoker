@@ -8,14 +8,14 @@ import {
   Custom,
 } from '@planning-poker/shared/backend-api-client';
 import React, { useContext, useEffect, useState } from 'react';
-import { useQuery } from 'react-query';
+import { useQuery, UseQueryResult } from 'react-query';
 
 export type AuthContext = {
   login: (username: string, password: string) => void;
   register: (username: string, password: string) => void;
   userName: string;
   authToken: string;
-  profile?: AuthControllerGetProfileQueryResult;
+  profile?: UseQueryResult<AuthControllerGetProfileQueryResult>;
 };
 
 const AuthContext = React.createContext<AuthContext>({
@@ -25,8 +25,11 @@ const AuthContext = React.createContext<AuthContext>({
   authToken: '',
 });
 
-export const AuthProvider: React.FC<object> = ({ children }) => {
-  const [authToken, setAuthToken] = useState('');
+export const AuthProvider: React.FC<{ authToken: string | undefined }> = ({
+  children,
+  authToken: initAuthToken,
+}) => {
+  const [authToken, setAuthToken] = useState(initAuthToken ?? '');
   const [userName, setUserName] = useState('');
 
   const getProfile = useQuery(
@@ -42,15 +45,17 @@ export const AuthProvider: React.FC<object> = ({ children }) => {
         login: (username, password) =>
           authControllerLogin({ username, password }).then((res) => {
             setUserName(username);
+            sessionStorage.setItem('authToken', res.access_token);
             return setAuthToken(res.access_token);
           }),
         register: (username, password) =>
           authControllerRegister({ username, password }).then((res) => {
             setUserName(username);
+            sessionStorage.setItem('authToken', res.access_token);
             setAuthToken(res.access_token);
           }),
         userName,
-        profile: getProfile.data,
+        profile: getProfile,
       }}
     >
       {children}

@@ -1,4 +1,10 @@
-import { useVotingControllerFinish, useVotingControllerSetCurrentIssue } from '@planning-poker/shared/backend-api-client';
+import { votingControllerResume } from './../../../../../../../libs/shared/backend-api-client/src/backend';
+import { useAuth } from '@planning-poker/react/api-hooks';
+import {
+  Custom,
+  useVotingControllerFinish,
+  useVotingControllerSetCurrentIssue,
+} from '@planning-poker/shared/backend-api-client';
 import { SetIssuesBody } from '@planning-poker/shared/backend-api-client';
 import { useVotingControllerSetIssues } from '@planning-poker/shared/backend-api-client';
 import { useParams } from 'react-router-dom';
@@ -11,45 +17,12 @@ import {
   GetResultSuccessDto,
 } from '@planning-poker/shared/backend-api-client';
 import { useGlobalState } from '../../../GlobalStateProvider';
-import { useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { useLocation } from 'react-router-dom';
-
-export const useGameResult = (onError?: () => void) => {
-  const [etag, setEtag] = useState<string>('etag');
-  const params = useParams();
-  const room = params['id']!;
-
-  const currentResult = useVotingControllerGetResult(
-    room,
-    { etag },
-    { query: { retry: false, queryKey: 'currentResult', onError } }
-  );
-
-  function fetch() {
-    // calculateEtag?: (
-    //   data: Exclude<typeof currentResult.data, undefined>
-    // ) => string
-    currentResult.refetch().then(({ data }) => {
-      if (data) {
-        setEtag(data['etag' as never]);
-      }
-    });
-  }
-
-  useEffect(
-    function refetchOnEtagChange() {
-      fetch();
-    },
-    [etag]
-  );
-
-  return {
-    fetch,
-    data: currentResult.data,
-  };
-};
+import { useGameResult } from '@planning-poker/react/api-hooks';
 
 export const useGameHook = () => {
+  const { authToken } = useAuth();
   const g = useGlobalState();
   const params = useParams();
   const room = params['id']!;
@@ -59,32 +32,28 @@ export const useGameHook = () => {
     return setIssues.mutateAsync({ roomID: room, data: x });
   };
 
-const setActiveIssue = useVotingControllerSetCurrentIssue();
+  const setActiveIssue = useVotingControllerSetCurrentIssue();
   const mutateSetActiveIssue = (id: string) => {
-    return setActiveIssue.mutateAsync({ roomID: room, data: {id} });
+    return setActiveIssue.mutateAsync({ roomID: room, data: { id } });
   };
-
 
   const finishGame = useVotingControllerFinish();
   const mutateFinishGame = () => {
     return finishGame.mutateAsync({ roomID: room });
   };
 
-
+  const resumeGame = useMutation(() => votingControllerResume(room));
 
   const vote = useVotingControllerVote({
     mutation: { onSettled: () => result.fetch() },
   });
-  const startNew = useVotingControllerStartNew();
-  const startNewVoting = useCallback(
-    function startNew_(name: string) {
-      return startNew.mutateAsync({ roomID: room, data: { name } });
-    },
-    [startNew]
-  );
-  const result = useGameResult(() =>
-    startNewVoting(g.state.gameName || 'newVoting')
-  );
+
+  const startNew = useMutation({
+    mutationFn: (name: string) =>
+      Custom.votingControllerStartNew(room, { name }, authToken),
+  });
+
+  const result = useGameResult();
 
   const loginToVoting = useCallback(
     function loginToVoting() {
@@ -108,27 +77,27 @@ const setActiveIssue = useVotingControllerSetCurrentIssue();
     },
     [g.state.userName, vote]
   );
- 
+
   useEffect(function loginToVotingAtStartup() {
     //loginToVoting();
     result.fetch();
   }, []);
 
   return {
-    data:
-      result.data ??
-      ({
-        gameName: '',
-        players: [],
-        finished: false,
-        id: '',
-        issues: [],
-        tasks: [],
-      } as GetResultSuccessDto),
-    startNewVoting,
+    data: {
+      ...result.data,
+      players: [...result.data.players].reverse().reduce((all, player) => {
+        if (all.find((x) => x.player === player.player) === undefined) {
+          all.push(player);
+        }
+        return all;
+      }, [] as typeof result.data.players),
+    } as typeof result.data,
+    startNewVoting: (gameName: string) => startNew.mutateAsync(gameName),
     vote: voteFn,
-    setIssues: {...setIssues, mutateAsync: mutateSetIssues},
-    setActiveIssue: {...setActiveIssue, mutateAsync: mutateSetActiveIssue},
-    finishGame: {...finishGame, mutateAsync: mutateFinishGame}
+    setIssues: { ...setIssues, mutateAsync: mutateSetIssues },
+    setActiveIssue: { ...setActiveIssue, mutateAsync: mutateSetActiveIssue },
+    finishGame: { ...finishGame, mutateAsync: mutateFinishGame },
+    resumeGame,
   };
 };

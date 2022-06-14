@@ -14,7 +14,10 @@ import { useGameHook } from './useGameHook';
 import UserList from '../../Componets/UserList/UserList';
 import NavItem from '../../Componets/NavItem/NavItem';
 import DropdownList from '../../Componets/DropdownList/DropdownList';
-import { useVotingControllerFinish, votingControllerFinish } from 'libs/shared/backend-api-client/src';
+import {
+  useVotingControllerFinish,
+  votingControllerFinish,
+} from 'libs/shared/backend-api-client/src';
 import { finished } from 'stream';
 import { votingControllerSetIssues } from '@planning-poker/shared/backend-api-client';
 
@@ -50,20 +53,17 @@ export default function GamePage() {
   const onChange = (e: any) => {
     setState({ resultAverange: e.target.value });
   };
-  useEffect(()=>{
-    let allvoted=0;
-    if(game.data.players !== undefined) {
-        for(let i =0;i<game.data.players.length;i++)
-        {
-            if(game.data.players[i].score!==null)
-            allvoted++;
-        }
-        setVotessum(allvoted);
-        console.log(votessum)
-    }
-  },[game.data.players])
   useEffect(() => {
-    
+    let allvoted = 0;
+    if (game.data.players !== undefined) {
+      for (let i = 0; i < game.data.players.length; i++) {
+        if (game.data.players[i].score !== null) allvoted++;
+      }
+      setVotessum(allvoted);
+      console.log(votessum);
+    }
+  }, [game.data.players]);
+  useEffect(() => {
     // console.log("-----------CalculateResult-----------")
     //----Get data---
     let localResultsWithNull: (number | null)[] = [];
@@ -84,20 +84,20 @@ export default function GamePage() {
         (prevValue, currentValue) => prevValue + currentValue,
         0
       ) / localResults.length;
-        if(average<=89){
-          const cardsValues = [0, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89];
-          const goal = Math.round(average);
-          const closest = cardsValues.reduce(function (prev, curr) {
-            return Math.abs(curr - goal) < Math.abs(prev - goal) ? curr : prev;
-          });
-          console.log(`Average: ${average}`);
-          console.log(`Average in fibo: ${closest}`);
-          changeGlobalState({ result: average.toString() });
-          changeGlobalState({ resultAverange: closest.toString() });
-        }
+    if (average <= 89) {
+      const cardsValues = [0, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89];
+      const goal = Math.round(average);
+      const closest = cardsValues.reduce(function (prev, curr) {
+        return Math.abs(curr - goal) < Math.abs(prev - goal) ? curr : prev;
+      });
+      console.log(`Average: ${average}`);
+      console.log(`Average in fibo: ${closest}`);
+      changeGlobalState({ result: average.toString() });
+      changeGlobalState({ resultAverange: closest.toString() });
+    }
     //return { average, closest };
     // console.log("-----------END-----------")
-  }, [game.data.finished,game.data.players]);
+  }, [game.data.finished, JSON.stringify(game.data.players)]);
 
   const NewBoard = () => {
     changeGlobalState({ result: '0' });
@@ -133,257 +133,258 @@ export default function GamePage() {
     }, 1000);
   }
   const xddd = useVotingControllerFinish();
-  useEffect(
-    
-    ()=>{
+  useEffect(() => {
+    console.log(sessionStorage.getItem('room'));
+    if (sessionStorage.getItem('room') !== null) {
+      console.log('dupa');
+      xddd.mutateAsync({ roomID: sessionStorage.getItem('room') || '' });
+    }
+  }, [state.gameEnded]);
 
-      console.log(sessionStorage.getItem('room'))
-      if (sessionStorage.getItem('room')!==null){
-        console.log("dupa")
-        xddd.mutateAsync({roomID:sessionStorage.getItem('room')||""})
-      }
-
-    },[state.gameEnded])
-  
-  function changeGameState(){
-    if (state.gameEnded)
-   {
-     changeGlobalState({ gameEnded: false });
-     console.log(game.data.finished)
-   }
-   else{
-     changeGlobalState({ gameEnded: true });
-     changeGlobalState({result: undefined, resultAverange: undefined})
-     console.log(game.data.finished)
-   }
+  function changeGameState() {
+    if (state.gameEnded) {
+      changeGlobalState({ gameEnded: false });
+      console.log(game.data.finished);
+    } else {
+      changeGlobalState({ gameEnded: true });
+      changeGlobalState({ result: undefined, resultAverange: undefined });
+      console.log(game.data.finished);
+    }
   }
- if(sessionStorage.getItem('master')){
-  return (
-    <div className="GamePage-container">
-      <div className="GamePage-header">
-        <img
-          className="GamePage-image-img"
-          src="../../../../assets/poker.png"
-          alt="Logo.png"
-        />
-        <h1 className="GamePage-h1">Planning Poker</h1>
-        <div className="GamePage-navv">
-          <NavBar>
-            <NavItem icon="Issue List">
-              <DropdownList
-                issues={game.data.issues.map((i) => ({
-                  description: i.tasks[0],
-                  storyPoints: (
-                    i.players.reduce((a, b) => a + (b.score || 0), 0) /
-                    i.players.length
-                  ).toString(),
-                  title: i.gameName,
-                  active: i.current,
-                  id: i.id,
-                }))}
-                onAdd={(issue) =>
-                  game.setIssues.mutateAsync({
-                    issues: [
-                      ...game.data.issues,
-                      {
-                        current: false,
-                        finished: false,
-                        gameName: issue.title,
-                        id: new Date().toISOString(),
-                        players: [],
-                        tasks: [issue.description],
-                      },
-                    ],
-                  })
-                }
-                onSelectActive={(item) =>
-                  game.setActiveIssue.mutateAsync(item.id)
-                }
-              />
-            </NavItem>
-          </NavBar>
+  if (sessionStorage.getItem('master')) {
+    return (
+      <div className="GamePage-container">
+        <div className="GamePage-header">
+          <img
+            className="GamePage-image-img"
+            src="../../../../assets/poker.png"
+            alt="Logo.png"
+          />
+          <h1 className="GamePage-h1">Planning Poker</h1>
+          <div className="GamePage-navv">
+            <NavBar>
+              <NavItem icon="Issue List">
+                <DropdownList
+                  issues={game.data.issues.map((i) => ({
+                    description: i.tasks[0],
+                    storyPoints: (
+                      i.players.reduce((a, b) => a + (b.score || 0), 0) /
+                      i.players.length
+                    ).toString(),
+                    title: i.gameName,
+                    active: i.current,
+                    id: i.id,
+                  }))}
+                  onAdd={(issue) =>
+                    game.setIssues.mutateAsync({
+                      issues: [
+                        ...game.data.issues,
+                        {
+                          current: false,
+                          finished: false,
+                          gameName: issue.title,
+                          id: new Date().toISOString(),
+                          players: [],
+                          tasks: [issue.description],
+                        },
+                      ],
+                    })
+                  }
+                  onSelectActive={(item) =>
+                    game.setActiveIssue.mutateAsync(item.id)
+                  }
+                />
+              </NavItem>
+            </NavBar>
+          </div>
         </div>
-      </div>
-      <div className="GamePage-userinfobar">
-        {/* <div className="GamePage-gameusers">Game Users</div> */}
-        <UserList users={game.data.players} />
-      </div>
-      <div className="GamePage-gameinfo">
-        <p>{vote}</p>
-        <div className="GamePage-gamename">
-          {/* <TextField
+        <div className="GamePage-userinfobar">
+          {/* <div className="GamePage-gameusers">Game Users</div> */}
+          <UserList users={game.data.players} />
+        </div>
+        <div className="GamePage-gameinfo">
+          <p>{vote}</p>
+          <div className="GamePage-gamename">
+            {/* <TextField
             placeholder="Game Name"
             value={gameNameLocal}
             onChange={setGameNameLocal}
             name="Name of vote"
           /> */}
-        </div>
-        <div className="GamePage-issuename">
-          <TextArea
-            placeholder="Issue name"
-            value={state.selectedIssue}
-            onChange={(e) => changeGlobalState({ selectedIssue: e })}
-            name="Title of Issue"
-          />
-        </div>
-        <div className="GamePage-vote">
-          {/* <Button
+          </div>
+          <div className="GamePage-issuename">
+            <TextArea
+              placeholder="Issue name"
+              value={state.selectedIssue}
+              onChange={(e) => changeGlobalState({ selectedIssue: e })}
+              name="Title of Issue"
+            />
+          </div>
+          <div className="GamePage-vote">
+            {/* <Button
             name="Change name"
             value={0}
             onClick={() => {
               HandleNewVote();
             }}
           /> */}
+          </div>
+
+          <div
+            className="GamePage-voting-results" //style={{ opacity: state.cardPicked ? undefined : 0 }}
+          >
+            <div className="GamePage-voteavg">
+              <p className="GamePage-p">Vote Averange:</p>
+              <p className="GamePage-pval">
+                {game.data.finished || game.data.players.length === votessum
+                  ? state.result
+                  : ''}
+              </p>
+            </div>
+            <div className="GamePage-voterlt">
+              <p className="GamePage-p">Vote Result:</p>
+              <p className="GamePage-pval">
+                {game.data.finished || game.data.players.length === votessum
+                  ? state.resultAverange
+                  : ''}
+              </p>
+            </div>
+            {/* <TextArea label="Vote Avarege:" value={state.cardPicked ? state.result : ""} /> */}
+            {/* <TextArea label="Vote Result:" value={state.cardPicked ? state.resultAverange : ""} /> */}
+          </div>
         </div>
 
-        <div
-          className="GamePage-voting-results" //style={{ opacity: state.cardPicked ? undefined : 0 }}
-        >
-          <div className="GamePage-voteavg">
-            <p className="GamePage-p">Vote Averange:</p>
-            <p className="GamePage-pval">
-              {(game.data.finished||game.data.players.length ===votessum) ? state.result : ''}
-            </p>
+        <div className="GamePage-voteinfo">
+          <div className="GamePage-voteoptions">
+            <CardDeck onChange={(v) => game.vote(v)} />
           </div>
-          <div className="GamePage-voterlt">
-            <p className="GamePage-p">Vote Result:</p>
-            <p className="GamePage-pval">
-              {(game.data.finished||game.data.players.length===votessum) ? state.resultAverange : ''}
-            </p>
+          <div className="GamePage-newvote">
+            <Button
+              name="New Game"
+              value={0}
+              onClick={() => {
+                NewBoard();
+                game.startNewVoting('New voting');
+              }}
+            />
+            {/* <div className="GamePage-copyinfo-container"> */}
+            <span className="GamePage-copyinfo">Link copied!</span>
+            {/* </div> */}
+            <Button name="Copy link" value={0} onClick={copyLinkToClipboard} />
+            <Button name="End/unend game" value={0} onClick={changeGameState} />
           </div>
-          {/* <TextArea label="Vote Avarege:" value={state.cardPicked ? state.result : ""} /> */}
-          {/* <TextArea label="Vote Result:" value={state.cardPicked ? state.resultAverange : ""} /> */}
         </div>
       </div>
-
-      <div className="GamePage-voteinfo">
-        <div className="GamePage-voteoptions">
-          <CardDeck onChange={(v) => game.vote(v)} />
-        </div>
-        <div className="GamePage-newvote">
-          <Button
-            name="New Game"
-            value={0}
-            onClick={() => {
-              NewBoard();
-              game.startNewVoting('New voting');
-            }}
+    );
+  } else {
+    return (
+      <div className="GamePage-container">
+        <div className="GamePage-header">
+          <img
+            className="GamePage-image-img"
+            src="../../../../assets/poker.png"
+            alt="Logo.png"
           />
-          {/* <div className="GamePage-copyinfo-container"> */}
-          <span className="GamePage-copyinfo">Link copied!</span>
-          {/* </div> */}
-          <Button name="Copy link" value={0} onClick={copyLinkToClipboard} />
-          <Button name="End/unend game" value={0} onClick={changeGameState} />
+          <h1 className="GamePage-h1">Planning Poker</h1>
+          <div className="GamePage-navv">
+            <NavBar>
+              <NavItem icon="Issue List">
+                <DropdownList
+                  issues={game.data.issues.map((i) => ({
+                    description: i.tasks[0],
+                    storyPoints: (
+                      i.players.reduce((a, b) => a + (b.score || 0), 0) /
+                      i.players.length
+                    ).toString(),
+                    title: i.gameName,
+                    active: i.current,
+                    id: i.id,
+                  }))}
+                  onAdd={(issue) =>
+                    game.setIssues.mutateAsync({
+                      issues: [
+                        ...game.data.issues,
+                        {
+                          current: false,
+                          finished: false,
+                          gameName: issue.title,
+                          id: new Date().toISOString(),
+                          players: [],
+                          tasks: [issue.description],
+                        },
+                      ],
+                    })
+                  }
+                  onSelectActive={(item) =>
+                    game.setActiveIssue.mutateAsync(item.id)
+                  }
+                />
+              </NavItem>
+            </NavBar>
+          </div>
         </div>
-      </div>
-    </div>
-  );
- }
- else{
-  return (
-    <div className="GamePage-container">
-      <div className="GamePage-header">
-        <img
-          className="GamePage-image-img"
-          src="../../../../assets/poker.png"
-          alt="Logo.png"
-        />
-        <h1 className="GamePage-h1">Planning Poker</h1>
-        <div className="GamePage-navv">
-          <NavBar>
-            <NavItem icon="Issue List">
-            <DropdownList
-                issues={game.data.issues.map((i) => ({
-                  description: i.tasks[0],
-                  storyPoints: (
-                    i.players.reduce((a, b) => a + (b.score || 0), 0) /
-                    i.players.length
-                  ).toString(),
-                  title: i.gameName,
-                  active: i.current,
-                  id: i.id,
-                }))}
-                onAdd={(issue) =>
-                  game.setIssues.mutateAsync({
-                    issues: [
-                      ...game.data.issues,
-                      {
-                        current: false,
-                        finished: false,
-                        gameName: issue.title,
-                        id: new Date().toISOString(),
-                        players: [],
-                        tasks: [issue.description],
-                      },
-                    ],
-                  })
-                }
-                onSelectActive={(item) =>
-                  game.setActiveIssue.mutateAsync(item.id)
-                }
-              />
-            </NavItem>
-          </NavBar>
+        <div className="GamePage-userinfobar">
+          {/* <div className="GamePage-gameusers">Game Users</div> */}
+          <UserList users={game.data.players} />
         </div>
-      </div>
-      <div className="GamePage-userinfobar">
-        {/* <div className="GamePage-gameusers">Game Users</div> */}
-        <UserList users={game.data.players} />
-      </div>
-      <div className="GamePage-gameinfo">
-        <p>{vote}</p>
-        <div className="GamePage-gamename">
-          {/* <TextField
+        <div className="GamePage-gameinfo">
+          <p>{vote}</p>
+          <div className="GamePage-gamename">
+            {/* <TextField
             placeholder="Game Name"
             value={gameNameLocal}
             onChange={setGameNameLocal}
             name="Name of vote"
           /> */}
-        </div>
-        <div className="GamePage-issuename">
-          <TextArea
-            placeholder="Issue name"
-            value={state.selectedIssue}
-            onChange={(e)=>changeGlobalState({selectedIssue : e})}
-            name="Title of Issue"
-          />
-        </div>
-        <div className="GamePage-vote">
-          {/* <Button
+          </div>
+          <div className="GamePage-issuename">
+            <TextArea
+              placeholder="Issue name"
+              value={state.selectedIssue}
+              onChange={(e) => changeGlobalState({ selectedIssue: e })}
+              name="Title of Issue"
+            />
+          </div>
+          <div className="GamePage-vote">
+            {/* <Button
             name="Change name"
             value={0}
             onClick={() => {
               HandleNewVote();
             }}
           /> */}
+          </div>
+
+          <div
+            className="GamePage-voting-results" //style={{ opacity: state.cardPicked ? undefined : 0 }}
+          >
+            <div className="GamePage-voteavg">
+              <p className="GamePage-p">Vote Averange:</p>
+              <p className="GamePage-pval">
+                {game.data.finished || game.data.players.length === votessum
+                  ? state.result
+                  : ''}
+              </p>
+            </div>
+            <div className="GamePage-voterlt">
+              <p className="GamePage-p">Vote Result:</p>
+              <p className="GamePage-pval">
+                {game.data.finished || game.data.players.length === votessum
+                  ? state.resultAverange
+                  : ''}
+              </p>
+            </div>
+            {/* <TextArea label="Vote Avarege:" value={state.cardPicked ? state.result : ""} /> */}
+            {/* <TextArea label="Vote Result:" value={state.cardPicked ? state.resultAverange : ""} /> */}
+          </div>
         </div>
 
-        <div
-          className="GamePage-voting-results" //style={{ opacity: state.cardPicked ? undefined : 0 }}
-        >
-          <div className="GamePage-voteavg">
-            <p className="GamePage-p">Vote Averange:</p>
-            <p className="GamePage-pval">
-              {(game.data.finished||game.data.players.length===votessum) ? state.result : ''}
-            </p>
+        <div className="GamePage-voteinfo">
+          <div className="GamePage-voteoptions">
+            <CardDeck onChange={(v) => game.vote(v)} />
           </div>
-          <div className="GamePage-voterlt">
-            <p className="GamePage-p">Vote Result:</p>
-            <p className="GamePage-pval">
-              {(game.data.finished||game.data.players.length===votessum) ? state.resultAverange : ''}
-            </p>
-          </div>
-          {/* <TextArea label="Vote Avarege:" value={state.cardPicked ? state.result : ""} /> */}
-          {/* <TextArea label="Vote Result:" value={state.cardPicked ? state.resultAverange : ""} /> */}
         </div>
       </div>
-
-      <div className="GamePage-voteinfo">
-        <div className="GamePage-voteoptions">
-          <CardDeck onChange={(v) => game.vote(v)} />
-        </div>
-      </div>
-    </div>
-  );
- }
+    );
+  }
 }

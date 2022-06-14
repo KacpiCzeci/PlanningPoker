@@ -1,27 +1,36 @@
-import React, { useEffect } from "react";
-import checkToken from "./CheckToken";
-import { Navigate } from "react-router-dom";
-import { useState } from "react";
-import LoadingPage from "../LoadingPage/LoadingPage";
+import React, { useEffect } from 'react';
+import checkToken from './CheckToken';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import LoadingPage from '../LoadingPage/LoadingPage';
+import { useAuth } from '@planning-poker/react/api-hooks';
 
-export interface ReqAth{
-    element: JSX.Element
+export interface ReqAth {
+  element: JSX.Element;
 }
 
 export default function ReqAuthRoute(props: ReqAth): JSX.Element {
-    const [loading, setLoading] = useState(true);
-    const [isTokenOk, setIsTokenOk] = useState<boolean|undefined>(false);
+  const auth = useAuth();
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        async function fetchData() {
-            const token = await checkToken();
+  useEffect(() => {
+    let handler: any;
+    if (auth.profile?.isLoading) {
+      handler = setTimeout(() => navigate('/login'), 4000);
+    }
 
-            setIsTokenOk(token);
-            setLoading(false);
-        }
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [auth.profile?.isLoading]);
 
-        fetchData();
-    }, [])
+  if (auth.authToken === '') {
+    navigate('/login');
+    return <Navigate to={'/login'} />;
+  }
 
-    return (isTokenOk)? props.element: (loading)? <LoadingPage/> : <Navigate to="/login" replace/>;
+  if (auth.profile?.data?.username) {
+    return props.element;
+  }
+  return <LoadingPage />;
 }
