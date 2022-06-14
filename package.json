@@ -33,6 +33,7 @@
     "react-query": "^3.38.0",
     "react-router-dom": "^6.3.0",
     "react-transition-group": "^4.4.2",
+    "reactjs-popup": "^2.0.5",
     "reflect-metadata": "^0.1.13",
     "regenerator-runtime": "0.13.7",
     "rxjs": "^7.0.0",
