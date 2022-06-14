@@ -59,18 +59,17 @@ export class GetResultRequest {
 @UseInterceptors(new VotingRoomInterceptor())
 @Controller('voting/:roomID')
 export class VotingController {
-
-  constructor(private users: UsersService){}
+  constructor(private users: UsersService) {}
 
   @UseGuards(AuthGuard('jwt'))
   @Post('/startNew')
   async startNew(
     @Body() { name }: RestartRequest,
     @Param('roomID') room: string,
-    @Req() req: VotingRequest & {user: any}
+    @Req() req: VotingRequest & { user: any }
   ) {
-    const user = await this.users.findId(req.user.userId)
-    user?.rooms.push(room)
+    const user = await this.users.findId(req.user.userId);
+    user?.rooms.push(room);
     const voting = req.getVoting();
 
     const currentIssue = req.getCurrentIssue();
@@ -138,7 +137,13 @@ export class VotingController {
   ) {
     const voting = req.getVoting();
     const currentIssue = req.getCurrentIssue();
-    currentIssue.players.push({ player, score });
+    
+    const participant = currentIssue.players.find((p) => p.player === player);
+    if (participant === undefined) {
+      currentIssue.players.push({ player, score });
+    } else {
+      participant.score = score;
+    }
 
     req.votingUpdated();
 
