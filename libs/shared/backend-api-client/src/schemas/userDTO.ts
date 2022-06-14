@@ -10,4 +10,5 @@ export interface UserDTO {
   username: string;
   password: string;
   rooms: string[];
+  roomsCreated: string[];
 }

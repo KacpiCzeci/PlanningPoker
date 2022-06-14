@@ -8,6 +8,8 @@ import {
   Body,
   Get,
   Logger,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
@@ -37,6 +39,10 @@ export class AuthController {
   @ApiOkResponse({ type: UserDTO })
   async getProfile(@Request() req) {
     const user = await this.users.findId(req.user.userId);
+    if(user === undefined){
+        throw new HttpException('User not exists, its propably the jwt is valid but user not in db', HttpStatus.NOT_FOUND);
+
+    }
     return {
       ...user,
       rooms: Array.from(user.rooms),

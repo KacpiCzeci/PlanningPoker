@@ -25,7 +25,7 @@ import { useLocation } from 'react-router-dom';
 import { useGameResult } from '@planning-poker/react/api-hooks';
 
 export const useGameHook = () => {
-  const { authToken } = useAuth();
+  const { authToken, profile } = useAuth();
   const g = useGlobalState();
   const params = useParams();
   const room = params['id']!;
@@ -95,11 +95,12 @@ export const useGameHook = () => {
         return all;
       }, [] as typeof result.data.players),
     } as typeof result.data,
-    startNewVoting: (gameName: string) => startNew.mutateAsync(gameName),
+    startNewVoting: (gameName: string) => startNew.mutateAsync(gameName).then(() => profile?.refetch()),
     vote: voteFn,
     setIssues: { ...setIssues, mutateAsync: mutateSetIssues },
     setActiveIssue: { ...setActiveIssue, mutateAsync: mutateSetActiveIssue },
     finishGame,
     resumeGame,
+    amIHost: profile?.data?.roomsCreated.find((r) => r === room) !== undefined,
   };
 };

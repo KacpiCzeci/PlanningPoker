@@ -35,7 +35,7 @@ export const AuthProvider: React.FC<{ authToken: string | undefined }> = ({
   const getProfile = useQuery(
     'getProfile',
     () => Custom.authControllerGetProfile(authToken),
-    { enabled: authToken !== '' }
+    { enabled: authToken !== '', useErrorBoundary: false }
   );
 
   return (

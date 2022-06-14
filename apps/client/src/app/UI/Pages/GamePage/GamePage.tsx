@@ -154,7 +154,7 @@ export default function GamePage() {
      console.log(game.data.finished)
    }
   }
- if(sessionStorage.getItem('master')){
+ if(game.amIHost){
   return (
     <div className="GamePage-container">
       <div className="GamePage-header">
