@@ -14,7 +14,7 @@ import { useGameHook } from './useGameHook';
 import UserList from '../../Componets/UserList/UserList';
 import NavItem from '../../Componets/NavItem/NavItem';
 import DropdownList from '../../Componets/DropdownList/DropdownList';
-import { useVotingControllerFinish, votingControllerFinish } from 'libs/shared/backend-api-client/src';
+import { useVotingControllerFinish} from '@planning-poker/shared/backend-api-client';
 import { finished } from 'stream';
 import { votingControllerSetIssues } from '@planning-poker/shared/backend-api-client';
 

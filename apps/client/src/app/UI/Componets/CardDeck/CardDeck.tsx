@@ -14,9 +14,9 @@ export function CardDeck(props: CardDeckProps) {
       <li
         key={value}
         className="CardDeck-item"
-        onClick={() => {}}
+        //onClick={() => {}}
       >
-        <Card key={value} value={value} onClick={() => {}} />
+        <Card key={value} value={value} /*onClick={() => {}}*/ />
       </li>
     );
   });

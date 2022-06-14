@@ -4,7 +4,7 @@ import "./Card.scss";
 import { useGameHook } from '../../Pages/GamePage/useGameHook';
 export interface CardProps {
   value: number;
-  onClick: (st: string) => void;
+  onClick?: (st: string) => void;
 }
 
 function getSessionStorageOrDefault(key: string, defaultValue: string) {
