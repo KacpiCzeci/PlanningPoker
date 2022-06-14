@@ -1,4 +1,7 @@
-import { votingControllerResume } from './../../../../../../../libs/shared/backend-api-client/src/backend';
+import {
+  votingControllerResume,
+  votingControllerFinish,
+} from './../../../../../../../libs/shared/backend-api-client/src/backend';
 import { useAuth } from '@planning-poker/react/api-hooks';
 import {
   Custom,
@@ -37,15 +40,20 @@ export const useGameHook = () => {
     return setActiveIssue.mutateAsync({ roomID: room, data: { id } });
   };
 
-  const finishGame = useVotingControllerFinish();
-  const mutateFinishGame = () => {
-    return finishGame.mutateAsync({ roomID: room });
-  };
+  const finishGame = useMutation({
+    mutationFn: () => votingControllerFinish(room),
+  });
 
   const resumeGame = useMutation(() => votingControllerResume(room));
 
-  const vote = useVotingControllerVote({
-    mutation: { onSettled: () => result.fetch() },
+  const vote = useMutation({
+    mutationFn: (score: number | null) =>
+      Custom.votingControllerVote(
+        room,
+        { player: g.state.userName ?? 'unknown' + Math.random(), score },
+        authToken
+      ),
+    onSettled: () => result.fetch(),
   });
 
   const startNew = useMutation({
@@ -57,10 +65,7 @@ export const useGameHook = () => {
 
   const loginToVoting = useCallback(
     function loginToVoting() {
-      return vote.mutateAsync({
-        roomID: room,
-        data: { player: g.state.userName ?? '', score: null },
-      });
+      return vote.mutateAsync(null);
     },
     [g.state.userName, vote]
   );
@@ -69,10 +74,7 @@ export const useGameHook = () => {
     function voteFNN(value: number | null) {
       console.log('vote', g.state.userName);
       if (g.state.userName) {
-        vote.mutateAsync({
-          roomID: room,
-          data: { player: g.state.userName, score: value ?? null },
-        });
+        vote.mutateAsync(value);
       }
     },
     [g.state.userName, vote]
@@ -97,7 +99,7 @@ export const useGameHook = () => {
     vote: voteFn,
     setIssues: { ...setIssues, mutateAsync: mutateSetIssues },
     setActiveIssue: { ...setActiveIssue, mutateAsync: mutateSetActiveIssue },
-    finishGame: { ...finishGame, mutateAsync: mutateFinishGame },
+    finishGame,
     resumeGame,
   };
 };

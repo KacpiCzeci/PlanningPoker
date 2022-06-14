@@ -30,6 +30,7 @@ export const GameProvider: React.FC<object> = ({children}) => {
     throw 'Cant parse room id from url';
   }
 
+  
   const currentResult = useVotingControllerGetResult(
     room,
     { etag },
@@ -43,6 +44,9 @@ export const GameProvider: React.FC<object> = ({children}) => {
       }
     });
   }
+  useEffect(() => {
+    setInterval(() => {fetch()}, 1000)
+  }, [1000])
 
   useEffect(
     function refetchOnEtagChange() {

@@ -19,7 +19,14 @@ export function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<GamePage />} />
-            <Route path="/:id" element={<CheckPage />} />
+            <Route
+              path="/:id"
+              element={
+                <GameProvider>
+                  <CheckPage />
+                </GameProvider>
+              }
+            />
             <Route
               path="/new"
               element={<ReqAuthRoute element={<CreateGamePage />} />}

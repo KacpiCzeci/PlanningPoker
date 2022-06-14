@@ -14,7 +14,6 @@ import { useGameHook } from './useGameHook';
 import UserList from '../../Componets/UserList/UserList';
 import NavItem from '../../Componets/NavItem/NavItem';
 import DropdownList from '../../Componets/DropdownList/DropdownList';
-import { useVotingControllerFinish} from '@planning-poker/shared/backend-api-client';
 import { finished } from 'stream';
 import { votingControllerSetIssues } from '@planning-poker/shared/backend-api-client';
 
@@ -132,15 +131,13 @@ export default function GamePage() {
       )[0].style.display = 'none';
     }, 1000);
   }
-  const xddd = useVotingControllerFinish();
   useEffect(
     
     ()=>{
 
       console.log(sessionStorage.getItem('room'))
       if (sessionStorage.getItem('room')!==null){
-        console.log("dupa")
-        xddd.mutateAsync({roomID:sessionStorage.getItem('room')||""})
+        game.finishGame.mutateAsync()
       }
 
     },[state.gameEnded])
