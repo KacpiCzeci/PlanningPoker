@@ -69,7 +69,7 @@ export class VotingController {
     @Req() req: VotingRequest & { user: any }
   ) {
     const user = await this.users.findId(req.user.userId);
-    user?.rooms.push(room);
+    user?.roomsCreated.add(room);
     const voting = req.getVoting();
 
     const currentIssue = req.getCurrentIssue();
@@ -130,14 +130,17 @@ export class VotingController {
   }
 
   @Post('vote')
-  vote(
+  @UseGuards(AuthGuard('jwt'))
+  async vote(
     @Body() { player, score }: PlayerDto,
     @Param('roomID') room: string,
-    @Req() req: VotingRequest
+    @Req() req: VotingRequest & { user: any }
   ) {
+    const user = await this.users.findId(req.user.userId);
+    user?.rooms.add(room);
     const voting = req.getVoting();
     const currentIssue = req.getCurrentIssue();
-    
+
     const participant = currentIssue.players.find((p) => p.player === player);
     if (participant === undefined) {
       currentIssue.players.push({ player, score });

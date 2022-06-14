@@ -5,7 +5,8 @@ export type User = {
   userId: number;
   username: string;
   password: string;
-  rooms: string[];
+  rooms: Set<string>;
+  roomsCreated: Set<string>;
 };
 
 @Injectable()
@@ -15,13 +16,15 @@ export class UsersService {
       userId: 1,
       username: 'john',
       password: 'changeme',
-      rooms: [],
+      rooms: new Set<string>(),
+      roomsCreated: new Set<string>(),
     },
     {
       userId: 2,
       username: 'maria',
       password: 'guess',
-      rooms: [],
+      rooms: new Set<string>(),
+      roomsCreated: new Set<string>(),
     },
   ];
 
@@ -38,7 +41,8 @@ export class UsersService {
       userId: this.users.length + 1,
       password: pass,
       username,
-      rooms: [],
+      rooms: new Set<string>(),
+      roomsCreated: new Set<string>(),
     };
     this.users.push(user);
     return user;
