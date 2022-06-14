@@ -5,20 +5,23 @@ import {
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-export type GameResult = GetResultSuccessDto;
+export type GameResult = { data: GetResultSuccessDto; fetch: () => void };
 
 const defaultValue: GameResult = {
-  finished: false,
-  gameName: '',
-  id: '',
-  issues: [],
-  players: [],
-  tasks: [],
+  fetch: () => 0,
+  data: {
+    finished: false,
+    gameName: '',
+    id: '',
+    issues: [],
+    players: [],
+    tasks: [],
+  },
 };
 
 const GameResultContext = React.createContext<GameResult>(defaultValue);
 
-export const GameProvider: React.FC<object> = ({ children }) => {
+export const GameProvider: React.FC<object> = ({children}) => {
   const [etag, setEtag] = useState<string>('etag');
   const params = useParams();
   const room = params['id'];
@@ -51,7 +54,8 @@ export const GameProvider: React.FC<object> = ({ children }) => {
   return (
     <GameResultContext.Provider
       value={{
-        ...(currentResult.data ?? defaultValue),
+        data: currentResult.data ?? defaultValue.data,
+        fetch,
       }}
     >
       {children}
@@ -60,5 +64,5 @@ export const GameProvider: React.FC<object> = ({ children }) => {
 };
 
 export const useGameResult = () => {
-  return React.useContext(GameResultContext)
-}
+  return React.useContext(GameResultContext);
+};
