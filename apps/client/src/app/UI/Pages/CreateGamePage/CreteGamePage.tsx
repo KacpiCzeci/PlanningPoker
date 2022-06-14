@@ -14,7 +14,7 @@ export default function CreateGamePage() {
   const navigate = useNavigate();
   const gameHook = useGameHook();
 
-  const handleClick = () => {
+  const handleClick = async () => {
     if(game !== "" && user !== ""){
       g.setState((p) => ({ ...p, gameName: game, userName: user }));
       sessionStorage.setItem('userName', user);
@@ -24,6 +24,25 @@ export default function CreateGamePage() {
       sessionStorage.setItem('room', id.toString());
       gameHook.startNewVoting(game);
       navigate('/' + id);
+      // try {
+      //   const response = await fetch(`http://localhost:3333/api/voting/${id}/startNew`, {
+      //       method: 'POST',
+      //       mode: 'cors',
+      //       headers: {
+      //           'Accept': 'application/json',
+      //           'Content-Type': 'application/json',
+      //           'jwt': sessionStorage.getItem("token") || "",
+      //       },
+      //       body: JSON.stringify({
+      //           'name': game,
+      //       })
+      //   });
+      //   if (response.ok) {
+      //     navigate('/' + id);
+      //   }
+      // } catch(e) {
+      //   console.log(e);
+      // }
     }
   }
 
