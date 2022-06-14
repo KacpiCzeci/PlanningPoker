@@ -18,7 +18,6 @@ export function App() {
         {/* <AppInner /> */}
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<GamePage />} />
             <Route
               path="/:id"
               element={
