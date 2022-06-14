@@ -1,0 +1,20 @@
+.CheckBox {
+    &-container{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    &-input{
+        cursor: pointer;
+        // color: 
+    }
+
+    &-text{
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+        font-size: 15px;
+        color: #a5a5a5;
+        margin: 10px;
+    }
+}

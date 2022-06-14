@@ -14,7 +14,7 @@ export function App() {
       {/* <AppInner /> */}
       <BrowserRouter>
         <Routes>
-          <Route path="/new" element={<CreateGamePage/>}/>
+          <Route path="/new" element={<ReqAuthRoute element={<CreateGamePage/>}/>}/>
           <Route path="/login" element={<LoginPage/>}/>
           <Route path="/register" element={<RegisterPage/>}/>
           <Route path="/:id" element={<ReqAuthRoute element={<CheckPage/>}/>}/>
