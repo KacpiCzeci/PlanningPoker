@@ -6,6 +6,7 @@
     "client-e2e": "apps/client-e2e",
     "nestjs-auth": "libs/nestjs/auth",
     "nestjs-planning-poker": "libs/nestjs/planning-poker",
+    "react-api-hooks": "libs/react/api-hooks",
     "shared-backend-api-client": "libs/shared/backend-api-client",
     "shared-interfaces": "libs/shared/interfaces"
   }

@@ -19,6 +19,7 @@
       "@planning-poker/nestjs/planning-poker": [
         "libs/nestjs/planning-poker/src/index.ts"
       ],
+      "@planning-poker/react/api-hooks": ["libs/react/api-hooks/src/index.ts"],
       "@planning-poker/shared/backend-api-client": [
         "libs/shared/backend-api-client/src/index.ts"
       ],

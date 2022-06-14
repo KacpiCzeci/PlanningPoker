@@ -6,3 +6,6 @@ export * from './issueDto';
 export * from './setIssuesBody';
 export * from './setCurrentIssueBody';
 export * from './playerDtoScore';
+export * from './loginDto';
+export * from './jwtDTO';
+export * from './userDTO';

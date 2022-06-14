@@ -1,3 +1,4 @@
+import { UserDTO } from './../dto/user.dto';
 import { LoginDto } from './../dto/login.dto';
 import {
   Controller,
@@ -10,6 +11,8 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
+import { ApiOkResponse } from '@nestjs/swagger';
+import { JwtDTO } from '../dto/jwt.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -17,17 +20,20 @@ export class AuthController {
 
   @UseGuards(AuthGuard('local'))
   @Post('login')
+  @ApiOkResponse({ type: JwtDTO })
   async login(@Request() req, @Body() data: LoginDto) {
     return this.authService.login(req.user);
   }
 
   @Post('register')
+  @ApiOkResponse({ type: JwtDTO })
   async register(@Request() req, @Body() data: LoginDto) {
     return this.authService.register(data.username, data.password);
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Get('profile')
+  @ApiOkResponse({ type: UserDTO })
   async getProfile(@Request() req) {
     return await this.users.findId(req.user.userId);
   }
