@@ -6,5 +6,6 @@ describe('CardDeck', () => {
   it('should render successfully', () => {
     const { baseElement } = render(<CardDeck onChange={()=>{return undefined}} />);
     expect(baseElement).toBeTruthy();
+    
   });
 });
