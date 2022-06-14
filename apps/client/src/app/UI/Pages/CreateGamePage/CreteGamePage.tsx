@@ -20,16 +20,16 @@ export default function CreateGamePage() {
       sessionStorage.setItem('userName', user);
       sessionStorage.setItem('gameName', game);
       sessionStorage.setItem('master', 'true');
-      let id = generateRoomID();
+      const id = generateRoomID();
       sessionStorage.setItem('room', id.toString());
       gameHook.startNewVoting(game);
       navigate('/' + id);
     }
   }
 
-  function generateRoomID(): String {
+  function generateRoomID(): string {
     const chars = 'ABCDEFGHIJKLMNOPRSTUWVXYZabcdefghijklmnoprstuwvxyz1234567890'
-    var id = ''
+    let id = ''
     for(let i=0; i<16; i++){
       id += chars.charAt(Math.floor(Math.random() * chars.length));
     }
