@@ -20,7 +20,10 @@ import type {
   VotingControllerGetResultParams,
   PlayerDto,
   SetIssuesBody,
-  SetCurrentIssueBody
+  SetCurrentIssueBody,
+  JwtDTO,
+  LoginDto,
+  UserDTO
 } from './schemas'
 import { customInstance, ErrorType } from './custom-instance'
 
@@ -215,6 +218,39 @@ export const votingControllerFinish = (
       return useMutation<AsyncReturnType<typeof votingControllerFinish>, TError, {roomID: string}, TContext>(mutationFn, mutationOptions)
     }
     
+export const votingControllerResume = (
+    roomID: string,
+ ) => {
+      return customInstance<void>(
+      {url: `/api/voting/${roomID}/resume`, method: 'post'
+    },
+      );
+    }
+  
+
+
+    export type VotingControllerResumeMutationResult = NonNullable<AsyncReturnType<typeof votingControllerResume>>
+    
+    export type VotingControllerResumeMutationError = ErrorType<unknown>
+
+    export const useVotingControllerResume = <TError = ErrorType<unknown>,
+    
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<AsyncReturnType<typeof votingControllerResume>, TError,{roomID: string}, TContext>, }
+) => {
+      const {mutation: mutationOptions} = options || {}
+
+      
+
+
+      const mutationFn: MutationFunction<AsyncReturnType<typeof votingControllerResume>, {roomID: string}> = (props) => {
+          const {roomID} = props || {};
+
+          return  votingControllerResume(roomID,)
+        }
+
+      return useMutation<AsyncReturnType<typeof votingControllerResume>, TError, {roomID: string}, TContext>(mutationFn, mutationOptions)
+    }
+    
 export const votingControllerSetIssues = (
     roomID: string,
     setIssuesBody: SetIssuesBody,
@@ -287,3 +323,111 @@ export const votingControllerSetCurrentIssue = (
       return useMutation<AsyncReturnType<typeof votingControllerSetCurrentIssue>, TError, {roomID: string;data: SetCurrentIssueBody}, TContext>(mutationFn, mutationOptions)
     }
     
+export const authControllerLogin = (
+    loginDto: LoginDto,
+ ) => {
+      return customInstance<JwtDTO>(
+      {url: `/api/auth/login`, method: 'post',
+      headers: {'Content-Type': 'application/json'},
+      data: loginDto
+    },
+      );
+    }
+  
+
+
+    export type AuthControllerLoginMutationResult = NonNullable<AsyncReturnType<typeof authControllerLogin>>
+    export type AuthControllerLoginMutationBody = LoginDto
+    export type AuthControllerLoginMutationError = ErrorType<unknown>
+
+    export const useAuthControllerLogin = <TError = ErrorType<unknown>,
+    
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<AsyncReturnType<typeof authControllerLogin>, TError,{data: LoginDto}, TContext>, }
+) => {
+      const {mutation: mutationOptions} = options || {}
+
+      
+
+
+      const mutationFn: MutationFunction<AsyncReturnType<typeof authControllerLogin>, {data: LoginDto}> = (props) => {
+          const {data} = props || {};
+
+          return  authControllerLogin(data,)
+        }
+
+      return useMutation<AsyncReturnType<typeof authControllerLogin>, TError, {data: LoginDto}, TContext>(mutationFn, mutationOptions)
+    }
+    
+export const authControllerRegister = (
+    loginDto: LoginDto,
+ ) => {
+      return customInstance<JwtDTO>(
+      {url: `/api/auth/register`, method: 'post',
+      headers: {'Content-Type': 'application/json'},
+      data: loginDto
+    },
+      );
+    }
+  
+
+
+    export type AuthControllerRegisterMutationResult = NonNullable<AsyncReturnType<typeof authControllerRegister>>
+    export type AuthControllerRegisterMutationBody = LoginDto
+    export type AuthControllerRegisterMutationError = ErrorType<unknown>
+
+    export const useAuthControllerRegister = <TError = ErrorType<unknown>,
+    
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<AsyncReturnType<typeof authControllerRegister>, TError,{data: LoginDto}, TContext>, }
+) => {
+      const {mutation: mutationOptions} = options || {}
+
+      
+
+
+      const mutationFn: MutationFunction<AsyncReturnType<typeof authControllerRegister>, {data: LoginDto}> = (props) => {
+          const {data} = props || {};
+
+          return  authControllerRegister(data,)
+        }
+
+      return useMutation<AsyncReturnType<typeof authControllerRegister>, TError, {data: LoginDto}, TContext>(mutationFn, mutationOptions)
+    }
+    
+export const authControllerGetProfile = (
+    
+ ) => {
+      return customInstance<UserDTO>(
+      {url: `/api/auth/profile`, method: 'get'
+    },
+      );
+    }
+  
+
+export const getAuthControllerGetProfileQueryKey = () => [`/api/auth/profile`];
+
+    
+export type AuthControllerGetProfileQueryResult = NonNullable<AsyncReturnType<typeof authControllerGetProfile>>
+export type AuthControllerGetProfileQueryError = ErrorType<unknown>
+
+export const useAuthControllerGetProfile = <TData = AsyncReturnType<typeof authControllerGetProfile>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<AsyncReturnType<typeof authControllerGetProfile>, TError, TData>, }
+
+  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+
+  const {query: queryOptions} = options || {}
+
+  const queryKey = queryOptions?.queryKey ?? getAuthControllerGetProfileQueryKey();
+
+  
+
+  const queryFn: QueryFunction<AsyncReturnType<typeof authControllerGetProfile>> = () => authControllerGetProfile();
+
+  const query = useQuery<AsyncReturnType<typeof authControllerGetProfile>, TError, TData>(queryKey, queryFn, queryOptions)
+
+  return {
+    queryKey,
+    ...query
+  }
+}
+
+
