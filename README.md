@@ -46,5 +46,6 @@ Nest JS
 # Availability
 ## Backend
 https://planning-poker-347212.lm.r.appspot.com/api
+
 ##Frontend
 https://planning-poker-tsd.web.app
