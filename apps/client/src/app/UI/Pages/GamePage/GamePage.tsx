@@ -137,7 +137,13 @@ export default function GamePage() {
 
       console.log(sessionStorage.getItem('room'))
       if (sessionStorage.getItem('room')!==null){
-        game.finishGame.mutateAsync()
+        if(state.gameEnded==true){
+          game.finishGame.mutateAsync()
+        }
+        else{
+          game.resumeGame.mutateAsync()
+        }
+
       }
 
     },[state.gameEnded])
@@ -277,14 +283,6 @@ export default function GamePage() {
           <CardDeck onChange={(v) => game.vote(v)} />
         </div>
         <div className="GamePage-newvote">
-          <Button
-            name="New Game"
-            value={0}
-            onClick={() => {
-              NewBoard();
-              game.startNewVoting('New voting');
-            }}
-          />
           {/* <div className="GamePage-copyinfo-container"> */}
           <span className="GamePage-copyinfo">Link copied!</span>
           {/* </div> */}
