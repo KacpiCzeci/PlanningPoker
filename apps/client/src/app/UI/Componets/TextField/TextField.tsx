@@ -60,6 +60,7 @@ function TextField( props : TextFieldProps) {
                     placeholder={props.placeholder}
                     onChange={changeHandler} 
                     value={val}
+                    type={props.type}
                     />
                     
                 </form>

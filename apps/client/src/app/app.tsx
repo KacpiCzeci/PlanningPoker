@@ -9,6 +9,7 @@ import GamePage from './UI/Pages/GamePage/GamePage';
 import ReqAuthRoute from './UI/Pages/ReqAuthPage/ReqAuthPage';
 import RegisterPage from './UI/Pages/RegisterPage/RegisterPage';
 import { AuthProvider, GameProvider } from '@planning-poker/react/api-hooks';
+import MainPage from './UI/Pages/MainPage/MainPage';
 
 export function App() {
   const authToken = sessionStorage.getItem('authToken');
@@ -18,25 +19,29 @@ export function App() {
         {/* <AppInner /> */}
         <BrowserRouter>
           <Routes>
-            <Route
+            {/* <Route
               path="/:id"
               element={
                 <GameProvider>
                   <CheckPage />
                 </GameProvider>
               }
+            /> */}
+            <Route
+              path="/"
+              element={<ReqAuthRoute element={<MainPage />} />}
             />
             <Route
               path="/new"
               element={<ReqAuthRoute element={<CreateGamePage />} />}
             />
-            <Route path="/login" element={<LoginPage />} />
+            <Route path="/login" element={<LoginPage />}/>
             <Route path="/register" element={<RegisterPage />} />
             <Route
               path="/:id"
               element={
                 <GameProvider>
-                  <ReqAuthRoute element={<CheckPage />} />
+                  <ReqAuthRoute element={<GamePage />} />
                 </GameProvider>
               }
             />

@@ -6,25 +6,44 @@ import './RegisterPage.scss';
 import { useGameHook } from '../GamePage/useGameHook';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@planning-poker/react/api-hooks';
+import Checkbox from '../../Componets/CheckBox/CheckBox';
+
+interface LocationState {
+  from: {
+    pathname: string;
+  };
+}
 
 export default function RegisterPage() {
   const { register, profile } = useAuth();
   const [username, setUsename] = useState('');
   const [password, setPassword] = useState('');
+  const [policy, setPolicy] = useState(false);
   const g = useGlobalState();
   //const game = useGameHook();
   const navigate = useNavigate();
   const gameHook = useGameHook();
+  const state = useLocation().state as LocationState;
+
 
   useEffect(() => {
     if (profile?.data) {
-      navigate('/new');
+      if(state?.from){
+        navigate(state.from);
+      }
+      else{
+        navigate('/');
+      }
     }
   }, [profile]);
 
   const handleClick = async (u: string, p: string) => {
     register(u, p);
   };
+
+  const handleCheckBox = () => {
+    setPolicy(!policy);
+  }
 
   return (
     <div className="RegisterPage-container">
@@ -42,6 +61,7 @@ export default function RegisterPage() {
           </div>
         </div>
         <div className="RegisterPage-input">
+          <p className="RegisterPage-registerlabel">Register</p>
           <TextField
             value={username}
             onChange={setUsename}
@@ -51,7 +71,11 @@ export default function RegisterPage() {
             value={password}
             onChange={setPassword}
             placeholder={'password'}
+            type={'password'}
           />
+        </div>
+        <div className="RegisterPage-checkboxcontainer">
+          <Checkbox text="Accept the personal data policy." handleOnChange={handleCheckBox} state={policy}/>
         </div>
         <div className="RegisterPage-button">
           <Button

@@ -1,0 +1,41 @@
+.txt{
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    font-weight: 600;
+    font-size: 30px;
+    color: #636363;
+    margin: 15px;
+}
+
+.MainPage{
+    &-container{
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    &-header{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 20px;
+        text-align: left;    
+    }
+
+    &-image{
+        &-img{
+            max-width: 64px;
+        }
+    }
+
+    &-h1{
+        @extend .txt;
+    }
+
+    &-navv{
+        display: flex;
+        flex-direction: row;
+        position:fixed;
+        right: 10px;
+    }
+}

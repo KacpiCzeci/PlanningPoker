@@ -10,21 +10,20 @@ import { Custom } from '@planning-poker/shared/backend-api-client';
 
 export default function CreateGamePage() {
   const [game, setGame] = useState('');
-  const [user, setUser] = useState('');
   const g = useGlobalState();
   //const game = useGameHook();
   const navigate = useNavigate();
   const auth = useAuth();
 
   const handleClick = async () => {
-    if (game !== '' && user !== '') {
-      g.setState((p) => ({ ...p, gameName: game, userName: user }));
-      sessionStorage.setItem('userName', user);
+    if (game !== '') {
+      g.setState((p) => ({ ...p, gameName: game, userName: auth.userName }));
+      sessionStorage.setItem('userName', auth.userName);
       sessionStorage.setItem('gameName', game);
       sessionStorage.setItem('master', 'true');
       const id = generateRoomID();
       sessionStorage.setItem('room', id.toString());
-      Custom.votingControllerStartNew(id, { name: user }, auth.authToken).then(
+      Custom.votingControllerStartNew(id, { name: auth.userName }, auth.authToken).then(
         () => auth.profile?.refetch()
       );
       navigate('/' + id);
@@ -76,15 +75,11 @@ export default function CreateGamePage() {
           </div>
         </div>
         <div className="CreateGamePage-input">
+          <p className="CreateGamePage-label">Create room</p>
           <TextField
             value={game}
             onChange={setGame}
             placeholder={'Game name'}
-          />
-          <TextField
-            value={user}
-            onChange={setUser}
-            placeholder={'User name'}
           />
         </div>
         <div className="CreateGamePage-button">

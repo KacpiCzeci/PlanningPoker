@@ -40,8 +40,30 @@
         }
     }
 
+    &-loginlabel{
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+        font-size: 20px;
+        font-weight: 600;
+        color: #636363;
+        margin: 10px;
+    }
+
+    &-registercontainer{
+        margin: 10px;
+    }
+
+    &-register{
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+        font-size: 15px;
+        color: #636363;
+        margin: 10px;
+    }
+
     &-input{
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
         margin: 0px 0px 0px 0px;

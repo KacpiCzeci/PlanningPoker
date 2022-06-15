@@ -12,6 +12,7 @@ export interface ReqAth {
 export default function ReqAuthRoute(props: ReqAth): JSX.Element {
   const auth = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     let handler: any;
@@ -25,8 +26,7 @@ export default function ReqAuthRoute(props: ReqAth): JSX.Element {
   }, [auth.profile?.isLoading]);
 
   if (auth.authToken === '') {
-    navigate('/login');
-    return <Navigate to={'/login'} />;
+    return <Navigate to={'/login'} replace state={{ from: location }}/>;
   }
 
   if (auth.profile?.data?.username) {
