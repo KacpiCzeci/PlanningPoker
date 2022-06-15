@@ -104,6 +104,12 @@ type Issue = {
 function calculateStoryPoints<T extends { players: PlayerDto[] }>(
   issue: T
 ): T & { storyPoints: [average: number, rounded: number] } {
+  let len=0;
+  for(let i=0;i<issue.players.length;i++)
+  {
+    if(issue.players[i].score!==null)
+    len+=1;
+  }
   const average =
     issue.players
       .map((x) => x.score)
@@ -111,7 +117,7 @@ function calculateStoryPoints<T extends { players: PlayerDto[] }>(
       .reduce<number>(
         (prevValue, currentValue) => Number(prevValue) + Number(currentValue),
         0
-      ) / issue.players.length;
+      ) / len;
 
   if (average <= 89) {
     const cardsValues = [0, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89];

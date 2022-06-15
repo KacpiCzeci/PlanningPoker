@@ -120,8 +120,7 @@ export default function GamePage() {
                 issues={game.data.issues.map((i) => ({
                   description: i.tasks[0],
                   storyPoints: (
-                    i.players.reduce((a, b) => a + (b.score || 0), 0) /
-                    i.players.length
+                    game.data.storyPoints[1]
                   ).toString(),
                   title: i.gameName,
                   active: i.current,
@@ -233,14 +232,6 @@ export default function GamePage() {
         </div>
         {game.amIHost ? (
           <div className="GamePage-newvote">
-            <Button
-              name="New Game"
-              value={0}
-              onClick={() => {
-                NewBoard();
-                game.startNewVoting('New voting');
-              }}
-            />
             {/* <div className="GamePage-copyinfo-container"> */}
             <span className="GamePage-copyinfo">Link copied!</span>
             {/* </div> */}
