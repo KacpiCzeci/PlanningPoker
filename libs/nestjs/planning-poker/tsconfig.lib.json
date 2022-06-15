@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../../dist/out-tsc",
+    "declaration": true,
+    "types": [],
+    "target": "es6",
+    "strict": true,
+    "strictPropertyInitialization": false
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["**/*.spec.ts", "**/*.test.ts"]
+}

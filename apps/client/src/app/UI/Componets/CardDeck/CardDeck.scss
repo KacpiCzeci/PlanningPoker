@@ -1,0 +1,44 @@
+.CardDeck{
+    &-container{
+        display: flex;
+        align-items: center;
+        padding: 20px;
+    }
+
+    &-subcontainer{
+        position: relative;
+        display: flex;
+        flex-direction: row;
+        //flex-wrap: wrap;
+        //justify-content: center;
+        box-sizing: border-box;
+        overflow-x: scroll;
+        overflow-y: hidden;
+        padding: 0px;
+        margin: 0px;
+
+    }
+
+    &-item{
+        list-style: none;
+    }
+
+    &-subcontainer::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+    &-subcontainer::-webkit-scrollbar-track {
+        border-radius: 10px;
+        background: #FFFFFF;
+    }
+    &-subcontainer::-webkit-scrollbar-thumb{
+        border-radius: 10px;
+        background: #A5A5A5;
+    }
+    &-subcontainer::-webkit-scrollbar-thumb:hover{
+        background: #636363;
+    }
+    &-subcontainer::-webkit-scrollbar-thumb:active{
+        background: #636363;
+    }
+}

@@ -1,0 +1,90 @@
+.container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    border-radius: 12px;
+    padding: 10px;
+    margin: 10px;
+    width: 25px;
+    height: 50px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
+    position: relative;
+    top: 0;
+    transition: top ease 0.1s;
+    border-style: solid;
+    border-color: #3993ff;
+    border-width: 2px;
+}
+
+.value{
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 300;
+    margin: 0;
+    text-align: center;
+}
+
+.hover{
+    filter: brightness(1.2);
+    top: -2px;
+    cursor: pointer;
+}
+
+.Card{
+    &-container{
+        &-clicked{
+            @extend .container;
+            background-color: #3993ff;
+            top: -10px;
+        }
+
+        &-notclicked{
+            @extend .container;
+            background-color: #ffffff;
+        }
+
+        &-blocked{
+            @extend .container;
+            background-color: #A5A5A5;
+            pointer-events: none;
+        }
+    }
+
+    &-container-clicked:hover{
+        filter: brightness(1.2);
+        cursor: pointer;
+    }
+
+    &-container-notclicked:hover{
+        @extend .hover;
+        background-color: #3993ff20;
+    }
+
+    &-subcontainer{
+        width: 100%;
+        height: 100%; 
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    &-value{
+        &-clicked{
+            @extend .value;
+            color: #ffffff;
+        }
+
+        &-notclicked{
+            @extend .value;
+            color: #3993ff;
+        }
+
+        &-blocked{
+            @extend .value;
+            color: #ffffff;
+        }
+    }
+}

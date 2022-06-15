@@ -1,0 +1,77 @@
+
+
+
+ @keyframes scale-down-tl{0%{transform:scale(1);transform-origin:0 0}100%{transform:scale(.5);transform-origin:0 0}}
+
+.container{
+    justify-content: center;
+    margin: 5px;
+    height: fit-content;
+    width: fit-content;
+    align-items: center;
+    position: relative;
+}
+
+.value{
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 300;
+    margin: 0;
+    text-align: center;
+}
+.hover{
+    filter: brightness(1.2);
+    cursor: pointer;
+}
+.TextField{
+    &-container{
+        @extend .container;
+    }
+    &-label{
+        @extend .value;
+        position: absolute;
+        font-size: smaller;
+        pointer-events:none;
+        right:70px;
+        top:-20px;
+        transition:0.2s ease all;
+        -moz-transition:0.2s ease all;
+        -webkit-transition:0.2s ease all;
+        background-color: white;
+        background-size: cover;
+        transition: visibility 2s; 
+    }
+    &-input{
+        @extend .value;
+        border: 2px solid #3993ff;
+        height: 50px;
+        width: 150px;
+        border-radius: 12px;
+        font-size: medium;
+    }
+    &-input:hover{
+        @extend .hover;
+        @extend .value;
+        background-color: #3993ff20;
+        border: 2px solid #3993ff;
+        height: 50px;
+        width: 150px;
+        border-radius: 8px;
+        font-size: medium;
+    }
+    &-input:focus{
+        @extend .hover;
+        @extend .value;
+        background-color: #3993ff20;
+        border: 2px solid #3993ff;
+        height: 50px;
+        width: 150px;
+        border-radius: 8px;
+        font-size: medium;
+        outline: none;
+    }
+}
+
+

@@ -14,7 +14,19 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@planning-poker/nestjs/auth": ["libs/nestjs/auth/src/index.ts"],
+      "@planning-poker/nestjs/planning-poker": [
+        "libs/nestjs/planning-poker/src/index.ts"
+      ],
+      "@planning-poker/react/api-hooks": ["libs/react/api-hooks/src/index.ts"],
+      "@planning-poker/shared/backend-api-client": [
+        "libs/shared/backend-api-client/src/index.ts"
+      ],
+      "@planning-poker/shared/interfaces": [
+        "libs/shared/interfaces/src/index.ts"
+      ]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

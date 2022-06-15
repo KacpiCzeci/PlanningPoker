@@ -1,0 +1,28 @@
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba($color: #000000, $alpha: 0.2);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 150;
+}
+
+.popup-inner{
+    border-radius: 12px;
+    position: relative;
+    padding: 32px;
+    width: 100%;
+    max-width: 640px;
+    background-color: white;
+}
+
+.popup-inner .popup-btn{
+position: absolute;
+top: 16px;
+right: 16px;
+}

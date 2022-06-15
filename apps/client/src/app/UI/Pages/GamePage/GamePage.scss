@@ -1,0 +1,132 @@
+.txt{
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    font-weight: 600;
+    font-size: 30px;
+    color: #636363;
+    margin: 15px;
+}
+
+.GamePage{
+    &-container{
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    &-header{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 20px;
+        text-align: left;    
+    }
+
+    &-h1{
+        @extend .txt;
+    }
+
+    &-userinfobar{
+        overflow: hidden;
+    }
+
+    &-image{
+        &-img{
+            max-width: 64px;
+        }
+    }
+
+    &-userinfobar {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        // margin-right: 20px;
+        // margin-left: 10px;
+    }
+
+    &-gameusers{
+        @extend .txt;
+
+        font-size: 15px;
+        color: #A5A5A5;
+    }
+
+    &-gameinfo{
+        display: flex;
+        padding: 15px;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    &-voting-results{
+        display: flex;
+        flex-direction: row;
+    }
+
+    &-voteavg{
+        display: flex;
+        flex-direction: row;
+        margin: 30px;
+    }
+
+    &-p{
+        @extend .txt;
+        font-size: 20px;
+        margin-right: 20px;
+        color: #A5A5A5;
+    }
+
+    &-pval{
+        @extend .txt;
+        font-size: 20px;
+    }
+
+    &-voterlt{
+        display: flex;
+        flex-direction: row;
+        margin: 30px;
+    }
+
+    &-voteinfo{
+        display: flex;
+        flex-direction: row;
+        padding: 10px;
+        text-align: center;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+
+    &--voteoptions{
+        display: flex;
+        // overflow: auto;
+        text-align: center;
+    }
+
+    &-newvote{
+        display: flex;
+        flex-direction: column;
+    }
+
+    &-copyinfo{
+        display: none;
+        padding: 5px;
+        background-color: #000000df;
+        border-radius: 4px;
+        color: #ffffff;
+    }
+    
+    &-copyinfo-container{
+        display: flex;
+        align-items: center;
+        position: absolute;
+    }
+
+    &-navv{
+        position:fixed;
+        right: 10px;
+    }
+}
+
+
