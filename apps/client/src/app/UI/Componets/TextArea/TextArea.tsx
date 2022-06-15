@@ -39,7 +39,7 @@ function TextArea( props : TextAreaProps) {
     return(
         <div className="TextArea-container">
         <label className="TextArea-label" htmlFor="text">{props.label}</label>
-        <input id="text" className="TextArea-input" placeholder={"-"} onChange={()=>{}} value={props.value}/>
+        <input id="text" className="TextArea-input" placeholder={"-"} onChange={()=>{return undefined}} value={props.value}/>
         </div>
     )
     // return(<p>Here shoud be a textarea <p className="error">{props.name}</p></p>)
