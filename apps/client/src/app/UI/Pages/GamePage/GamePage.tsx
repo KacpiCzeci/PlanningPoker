@@ -124,6 +124,17 @@ export default function GamePage() {
                   active: i.current,
                   id: i.id,
                 }))}
+                onUpdate={(issue) => {
+                  const newIssues = [...game.data.issues];
+                  const issueToChange = newIssues.find(
+                    (i) => i.id === issue.id
+                  );
+                  if (issueToChange) {
+                    issueToChange.gameName = issue.title;
+                    issueToChange.tasks[0] = issue.description
+                    game.setIssues.mutateAsync({ issues: newIssues });
+                  }
+                }}
                 onAdd={(issue) =>
                   game.setIssues.mutateAsync({
                     issues: [

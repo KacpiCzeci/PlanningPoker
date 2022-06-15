@@ -20,9 +20,12 @@ import {
 import { Issue as IssueType } from '@planning-poker/shared/interfaces';
 import { resolve } from 'path';
 import { rejects } from 'assert';
-import { GetResultSuccessDto, IssueDto } from '@planning-poker/shared/backend-api-client';
+import {
+  GetResultSuccessDto,
+  IssueDto,
+} from '@planning-poker/shared/backend-api-client';
 
-const getIssueId = () => new Date().toString()+Math.random()
+const getIssueId = () => new Date().toString() + Math.random();
 
 export type IssuesListItem = {
   active?: boolean;
@@ -34,15 +37,17 @@ export type IssuesListItem = {
 
 export type DropdownListProps = {
   issues: IssuesListItem[];
+  onUpdate: (item: IssuesListItem) => void;
   onAdd: (item: IssuesListItem) => void;
   onRemove: (item: number) => void;
   onSelectActive: (item: IssuesListItem) => void;
-  onAddMany: (items:IssueDto[]) => void;
+  onAddMany: (items: IssueDto[]) => void;
 };
 
 export default function DropdownList({ issues, ...props }: DropdownListProps) {
   //global store
   const { state: globalStore, setState: setGlobalStore } = useGlobalState();
+  const [currentIssue, setCurrentIssue] = useState<IssuesListItem>();
   const changeGlobalState = useCallback(
     (data: Partial<GlobalStateInterface>) => {
       setGlobalStore((prevSt) => ({ ...prevSt, ...data }));
@@ -63,15 +68,17 @@ export default function DropdownList({ issues, ...props }: DropdownListProps) {
   const [issueTitleHandler, setIssueTitleHandler] = useState('');
   const [issueDescriptionHandler, setIssueDescriptionHandler] = useState('');
   const [issueStoryPointsHandler, setIssueStoryPointsHandler] = useState('');
-  const [selectedIssueIndexHandler, setSelectedIssueIndexHandler] = useState(-1);
+  const [selectedIssueIndexHandler, setSelectedIssueIndexHandler] =
+    useState(-1);
 
-  const [popupShow,setPopupShow]=useState(false);
-  const [popupShowIndex,setPopupShowIndex]=useState(-1);
+  const [popupShow, setPopupShow] = useState(false);
+  const [popupShowIndex, setPopupShowIndex] = useState(-1);
 
   const [colorHandler, setColorHandler] = useState(false);
-  const [colorHandlerDeleteOperation, setColorHandlerDeleteOperation] = useState(false);
-  const [globalStoreHandlerSaveOperation, setGlobalStoreHandlerSaveOperation] = useState(false);
-
+  const [colorHandlerDeleteOperation, setColorHandlerDeleteOperation] =
+    useState(false);
+  const [globalStoreHandlerSaveOperation, setGlobalStoreHandlerSaveOperation] =
+    useState(false);
 
   //UseState - store
   //---issue list
@@ -98,91 +105,88 @@ export default function DropdownList({ issues, ...props }: DropdownListProps) {
     setViewList(false);
   };
 
+  const readUploadedFileAsText = (inputFile: any) => {
+    const temporaryFileReader = new FileReader();
 
+    return new Promise((resolve, reject) => {
+      temporaryFileReader.onerror = () => {
+        temporaryFileReader.abort();
+        reject(new DOMException('Problem parsing input file.'));
+      };
 
-const readUploadedFileAsText = (inputFile:any) => {
-  const temporaryFileReader = new FileReader();
-
-  return new Promise((resolve, reject) => {
-    temporaryFileReader.onerror = () => {
-      temporaryFileReader.abort();
-      reject(new DOMException("Problem parsing input file."));
-    };
-
-    temporaryFileReader.onload = () => {
-      resolve(temporaryFileReader.result);
-    };
-    temporaryFileReader.readAsText(inputFile);
-  });
-};
+      temporaryFileReader.onload = () => {
+        resolve(temporaryFileReader.result);
+      };
+      temporaryFileReader.readAsText(inputFile);
+    });
+  };
   //UseSate Backend - gowno klasa
-  const[issueDtoClassArrayHandler,setIssueDtoClassArrayHandler]=useState<IssueDto[]>([]);
-/**
- * Function for adding file from Jira
- * @param propsLocal 
- */
-const UploadJiraList = async (propsLocal: any) => {
-  const file = propsLocal.target.files[0];
+  const [issueDtoClassArrayHandler, setIssueDtoClassArrayHandler] = useState<
+    IssueDto[]
+  >([]);
+  /**
+   * Function for adding file from Jira
+   * @param propsLocal
+   */
+  const UploadJiraList = async (propsLocal: any) => {
+    const file = propsLocal.target.files[0];
 
-  try {
-    const fileContents = await readUploadedFileAsText(file)
-    if(typeof fileContents==="string"){
-      const rawcsv = fileContents.toString();
-      const csvsplits = rawcsv.split('\n');
-      const csvheader = csvsplits[0].split(',');
-      let sum = -1;
-      let desc = -1;
-      let spts = -1;
-      for (let i = 0; i < csvheader.length; i++) {
-        if (csvheader[i] == 'Podsumowanie' || csvheader[i] == 'title') {
-          sum = i;
-        } else if (
-          csvheader[i] == 'Pole niestandardowe (Story point estimate)' ||
-          csvheader[i] == 'storyPoints'
-        ) {
-          spts = i;
-        } else if (
-          csvheader[i] == 'Opis' ||
-          csvheader[i] == 'description'
-        ) {
-          desc = i;
-        }
-      }
-      for (let i = 1; i < csvsplits.length; i++) {
-        console.log(i);
-        // console.log(csvsplits[i])
-        const linesplit = csvsplits[i].split(',');
-        let temptitle = '';
-        let tempdescription = '';
-        let tempstoryPoints = '0';
-        if (sum >= 0) {
-          temptitle = linesplit[sum];
-        }
-        if (desc >= 0) {
-          tempdescription = linesplit[desc];
-        }
-        if (spts >= 0) {
-          if (linesplit[spts] !== '') {
-            tempstoryPoints = linesplit[spts];
+    try {
+      const fileContents = await readUploadedFileAsText(file);
+      if (typeof fileContents === 'string') {
+        const rawcsv = fileContents.toString();
+        const csvsplits = rawcsv.split('\n');
+        const csvheader = csvsplits[0].split(',');
+        let sum = -1;
+        let desc = -1;
+        let spts = -1;
+        for (let i = 0; i < csvheader.length; i++) {
+          if (csvheader[i] == 'Podsumowanie' || csvheader[i] == 'title') {
+            sum = i;
+          } else if (
+            csvheader[i] == 'Pole niestandardowe (Story point estimate)' ||
+            csvheader[i] == 'storyPoints'
+          ) {
+            spts = i;
+          } else if (csvheader[i] == 'Opis' || csvheader[i] == 'description') {
+            desc = i;
           }
         }
-        const newObj = {
-          storyPoints: null,
-          current: false,
-          finished: false,
-          gameName: temptitle,
-          id: new Date().toISOString(),
-          players: [],
-          tasks: [tempdescription],
-        };
-        issueDtoClassArrayHandler.push(newObj)
+        for (let i = 1; i < csvsplits.length; i++) {
+          console.log(i);
+          // console.log(csvsplits[i])
+          const linesplit = csvsplits[i].split(',');
+          let temptitle = '';
+          let tempdescription = '';
+          let tempstoryPoints = '0';
+          if (sum >= 0) {
+            temptitle = linesplit[sum];
+          }
+          if (desc >= 0) {
+            tempdescription = linesplit[desc];
+          }
+          if (spts >= 0) {
+            if (linesplit[spts] !== '') {
+              tempstoryPoints = linesplit[spts];
+            }
+          }
+          const newObj = {
+            storyPoints: null,
+            current: false,
+            finished: false,
+            gameName: temptitle,
+            id: new Date().toISOString(),
+            players: [],
+            tasks: [tempdescription],
+          };
+          issueDtoClassArrayHandler.push(newObj);
+        }
       }
+      props.onAddMany(issueDtoClassArrayHandler);
+    } catch (e) {
+      console.warn(propsLocal.message);
     }
-    props.onAddMany(issueDtoClassArrayHandler);
-  } catch (e) {
-    console.warn(propsLocal.message)
-  }
-};
+  };
 
   /**
    * Download list of issue in csv
@@ -295,8 +299,8 @@ const UploadJiraList = async (propsLocal: any) => {
         }}
         onClick3={() => {
           // DeleteThisIssue(index);
-          setPopupShow(true)
-          setPopupShowIndex(index)
+          setPopupShow(true);
+          setPopupShowIndex(index);
         }}
         rightRightIcon={<DeleteIcon />}
       >
@@ -318,7 +322,7 @@ const UploadJiraList = async (propsLocal: any) => {
       storyPoints: '0',
       title: issueTitleHandler,
       active: false,
-      id: getIssueId()
+      id: getIssueId(),
     });
     // Adding to store
     setIssuesSessionStorage([
@@ -327,7 +331,7 @@ const UploadJiraList = async (propsLocal: any) => {
         title: issueTitleHandler,
         description: issueDescriptionHandler,
         storyPoints: '0',
-        id: getIssueId()
+        id: getIssueId(),
       },
     ]);
     setSelectedIssueColorHandlerSessionStorage([
@@ -348,13 +352,13 @@ const UploadJiraList = async (propsLocal: any) => {
    * @param i index
    */
   const DeleteThisIssue = (i: number) => {
-    console.log("----Before delete---"+issuesSessionStorage.toString())
-    props.onRemove(i)
+    console.log('----Before delete---' + issuesSessionStorage.toString());
+    props.onRemove(i);
     setIssuesSessionStorage([
       ...issuesSessionStorage.slice(0, i),
       ...issuesSessionStorage.slice(i + 1, issuesSessionStorage.length),
     ]);
-    console.log("----After delete---"+issuesSessionStorage.toString())
+    console.log('----After delete---' + issuesSessionStorage.toString());
     setSelectedIssueColorHandlerSessionStorage([
       ...selectedIssueColorHandlerSessionStorage.slice(0, i),
       ...selectedIssueColorHandlerSessionStorage.slice(
@@ -371,7 +375,7 @@ const UploadJiraList = async (propsLocal: any) => {
    * Showing details of selected issue from list
    * @param props Issue Object
    */
-  const ShowDetailsOfSelectedIssue = (props: any) => {
+  const ShowDetailsOfSelectedIssue = (props: IssuesListItem) => {
     // console.log(issues.indexOf(props))
     // console.log(props)
     setSelectedIssueIndexHandler(issuesSessionStorage.indexOf(props));
@@ -379,6 +383,7 @@ const UploadJiraList = async (propsLocal: any) => {
     setIssueTitleHandler(props.title);
     setIssueDescriptionHandler(props.description);
     setIssueStoryPointsHandler(props.storyPoints);
+    setCurrentIssue(props);
 
     //Set view variable
     setViewIssueDetails(true);
@@ -391,8 +396,10 @@ const UploadJiraList = async (propsLocal: any) => {
       title: issueTitleHandler,
       description: issueDescriptionHandler,
       storyPoints: issueStoryPointsHandler,
-      id: getIssueId()
+      id: getIssueId(),
     };
+    if (currentIssue)
+      props.onUpdate({ ...currentIssue, ...newObj, id: currentIssue.id });
     // console.log(newObj);
     issuesSessionStorage[selectedIssueIndexHandler] = newObj;
     setViewList(true);
@@ -485,157 +492,159 @@ const UploadJiraList = async (propsLocal: any) => {
     <div>
       {/* POPUP */}
       <Popup trigger={popupShow} setTrigger={setPopupShow}>
-            <h1>
-            Are you sure you want to delete ?
-            </h1>
-            <Button 
-            name="Confirm" 
-            onClick={()=>{DeleteThisIssue(popupShowIndex);setPopupShow(false)} }></Button>
+        <h1>Are you sure you want to delete ?</h1>
+        <Button
+          name="Confirm"
+          onClick={() => {
+            DeleteThisIssue(popupShowIndex);
+            setPopupShow(false);
+          }}
+        ></Button>
       </Popup>
-    <div className="dropdown">
-      {/* LIST VIEW */}
-      <div className={'dropdown-issue-' + listView}>
-        <div className="dropdown-issue-list">
-          {/* {issueListTEST()} */}
-          {issueList}
+      <div className="dropdown">
+        {/* LIST VIEW */}
+        <div className={'dropdown-issue-' + listView}>
+          <div className="dropdown-issue-list">
+            {/* {issueListTEST()} */}
+            {issueList}
+          </div>
+          <div className="dropdown-issue-add">
+            <div className="dropdown-issue-add-button">
+              <Button
+                name="New Issue"
+                value={0}
+                onClick={() => {
+                  GoToAddView();
+                }}
+              />
+            </div>
+            <div className="dropdown-issue-add-jira">
+              <div className="dropdown-issue-add-jira-col1">
+                <div className="dropdown-issue-add-jira-upload">
+                  <input
+                    id="inputJira"
+                    className="dropdown-issue-add-jira-upload-input"
+                    type="file"
+                    onChange={(e) => {
+                      UploadJiraList(e);
+                      console.log('TEST upload');
+                    }}
+                    onClick={(e) => ((e.target as HTMLInputElement).value = '')}
+                  />
+
+                  <label
+                    htmlFor="inputJira"
+                    className="dropdown-issue-add-jira-upload-label"
+                  >
+                    <UploadIcon />
+                  </label>
+                </div>
+              </div>
+              <div className="dropdown-issue-add-jira-col2">
+                <div
+                  onClick={DownloadJiraList}
+                  className="dropdown-issue-add-jira-download"
+                >
+                  <DownloadIcon />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="dropdown-issue-add">
-          <div className="dropdown-issue-add-button">
+        {/* ADD VIEW */}
+        <div className={'dropdown-issue-' + addNewView}>
+          <DropdownItem
+            leftIcon={<ArrowIcon />}
+            onClick1={() => {
+              setViewList(true);
+              setViewIssueDetails(false);
+            }}
+            onClick2={() => {
+              setViewList(true);
+              setViewIssueDetails(false);
+            }}
+          >
+            Back
+          </DropdownItem>
+          <div className="dropdown-issue-add-view-row1">
+            <div>
+              <TextField
+                placeholder="Issue Name"
+                value={issueTitleHandler}
+                onChange={(e) => setIssueTitleHandler(e.target.value)}
+                name="New Issue name"
+              />
+            </div>
+          </div>
+          <div className="dropdown-issue-add-view-row2">
+            <div>
+              <textarea
+                placeholder="Issue Description..."
+                className="dropdown-issue-details-textarea"
+                value={issueDescriptionHandler}
+                onChange={(e) => setIssueDescriptionHandler(e.target.value)}
+              ></textarea>
+            </div>
+          </div>
+          <div className="dropdown-issue-button">
             <Button
-              name="New Issue"
+              name="Add New Issue"
               value={0}
               onClick={() => {
-                GoToAddView();
+                AddNewIssue();
               }}
             />
           </div>
-          <div className="dropdown-issue-add-jira">
-            <div className="dropdown-issue-add-jira-col1">
-              <div className="dropdown-issue-add-jira-upload">
-                <input
-                  id="inputJira"
-                  className="dropdown-issue-add-jira-upload-input"
-                  type="file"
-                  onChange={(e) => {
-                    UploadJiraList(e);
-                    console.log('TEST upload');
-                  }}
-                  onClick={(e) => ((e.target as HTMLInputElement).value = '')}
-                />
-
-                <label
-                  htmlFor="inputJira"
-                  className="dropdown-issue-add-jira-upload-label"
-                >
-                  <UploadIcon />
-                </label>
-              </div>
+        </div>
+        {/* Details View */}
+        <div className={'dropdown-issue-' + detailsView}>
+          <DropdownItem
+            leftIcon={<ArrowIcon />}
+            onClick1={() => {
+              setViewList(true);
+              setViewIssueDetails(false);
+            }}
+            onClick2={() => {
+              setViewList(true);
+              setViewIssueDetails(false);
+            }}
+          >
+            Back
+          </DropdownItem>
+          <div className="dropdown-issue-details-row1">
+            <div className="dropdown-issue-details-text">
+              <TextField
+                value={issueTitleHandler}
+                onChange={(e) => setIssueTitleHandler(e.target.value)}
+              />
             </div>
-            <div className="dropdown-issue-add-jira-col2">
-              <div
-                onClick={DownloadJiraList}
-                className="dropdown-issue-add-jira-download"
-              >
-                <DownloadIcon />
-              </div>
+            <div className="dropdown-issue-details-storypoints">
+              <TextField
+                value={issueStoryPointsHandler}
+                onChange={(e) => setIssueStoryPointsHandler(e.target.value)}
+              />
             </div>
           </div>
-        </div>
-      </div>
-      {/* ADD VIEW */}
-      <div className={'dropdown-issue-' + addNewView}>
-        <DropdownItem
-          leftIcon={<ArrowIcon />}
-          onClick1={() => {
-            setViewList(true);
-            setViewIssueDetails(false);
-          }}
-          onClick2={() => {
-            setViewList(true);
-            setViewIssueDetails(false);
-          }}
-        >
-          Back
-        </DropdownItem>
-        <div className="dropdown-issue-add-view-row1">
-          <div>
-            <TextField
-              placeholder="Issue Name"
-              value={issueTitleHandler}
-              onChange={(e) => setIssueTitleHandler(e.target.value)}
-              name="New Issue name"
-            />
-          </div>
-        </div>
-        <div className="dropdown-issue-add-view-row2">
-          <div>
+          <div className="dropdown-issue-details-row2">
             <textarea
-              placeholder="Issue Description..."
               className="dropdown-issue-details-textarea"
               value={issueDescriptionHandler}
               onChange={(e) => setIssueDescriptionHandler(e.target.value)}
             ></textarea>
           </div>
-        </div>
-        <div className="dropdown-issue-button">
-          <Button
-            name="Add New Issue"
-            value={0}
-            onClick={() => {
-              AddNewIssue();
-            }}
-          />
-        </div>
-      </div>
-      {/* Details View */}
-      <div className={'dropdown-issue-' + detailsView}>
-        <DropdownItem
-          leftIcon={<ArrowIcon />}
-          onClick1={() => {
-            setViewList(true);
-            setViewIssueDetails(false);
-          }}
-          onClick2={() => {
-            setViewList(true);
-            setViewIssueDetails(false);
-          }}
-        >
-          Back
-        </DropdownItem>
-        <div className="dropdown-issue-details-row1">
-          <div className="dropdown-issue-details-text">
-            <TextField
-              value={issueTitleHandler}
-              onChange={(e) => setIssueTitleHandler(e.target.value)}
-            />
-          </div>
-          <div className="dropdown-issue-details-storypoints">
-            <TextField
-              value={issueStoryPointsHandler}
-              onChange={(e) => setIssueStoryPointsHandler(e.target.value)}
-            />
-          </div>
-        </div>
-        <div className="dropdown-issue-details-row2">
-          <textarea
-            className="dropdown-issue-details-textarea"
-            value={issueDescriptionHandler}
-            onChange={(e) => setIssueDescriptionHandler(e.target.value)}
-          ></textarea>
-        </div>
-        <div className="dropdown-issue-details-row3">
-          <div className="dropdown-issue-button">
-            <Button
-              name="Save changes"
-              value={0}
-              onClick={() => {
-                SaveChanges();
-              }}
-            />
+          <div className="dropdown-issue-details-row3">
+            <div className="dropdown-issue-button">
+              <Button
+                name="Save changes"
+                value={0}
+                onClick={() => {
+                  SaveChanges();
+                }}
+              />
+            </div>
           </div>
         </div>
       </div>
-    </div>
     </div>
   );
 }
