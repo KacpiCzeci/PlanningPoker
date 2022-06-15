@@ -206,7 +206,9 @@ export default function GamePage() {
           <div className="GamePage-voteavg">
             <p className="GamePage-p">Vote Averange:</p>
             <p className="GamePage-pval">
-              {game.data.finished || game.data.players.length === votessum
+              {game.data.finished ||
+              (game.data.players.length > 0 &&
+                game.data.players.every((x) => x.score != undefined))
                 ? game.data.calculatedStoryPoints[0]
                 : ''}
             </p>
@@ -215,7 +217,8 @@ export default function GamePage() {
             <p className="GamePage-p">Vote Result:</p>
             <p className="GamePage-pval">
               {game.data.finished ||
-              game.data.players.every((x) => x.score != undefined)
+              (game.data.players.length > 0 &&
+                game.data.players.every((x) => x.score != undefined))
                 ? game.data.calculatedStoryPoints[1]
                 : ''}
             </p>
