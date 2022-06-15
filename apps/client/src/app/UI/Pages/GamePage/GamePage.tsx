@@ -231,14 +231,6 @@ export default function GamePage() {
         </div>
         {game.amIHost ? (
           <div className="GamePage-newvote">
-            <Button
-              name="New Game"
-              value={0}
-              onClick={() => {
-                NewBoard();
-                game.startNewVoting('New voting');
-              }}
-            />
             {/* <div className="GamePage-copyinfo-container"> */}
             <span className="GamePage-copyinfo">Link copied!</span>
             {/* </div> */}

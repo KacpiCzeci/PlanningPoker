@@ -72,31 +72,37 @@ export default function MainPage() {
       </div>
       <div className="MainPage-label">
         <p className="MainPage-p">Your rooms:</p>
-        {[...(profile?.data?.roomsCreated ?? [])]
-          .filter((x) => x !== 'undefined')
-          .map((id) => (
-            <Button
-              name={id}
-              value={0}
-              onClick={() => {
-                navigate('/' + id);
-              }}
-            />
+        <div className="MainPage-roomlist">
+          {[...(profile?.data?.roomsCreated ?? [])]
+            .filter((x) => x !== 'undefined')
+            .map((id) => (
+              <Button
+                key={id}
+                name={id}
+                value={0}
+                onClick={() => {
+                  navigate('/' + id);
+                }}
+              />
           ))}
+        </div>
       </div>
       <div className="MainPage-label">
         <p className="MainPage-p">Rooms you have take part in:</p>
-        {[...(profile?.data?.rooms ?? [])]
-          .filter((x) => x !== 'undefined')
-          .map((id) => (
-            <Button
-              name={id}
-              value={0}
-              onClick={() => {
-                navigate('/' + id);
-              }}
-            />
+        <div className="MainPage-roomlist">
+          {[...(profile?.data?.rooms ?? [])]
+            .filter((x) => x !== 'undefined')
+            .map((id) => (
+              <Button
+                key={id}
+                name={id}
+                value={0}
+                onClick={() => {
+                  navigate('/' + id);
+                }}
+              />
           ))}
+        </div>
       </div>
     </div>
   );
