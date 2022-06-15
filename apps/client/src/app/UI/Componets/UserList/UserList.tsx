@@ -21,20 +21,16 @@ export function UserList(props: UserListProps) {
   const userss = props.users
     .sort((a, b) => (a.player === profile?.data?.username ? -1 : 1))
     .map((value) => {
-      if (value.player !== state.userName) {
-        return (
-          <li key={value.player} className="UserList-item">
-            <User
-              key={value.player}
-              value={value.score ?? undefined}
-              userName={value.player}
-              players={props.users}
-            />
-          </li>
-        );
-      } else {
-        return null;
-      }
+      return (
+        <li key={value.player} className="UserList-item">
+          <User
+            key={value.player}
+            value={value.score ?? undefined}
+            userName={value.player}
+            players={props.users}
+          />
+        </li>
+      );
     });
   return (
     <div className="UserList-container">
