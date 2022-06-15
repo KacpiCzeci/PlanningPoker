@@ -131,7 +131,7 @@ export default function GamePage() {
                   );
                   if (issueToChange) {
                     issueToChange.gameName = issue.title;
-                    issueToChange.tasks[0] = issue.description
+                    issueToChange.tasks[0] = issue.description;
                     game.setIssues.mutateAsync({ issues: newIssues });
                   }
                 }}
@@ -153,7 +153,12 @@ export default function GamePage() {
                 }
                 onAddMany={(issuess) => {
                   game.setIssues.mutateAsync({
-                    issues: [...game.data.issues, ...issuess],
+                    issues: [
+                      ...issuess.map((x) => ({
+                        ...x,
+                        id: `${new Date().toString()}`+Math.random(),
+                      })),
+                    ],
                   });
                 }}
                 onRemove={(index) => {
