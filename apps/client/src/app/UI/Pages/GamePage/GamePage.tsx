@@ -185,8 +185,10 @@ export default function GamePage() {
         <div className="GamePage-issuename">
           <TextArea
             placeholder="Issue name"
-            value={state.selectedIssue}
-            onChange={(e) => changeGlobalState({ selectedIssue: e })}
+            value={game.data.gameName}
+            onChange={(e) => {
+              return;
+            }}
             name="Title of Issue"
           />
         </div>
