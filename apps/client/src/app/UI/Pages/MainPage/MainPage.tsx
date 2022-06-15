@@ -47,12 +47,13 @@ export default function MainPage() {
           />
         </div>
       </div>
-      <div>
+      <div className="MainPage-urlcontainer">
         <TextField
           value={url}
           onChange={setUrl}
           placeholder={'url'}
           type={'text'}
+          style={{width:'500px'}}
         />
         <Button
           name="Go to the room!"
@@ -69,8 +70,8 @@ export default function MainPage() {
           }}
         />
       </div>
-      <div>
-        Your rooms:
+      <div className="MainPage-label">
+        <p className="MainPage-p">Your rooms:</p>
         {[...(profile?.data?.roomsCreated ?? [])]
           .filter((x) => x !== 'undefined')
           .map((id) => (
@@ -83,8 +84,8 @@ export default function MainPage() {
             />
           ))}
       </div>
-      <div>
-        Rooms you have take part in:
+      <div className="MainPage-label">
+        <p className="MainPage-p">Rooms you have take part in:</p>
         {[...(profile?.data?.rooms ?? [])]
           .filter((x) => x !== 'undefined')
           .map((id) => (

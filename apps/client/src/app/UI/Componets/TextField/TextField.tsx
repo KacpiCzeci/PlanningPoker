@@ -10,7 +10,7 @@ interface TextFieldProps {
     autoFocus?: boolean;
     name?: string;
     type?: 'email' | 'password' | 'text';
-
+    style?: React.CSSProperties;
 }
 
 /**
@@ -61,6 +61,7 @@ function TextField( props : TextFieldProps) {
                     onChange={changeHandler} 
                     value={val}
                     type={props.type}
+                    style={props.style}
                     />
                     
                 </form>
