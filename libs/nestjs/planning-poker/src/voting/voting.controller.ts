@@ -97,10 +97,10 @@ export class VotingController {
 
     const [result, update] = ((): [GetResultSuccessDto, () => void] => {
       const mapPlayers = () =>
-        req.getCurrentIssue().players.map((x) => ({
+        req.getCurrentIssue()?.players.map((x) => ({
           player: x.player,
           score: x.score,
-        }));
+        })) ?? [];
 
       const result: GetResultSuccessDto = {
         ...currentIssue,
@@ -109,7 +109,7 @@ export class VotingController {
       return [
         result,
         function update() {
-          result.gameName = req.getCurrentIssue().gameName;
+          result.gameName = req.getCurrentIssue()?.gameName ?? '';
           result.players = mapPlayers();
           result.issues = req.getVoting().issues;
         },
@@ -164,7 +164,7 @@ export class VotingController {
     const voting = req.getVoting();
     const currentIssue = req.getCurrentIssue();
     currentIssue.finished = true;
-    currentIssue.storyPoints = calculateStoryPoints(currentIssue)
+    currentIssue.storyPoints = calculateStoryPoints(currentIssue);
     req.votingUpdated();
 
     return 'ok';
@@ -186,8 +186,14 @@ export class VotingController {
     @Req() req: VotingRequest
   ) {
     const voting = req.getVoting();
-    voting.issues = issues;
-    req.votingUpdated();
+    if (issues.length > 0) {
+      voting.issues = issues;
+      if (issues.every((x) => x.current === false)) {
+        issues[0].current = true;
+        voting.currentIssueId = issues[0].id;
+      }
+      req.votingUpdated();
+    }
 
     return 'ok';
   }

@@ -119,7 +119,7 @@ export default function GamePage() {
               <DropdownList
                 issues={game.data.issues.map((i) => ({
                   description: i.tasks[0],
-                  storyPoints: i.storyPoints ? i.storyPoints.toString() : '',
+                  storyPoints: i.storyPoints ? i.storyPoints.toString() : '-',
                   title: i.gameName,
                   active: i.current,
                   id: i.id,
