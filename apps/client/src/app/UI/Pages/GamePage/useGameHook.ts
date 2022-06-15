@@ -1,6 +1,7 @@
 import { useAuth } from '@planning-poker/react/api-hooks';
 import {
   Custom,
+  PlayerDto,
   useVotingControllerSetCurrentIssue,
 } from '@planning-poker/shared/backend-api-client';
 import { SetIssuesBody } from '@planning-poker/shared/backend-api-client';
@@ -67,15 +68,17 @@ export const useGameHook = () => {
   }, []);
 
   return {
-    data: {
+    data: calculateStoryPoints({
       ...result.data,
+      issues: result.data.issues.map((i) => calculateStoryPoints(i)),
+      storyPoints: [0, 0],
       players: [...result.data.players].reverse().reduce((all, player) => {
         if (all.find((x) => x.player === player.player) === undefined) {
           all.push(player);
         }
         return all;
       }, [] as typeof result.data.players),
-    } as typeof result.data,
+    }),
     startNewVoting: (gameName: string) =>
       startNew.mutateAsync(gameName).then(() => profile?.refetch()),
     vote: voteFn,
@@ -86,3 +89,39 @@ export const useGameHook = () => {
     amIHost: profile?.data?.roomsCreated.find((r) => r === room) !== undefined,
   };
 };
+
+type GameResults = Issue & { issues: Issue[] };
+
+type Issue = {
+  finished: boolean;
+  gameName: string;
+  players: PlayerDto[];
+  storyPoints: [average: number, rounded: number];
+  tasks: string[];
+  id: string;
+};
+
+function calculateStoryPoints<T extends { players: PlayerDto[] }>(
+  issue: T
+): T & { storyPoints: [average: number, rounded: number] } {
+  const average =
+    issue.players
+      .map((x) => x.score)
+      .filter((x): x is number => x !== null)
+      .reduce<number>(
+        (prevValue, currentValue) => prevValue + currentValue,
+        0
+      ) / issue.players.length;
+
+  if (average <= 89) {
+    const cardsValues = [0, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89];
+    const goal = Math.round(average);
+    const closest = cardsValues.reduce(function (prev, curr) {
+      return Math.abs(curr - goal) < Math.abs(prev - goal) ? curr : prev;
+    });
+
+    return { ...issue, storyPoints: [average, closest] };
+  } else {
+    return { ...issue, storyPoints: [average, 100] };
+  }
+}
