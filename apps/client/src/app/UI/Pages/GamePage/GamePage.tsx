@@ -93,20 +93,16 @@ export default function GamePage() {
       )[0].style.display = 'none';
     }, 1000);
   }
-  useEffect(
-    
-    ()=>{
-
-      console.log(sessionStorage.getItem('room'))
-      if (sessionStorage.getItem('room')!==null){
-        if(state.gameEnded==true){
-          game.finishGame.mutateAsync()
-        }
-        else{
-          game.resumeGame.mutateAsync()
-        }
-
-      }})
+  useEffect(() => {
+    console.log(sessionStorage.getItem('room'));
+    if (sessionStorage.getItem('room') !== null) {
+      if (state.gameEnded == true) {
+        game.finishGame.mutateAsync();
+      } else {
+        game.resumeGame.mutateAsync();
+      }
+    }
+  });
 
   function changeGameState() {
     if (state.gameEnded) {
@@ -257,7 +253,17 @@ export default function GamePage() {
             <span className="GamePage-copyinfo">Link copied!</span>
             {/* </div> */}
             <Button name="Copy link" value={0} onClick={copyLinkToClipboard} />
-            <Button name="End/unend game" value={0} onClick={changeGameState} />
+            <Button
+              name="End/unend game"
+              value={0}
+              onClick={() => {
+                if (game.data.finished) {
+                  game.resumeGame.mutateAsync();
+                } else {
+                  game.finishGame.mutateAsync();
+                }
+              }}
+            />
           </div>
         ) : null}
       </div>
