@@ -109,7 +109,7 @@ function calculateStoryPoints<T extends { players: PlayerDto[] }>(
       .map((x) => x.score)
       .filter((x): x is number => x !== null)
       .reduce<number>(
-        (prevValue, currentValue) => prevValue + currentValue,
+        (prevValue, currentValue) => Number(prevValue) + Number(currentValue),
         0
       ) / issue.players.length;
 
