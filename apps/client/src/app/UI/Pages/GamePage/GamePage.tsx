@@ -120,7 +120,7 @@ export default function GamePage() {
                 issues={game.data.issues.map((i) => ({
                   description: i.tasks[0],
                   storyPoints: (
-                    game.data.storyPoints[1]
+                    i.storyPoints[1]
                   ).toString(),
                   title: i.gameName,
                   active: i.current,
