@@ -1,32 +1,21 @@
-import {
-  votingControllerResume,
-  votingControllerFinish,
-} from './../../../../../../../libs/shared/backend-api-client/src/backend';
 import { useAuth } from '@planning-poker/react/api-hooks';
 import {
   Custom,
-  useVotingControllerFinish,
   useVotingControllerSetCurrentIssue,
 } from '@planning-poker/shared/backend-api-client';
 import { SetIssuesBody } from '@planning-poker/shared/backend-api-client';
-import { useVotingControllerSetIssues } from '@planning-poker/shared/backend-api-client';
-import { useParams } from 'react-router-dom';
-import { useCallback, useEffect, useState } from 'react';
 import {
-  useVotingControllerVote,
-  useVotingControllerGetResult,
-  useVotingControllerStartNew,
-  calculateEtag,
-  GetResultSuccessDto,
+  useVotingControllerSetIssues,
+  votingControllerResume,
+  votingControllerFinish,
 } from '@planning-poker/shared/backend-api-client';
-import { useGlobalState } from '../../../GlobalStateProvider';
-import { useMutation, useQueryClient } from 'react-query';
-import { useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import { useCallback, useEffect } from 'react';
+import { useMutation } from 'react-query';
 import { useGameResult } from '@planning-poker/react/api-hooks';
 
 export const useGameHook = () => {
   const { authToken, profile } = useAuth();
-  const g = useGlobalState();
   const params = useParams();
   const room = params['id']!;
 
@@ -50,7 +39,7 @@ export const useGameHook = () => {
     mutationFn: (score: number | null) =>
       Custom.votingControllerVote(
         room,
-        { player: g.state.userName ?? 'unknown' + Math.random(), score },
+        { player: profile?.data?.username ?? 'unknown' + Math.random(), score },
         authToken
       ),
     onSettled: () => result.fetch(),
@@ -63,21 +52,13 @@ export const useGameHook = () => {
 
   const result = useGameResult();
 
-  const loginToVoting = useCallback(
-    function loginToVoting() {
-      return vote.mutateAsync(null);
-    },
-    [g.state.userName, vote]
-  );
-
   const voteFn = useCallback(
     function voteFNN(value: number | null) {
-      console.log('vote', g.state.userName);
-      if (g.state.userName) {
+      if (profile?.data?.username) {
         vote.mutateAsync(value);
       }
     },
-    [g.state.userName, vote]
+    [profile, vote]
   );
 
   useEffect(function loginToVotingAtStartup() {
@@ -95,7 +76,8 @@ export const useGameHook = () => {
         return all;
       }, [] as typeof result.data.players),
     } as typeof result.data,
-    startNewVoting: (gameName: string) => startNew.mutateAsync(gameName).then(() => profile?.refetch()),
+    startNewVoting: (gameName: string) =>
+      startNew.mutateAsync(gameName).then(() => profile?.refetch()),
     vote: voteFn,
     setIssues: { ...setIssues, mutateAsync: mutateSetIssues },
     setActiveIssue: { ...setActiveIssue, mutateAsync: mutateSetActiveIssue },
