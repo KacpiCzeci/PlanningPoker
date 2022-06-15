@@ -34,6 +34,7 @@ export class VotingRoomInterceptor {
               finished: false,
               players: [],
               tasks: [],
+              storyPoints: undefined
             },
           ],
         };

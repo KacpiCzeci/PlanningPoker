@@ -12,6 +12,7 @@ export interface GetResultSuccessDto {
   gameName: string;
   players: PlayerDto[];
   tasks: string[];
+  storyPoints: number | null;
   id: string;
   issues: IssueDto[];
 }

@@ -12,5 +12,6 @@ export interface IssueDto {
   players: PlayerDto[];
   tasks: string[];
   current: boolean;
+  storyPoints: number | null;
   id: string;
 }

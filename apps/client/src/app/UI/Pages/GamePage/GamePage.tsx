@@ -119,9 +119,7 @@ export default function GamePage() {
               <DropdownList
                 issues={game.data.issues.map((i) => ({
                   description: i.tasks[0],
-                  storyPoints: (
-                    i.storyPoints[1]
-                  ).toString(),
+                  storyPoints: i.storyPoints ? i.storyPoints.toString() : '',
                   title: i.gameName,
                   active: i.current,
                   id: i.id,
@@ -131,6 +129,7 @@ export default function GamePage() {
                     issues: [
                       ...game.data.issues,
                       {
+                        storyPoints: null,
                         current: false,
                         finished: false,
                         gameName: issue.title,
@@ -208,7 +207,7 @@ export default function GamePage() {
             <p className="GamePage-p">Vote Averange:</p>
             <p className="GamePage-pval">
               {game.data.finished || game.data.players.length === votessum
-                ? game.data.storyPoints[0]
+                ? game.data.calculatedStoryPoints[0]
                 : ''}
             </p>
           </div>
@@ -217,7 +216,7 @@ export default function GamePage() {
             <p className="GamePage-pval">
               {game.data.finished ||
               game.data.players.every((x) => x.score != undefined)
-                ? game.data.storyPoints[1]
+                ? game.data.calculatedStoryPoints[1]
                 : ''}
             </p>
           </div>

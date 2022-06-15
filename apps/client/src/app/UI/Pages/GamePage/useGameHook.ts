@@ -101,33 +101,35 @@ type Issue = {
   id: string;
 };
 
-function calculateStoryPoints<T extends { players: PlayerDto[] }>(
-  issue: T
-): T & { storyPoints: [average: number, rounded: number] } {
-  let len=0;
-  for(let i=0;i<issue.players.length;i++)
-  {
-    if(issue.players[i].score!==null)
-    len+=1;
+function calculateStoryPoints<
+  T extends { players: PlayerDto[]; finished: boolean }
+>(issue: T): T & { calculatedStoryPoints: [average: number, rounded: number] } {
+  let len = 0;
+  for (let i = 0; i < issue.players.length; i++) {
+    if (issue.players[i].score !== null) len += 1;
   }
-  const average =
-    issue.players
-      .map((x) => x.score)
-      .filter((x): x is number => x !== null)
-      .reduce<number>(
-        (prevValue, currentValue) => Number(prevValue) + Number(currentValue),
-        0
-      ) / len;
+  if (issue.finished === true || issue.players.every((x) => x.score !== null)) {
+    const average =
+      issue.players
+        .map((x) => x.score)
+        .filter((x): x is number => x !== null)
+        .reduce<number>(
+          (prevValue, currentValue) => Number(prevValue) + Number(currentValue),
+          0
+        ) / len;
 
-  if (average <= 89) {
-    const cardsValues = [0, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89];
-    const goal = Math.round(average);
-    const closest = cardsValues.reduce(function (prev, curr) {
-      return Math.abs(curr - goal) < Math.abs(prev - goal) ? curr : prev;
-    });
+    if (average <= 89) {
+      const cardsValues = [0, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89];
+      const goal = Math.round(average);
+      const closest = cardsValues.reduce(function (prev, curr) {
+        return Math.abs(curr - goal) < Math.abs(prev - goal) ? curr : prev;
+      });
 
-    return { ...issue, storyPoints: [average, closest] };
+      return { ...issue, calculatedStoryPoints: [average, closest] };
+    } else {
+      return { ...issue, calculatedStoryPoints: [average, 100] };
+    }
   } else {
-    return { ...issue, storyPoints: [average, 100] };
+    return { ...issue, calculatedStoryPoints: [-0, -0] };
   }
 }

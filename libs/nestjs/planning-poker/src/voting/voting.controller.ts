@@ -101,6 +101,7 @@ export class VotingController {
           player: x.player,
           score: x.score,
         }));
+
       const result: GetResultSuccessDto = {
         ...currentIssue,
         issues: [...req.getVoting().issues],
@@ -148,6 +149,11 @@ export class VotingController {
       participant.score = score;
     }
 
+    if (currentIssue.players.every((x) => x.score != null)) {
+      const storyPoints = calculateStoryPoints(currentIssue);
+      currentIssue.storyPoints = storyPoints;
+    }
+
     req.votingUpdated();
 
     return 'ok';
@@ -158,6 +164,7 @@ export class VotingController {
     const voting = req.getVoting();
     const currentIssue = req.getCurrentIssue();
     currentIssue.finished = true;
+    currentIssue.storyPoints = calculateStoryPoints(currentIssue)
     req.votingUpdated();
 
     return 'ok';
@@ -196,5 +203,34 @@ export class VotingController {
     req.votingUpdated();
 
     return 'ok';
+  }
+}
+
+function calculateStoryPoints<
+  T extends { players: PlayerDto[]; finished: boolean }
+>(issue: T): number {
+  let len = 0;
+  for (let i = 0; i < issue.players.length; i++) {
+    if (issue.players[i].score !== null) len += 1;
+  }
+  const average =
+    issue.players
+      .map((x) => x.score)
+      .filter((x): x is number => x !== null)
+      .reduce<number>(
+        (prevValue, currentValue) => Number(prevValue) + Number(currentValue),
+        0
+      ) / len;
+
+  if (average <= 89) {
+    const cardsValues = [0, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89];
+    const goal = Math.round(average);
+    const closest = cardsValues.reduce(function (prev, curr) {
+      return Math.abs(curr - goal) < Math.abs(prev - goal) ? curr : prev;
+    });
+
+    return closest;
+  } else {
+    return 100;
   }
 }

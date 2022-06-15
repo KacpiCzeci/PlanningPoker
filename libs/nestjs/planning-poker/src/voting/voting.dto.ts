@@ -3,10 +3,11 @@ import { ApiProperty, OmitType, PickType } from '@nestjs/swagger';
 export type Issue = {
   finished: boolean;
   gameName: string;
-  players: { player: string; score: number|null }[];
+  players: { player: string; score: number | null }[];
   tasks: string[];
   id: string;
   current: boolean;
+  storyPoints: number | undefined 
 };
 
 export type Player = { player: string; score: number | null };
@@ -34,6 +35,9 @@ export class IssueDto implements Issue {
 
   @ApiProperty()
   current: boolean;
+
+  @ApiProperty({nullable: true})
+  storyPoints: number | undefined;
 
   @ApiProperty()
   id: string;

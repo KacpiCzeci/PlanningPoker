@@ -167,6 +167,7 @@ const UploadJiraList = async (propsLocal: any) => {
           }
         }
         const newObj = {
+          storyPoints: null,
           current: false,
           finished: false,
           gameName: temptitle,

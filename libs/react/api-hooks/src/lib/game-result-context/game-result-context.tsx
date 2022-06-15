@@ -10,6 +10,7 @@ export type GameResult = { data: GetResultSuccessDto; fetch: () => void };
 const defaultValue: GameResult = {
   fetch: () => 0,
   data: {
+    storyPoints: null,
     finished: false,
     gameName: '',
     id: '',
@@ -46,7 +47,7 @@ export const GameProvider: React.FC<object> = ({children}) => {
   }
   useEffect(() => {
     setInterval(() => {fetch()}, 1000)
-  }, [1000])
+  }, [])
 
   useEffect(
     function refetchOnEtagChange() {
