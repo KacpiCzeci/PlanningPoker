@@ -1,30 +1,45 @@
 import {
-  authControllerGetProfile,
-  AuthControllerGetProfileQueryError,
   AuthControllerGetProfileQueryResult,
-  authControllerLogin,
-  authControllerRegister,
-  useAuthControllerGetProfile,
   Custom,
+  useAuthControllerLogin,
+  useAuthControllerRegister,
+  JwtDTO,
+  LoginDto,
 } from '@planning-poker/shared/backend-api-client';
-import React, { useContext, useEffect, useState } from 'react';
-import { useQuery, UseQueryResult } from 'react-query';
+import React, { useContext, useState } from 'react';
+import { UseMutationResult, useQuery, UseQueryResult } from 'react-query';
 
 export type AuthContext = {
-  login: (username: string, password: string) => void;
+  login: UseMutationResult<
+    JwtDTO,
+    unknown,
+    {
+      data: LoginDto;
+    },
+    unknown
+  >;
   logout: () => void;
-  register: (username: string, password: string) => void;
+  register: UseMutationResult<
+    JwtDTO,
+    unknown,
+    {
+      data: LoginDto;
+    },
+    unknown
+  >;
   userName: string;
   authToken: string;
   profile?: UseQueryResult<AuthControllerGetProfileQueryResult>;
+  isLoggedIn: () => Promise<boolean>;
 };
 
 const AuthContext = React.createContext<AuthContext>({
-  login: () => 0,
-  logout: () => 0,
-  register: () => 0,
-  userName: undefined as any,
+  login: undefined as never,
+  logout: undefined as never,
+  register: undefined as never,
+  userName: undefined as never,
   authToken: '',
+  isLoggedIn: undefined as never,
 });
 
 export const AuthProvider: React.FC<{ authToken: string | undefined }> = ({
@@ -34,40 +49,61 @@ export const AuthProvider: React.FC<{ authToken: string | undefined }> = ({
   const [authToken, setAuthToken] = useState(initAuthToken ?? '');
   const [userName, setUserName] = useState('');
 
-  var getProfile = useQuery(
+  const getProfile = useQuery(
     'getProfile',
     () => Custom.authControllerGetProfile(authToken),
     { enabled: authToken !== '', useErrorBoundary: false }
   );
 
-  const sleep = (milliseconds: number) => {
-    return new Promise(resolve => setTimeout(resolve, milliseconds))
-  }
+  const login = useAuthControllerLogin({
+    mutation: {
+      onSuccess: ({ access_token }, { data: { username } }) => {
+        setUserName(username);
+        sessionStorage.setItem('authToken', access_token);
+        setAuthToken(access_token);
+        setUserName(username);
+      },
+      useErrorBoundary: false,
+    },
+  });
 
+  const register = useAuthControllerRegister({
+    mutation: {
+      onSuccess: ({ access_token }, { data: { username } }) => {
+        setUserName(username);
+        sessionStorage.setItem('authToken', access_token);
+        setAuthToken(access_token);
+        setUserName(username);
+      },
+      useErrorBoundary: false,
+    },
+  });
+
+  const logout = () => {
+    setUserName('');
+    setAuthToken('');
+    sessionStorage.setItem('authToken', '');
+  };
   return (
     <AuthContext.Provider
       value={{
+        isLoggedIn: async () => {
+          try {
+            const data = await Custom.authControllerGetProfile(authToken);
+            if (data.userId !== undefined) {
+              return true;
+            }
+            logout();
+            return false;
+          } catch {
+            logout();
+            return false;
+          }
+        },
         authToken,
-        login: (username, password) =>
-          authControllerLogin({ username, password }).then( async (res) => {
-            setUserName(username);
-            sessionStorage.setItem('userName', username);
-            sessionStorage.setItem('authToken', res.access_token);
-            return setAuthToken(res.access_token);
-          }).catch(e => {}),
-        logout: () => {
-            setUserName('');
-            sessionStorage.setItem('userName', '');
-            sessionStorage.setItem('authToken', '');
-            setAuthToken('');
-          },
-        register: (username, password) =>
-          authControllerRegister({ username, password }).then((res) => {
-            setUserName(username);
-            sessionStorage.setItem('userName', username);
-            sessionStorage.setItem('authToken', res.access_token);
-            setAuthToken(res.access_token);
-          }).catch(e => {}),
+        login,
+        logout,
+        register,
         userName,
         profile: getProfile,
       }}

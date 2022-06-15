@@ -6,6 +6,7 @@ import './LoginPage.scss';
 import { useGameHook } from '../GamePage/useGameHook';
 import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '@planning-poker/react/api-hooks';
+import { toast } from 'react-toastify';
 
 interface LocationState {
   from: {
@@ -14,7 +15,7 @@ interface LocationState {
 }
 
 export default function LoginPage() {
-  const { login, userName, profile } = useAuth();
+  const { login, userName, profile, isLoggedIn, authToken } = useAuth();
   const [username, setUsename] = useState('');
   const [password, setPassword] = useState('');
   const g = useGlobalState();
@@ -24,20 +25,32 @@ export default function LoginPage() {
   const state = useLocation().state as LocationState;
 
   useEffect(() => {
-    console.log("ok", profile?.data)
-    if (profile?.data) {
-      console.log("user", userName)
-      if(state?.from){
-        navigate(state.from);
+    isLoggedIn().then((loggedIn) => {
+      if (loggedIn === true) {
+        if (state?.from) {
+          navigate(state.from);
+        } else {
+          navigate('/');
+        }
       }
-      else{
-        navigate('/');
-      }
-    }
-  }, [profile?.data]);
+    });
+  }, [authToken]);
 
-  const handleClick = async (u: string, p: string) => {
-    login(u, p);
+  const handleClick = async (username: string, password: string) => {
+    try {
+      await login
+        .mutateAsync(
+          { data: { password, username } },
+          {
+            onError: () => {
+              toast.error('Bad login credentials');
+            },
+          }
+        )
+        .catch();
+    } catch {
+      console.log("E")
+    }
   };
 
   return (
@@ -70,7 +83,9 @@ export default function LoginPage() {
           />
         </div>
         <div className="LoginPage-registercontainer">
-          <Link className="LoginPage-register" to="/register">Do not have account? Register.</Link>
+          <Link className="LoginPage-register" to="/register">
+            Do not have account? Register.
+          </Link>
         </div>
         <div className="LoginPage-button">
           <Button

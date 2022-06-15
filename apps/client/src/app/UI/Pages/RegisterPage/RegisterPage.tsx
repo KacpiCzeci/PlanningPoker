@@ -7,6 +7,7 @@ import { useGameHook } from '../GamePage/useGameHook';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@planning-poker/react/api-hooks';
 import Checkbox from '../../Componets/CheckBox/CheckBox';
+import { toast } from 'react-toastify';
 
 interface LocationState {
   from: {
@@ -15,7 +16,7 @@ interface LocationState {
 }
 
 export default function RegisterPage() {
-  const { register, profile } = useAuth();
+  const { register, profile, isLoggedIn, authToken } = useAuth();
   const [username, setUsename] = useState('');
   const [password, setPassword] = useState('');
   const [policy, setPolicy] = useState(false);
@@ -25,25 +26,35 @@ export default function RegisterPage() {
   const gameHook = useGameHook();
   const state = useLocation().state as LocationState;
 
-
   useEffect(() => {
-    if (profile?.data) {
-      if(state?.from){
-        navigate(state.from);
+    isLoggedIn().then((loggedIn) => {
+      if (loggedIn === true) {
+        if (state?.from) {
+          navigate(state.from);
+        } else {
+          navigate('/');
+        }
       }
-      else{
-        navigate('/');
-      }
-    }
-  }, [profile]);
+    });
+  }, [authToken]);
 
-  const handleClick = async (u: string, p: string) => {
-    register(u, p);
+  const handleClick = async (username: string, password: string) => {
+    if (policy) {
+      try {
+        await register.mutateAsync({ data: { username, password } });
+      } catch {
+        toast.error('Register error', { position: 'bottom-right' });
+      }
+    } else {
+      toast.error('You have to accept the personal data policy', {
+        position: 'bottom-right',
+      });
+    }
   };
 
   const handleCheckBox = () => {
     setPolicy(!policy);
-  }
+  };
 
   return (
     <div className="RegisterPage-container">
@@ -75,7 +86,11 @@ export default function RegisterPage() {
           />
         </div>
         <div className="RegisterPage-checkboxcontainer">
-          <Checkbox text="Accept the personal data policy." handleOnChange={handleCheckBox} state={policy}/>
+          <Checkbox
+            text="Accept the personal data policy."
+            handleOnChange={handleCheckBox}
+            state={policy}
+          />
         </div>
         <div className="RegisterPage-button">
           <Button

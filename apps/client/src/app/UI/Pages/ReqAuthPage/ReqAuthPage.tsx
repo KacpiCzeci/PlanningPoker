@@ -29,7 +29,7 @@ export default function ReqAuthRoute(props: ReqAth): JSX.Element {
     return <Navigate to={'/login'} replace state={{ from: location }}/>;
   }
 
-  if (auth.profile?.data?.username) {
+  if (auth.profile?.data?.username !== undefined) {
     return props.element;
   }
   return <LoadingPage />;
