@@ -11,6 +11,7 @@ import {
 } from 'react-router-dom';
 import TextField from '../../Componets/TextField/TextField';
 import { Query } from 'react-query';
+import { async } from 'rxjs';
 
 export default function MainPage() {
   const { logout, profile } = useAuth();
@@ -27,7 +28,7 @@ export default function MainPage() {
         />
         <h1 className="MainPage-h1">Planning Poker</h1>
         <div className="MainPage-navv">
-          <h1 className="CreateGamePage-label" style={{alignSelf: "center"}}>
+          <h1 className="CreateGamePage-label" style={{ alignSelf: 'center' }}>
             Hello {profile?.data?.username}!
           </h1>
           <Button
@@ -67,6 +68,34 @@ export default function MainPage() {
             window.location.href = url;
           }}
         />
+      </div>
+      <div>
+        Your rooms:
+        {[...(profile?.data?.roomsCreated ?? [])]
+          .filter((x) => x !== 'undefined')
+          .map((id) => (
+            <Button
+              name={id}
+              value={0}
+              onClick={() => {
+                navigate('/' + id);
+              }}
+            />
+          ))}
+      </div>
+      <div>
+        Rooms you have take part in:
+        {[...(profile?.data?.rooms ?? [])]
+          .filter((x) => x !== 'undefined')
+          .map((id) => (
+            <Button
+              name={id}
+              value={0}
+              onClick={() => {
+                navigate('/' + id);
+              }}
+            />
+          ))}
       </div>
     </div>
   );
