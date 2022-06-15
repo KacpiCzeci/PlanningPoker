@@ -12,6 +12,7 @@ import {
 import TextField from '../../Componets/TextField/TextField';
 import { Query } from 'react-query';
 import { async } from 'rxjs';
+import {ReactComponent as Room} from "../../../../assets/icons/room.svg";
 
 export default function MainPage() {
   const { logout, profile } = useAuth();
@@ -76,14 +77,20 @@ export default function MainPage() {
           {[...(profile?.data?.roomsCreated ?? [])]
             .filter((x) => x !== 'undefined')
             .map((id) => (
-              <Button
-                key={id}
-                name={id}
-                value={0}
-                onClick={() => {
-                  navigate('/' + id);
-                }}
-              />
+              <div key={id} className="MainPage-item-container" onClick={() => {navigate('/' + id)}}>
+                <div className="MainPage-item-icon">
+                    <Room fill="#636363"/>
+                  </div>
+                <p className="MainPage-item-text">{id}</p>
+              </div>
+              // <Button
+              //   key={id}
+              //   name={id}
+              //   value={0}
+              //   onClick={() => {
+              //     navigate('/' + id);
+              //   }}
+              // />
           ))}
         </div>
       </div>
@@ -93,14 +100,12 @@ export default function MainPage() {
           {[...(profile?.data?.rooms ?? [])]
             .filter((x) => x !== 'undefined')
             .map((id) => (
-              <Button
-                key={id}
-                name={id}
-                value={0}
-                onClick={() => {
-                  navigate('/' + id);
-                }}
-              />
+              <div key={id} className="MainPage-item-container" onClick={() => {navigate('/' + id)}}>
+                <div className="MainPage-item-icon">
+                    <Room fill="#636363"/>
+                  </div>
+                <p className="MainPage-item-text">{id}</p>
+              </div>
           ))}
         </div>
       </div>
