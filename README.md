@@ -47,5 +47,5 @@ Nest JS
 ## Backend
 https://planning-poker-347212.lm.r.appspot.com/api
 
-##Frontend
+## Frontend
 https://planning-poker-tsd.web.app
