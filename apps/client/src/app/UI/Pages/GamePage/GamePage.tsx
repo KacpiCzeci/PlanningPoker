@@ -93,16 +93,6 @@ export default function GamePage() {
       )[0].style.display = 'none';
     }, 1000);
   }
-  useEffect(() => {
-    console.log(sessionStorage.getItem('room'));
-    if (sessionStorage.getItem('room') !== null) {
-      if (state.gameEnded == true) {
-        game.finishGame.mutateAsync();
-      } else {
-        game.resumeGame.mutateAsync();
-      }
-    }
-  });
 
   function changeGameState() {
     if (state.gameEnded) {
