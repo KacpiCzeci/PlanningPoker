@@ -16,6 +16,7 @@ import NavItem from '../../Componets/NavItem/NavItem';
 import DropdownList from '../../Componets/DropdownList/DropdownList';
 import { finished } from 'stream';
 import { votingControllerSetIssues } from '@planning-poker/shared/backend-api-client';
+import { getListItemTextUtilityClass } from '@mui/material';
 
 function getSessionStorageOrDefault(key: string, defaultValue: string) {
   const stored = sessionStorage.getItem(key);
@@ -93,6 +94,43 @@ export default function GamePage() {
       )[0].style.display = 'none';
     }, 1000);
   }
+
+let hours = 0;
+let mins = 0;
+let seconds = 0;
+let counting = false
+let timer: ReturnType<typeof setTimeout>
+
+async function beginCounting(){
+  if (counting === false){
+    counting = true;
+    startTimer();
+  }
+}
+
+async function startTimer(){
+    timer = setTimeout(function(){
+        seconds++;
+      if(seconds >59){
+      seconds=0;mins++;
+      }
+      if(mins>59) {
+      mins=0;hours++;
+        }
+      console.log(seconds)
+        startTimer();
+      },1000);
+
+}
+function stopTimer(){
+  counting = false;
+  clearTimeout(timer);
+}
+function resetTimer(){
+hours = 0;
+mins = 0;
+seconds = 0;
+}
 
   function changeGameState() {
     if (state.gameEnded) {
@@ -206,14 +244,17 @@ export default function GamePage() {
             name="Title of Issue"
           />
         </div>
-        <div className="GamePage-vote">
-          {/* <Button
-            name="Change name"
-            value={0}
-            onClick={() => {
-              HandleNewVote();
-            }}
-          /> */}
+        <div className="GamePage-timer">
+          <div id="timer">
+            <span id="hours">{hours}:</span>
+            <span id="minutes">{mins}:</span>
+            <span id="seconds" >{seconds}</span>  
+          </div>
+          <div id="controls">
+            <button id="start" onClick={beginCounting}>Start</button>
+            <button id="stop" onClick={stopTimer}>Stop</button>
+            <button id="reset" onClick={resetTimer}>Reset</button>
+          </div>
         </div>
 
         <div
